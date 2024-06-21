@@ -162,7 +162,9 @@ Channel.prototype.initModules = function () {
         "./kickban"       : "kickban",
         "./ranks"         : "rank",
         "./accesscontrol" : "password",
-        "./anonymouscheck": "anoncheck"
+        "./anonymouscheck": "anoncheck",
+        "./coolholecommon": "coolholecommon", //coolholecommon should be before other coolhole modules
+        "./coolholegolds" : "coolholegolds"
     };
 
     var self = this;
