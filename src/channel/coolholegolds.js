@@ -10,7 +10,7 @@ CoolholeGoldsModule.prototype = Object.create(ChannelModule.prototype);
 
 /**
  * Native cytube hook called from cytube chat module.
- * Checks if the chat message is gold and applies it to the coolholemeta object
+ * Checks if the chat message is gold and applies it to the coolholeMeta object
  * @param {Object} user User object
  * @param {Object} data msg object
  * @param {function} cb callback to return ChannelModule.PASSTHROUGH back
@@ -21,7 +21,7 @@ CoolholeGoldsModule.prototype.onUserPreChat = function(user, data, cb) {
 }
 
 /**
- * Calculates if the message is gold, and applies it to data.meta.coolholemeta
+ * Calculates if the message is gold, and applies it to data.meta.coolholeMeta
  * @param {Object} user user object
  * @param {Object} data msg object
  * @returns 
@@ -34,7 +34,7 @@ CoolholeGoldsModule.prototype.maybeMakeMessageGold = function (user, data) {
 
     // Get current video title
     const currentVideoTitle = this.channel.modules["playlist"].current.media.title;
-
+    
     // Add some date specific modifer to let golds "go stale"; this is based on each quarter per year (~3 month period)
     const dateModifier = Math.floor((new Date().getUTCMonth() + 3) / 3) + new Date().getUTCFullYear();
 
@@ -53,10 +53,12 @@ CoolholeGoldsModule.prototype.maybeMakeMessageGold = function (user, data) {
     // No negatives
     lotteryHash = lotteryHash < 0 ? -lotteryHash : lotteryHash;
 
+    console.log(lotteryHash);
+
     // 1% chance? Idk either. If it's equal to one, they get a gold
     if (lotteryHash === 1) {
         LOGGER.info(`maybeMakeMessageGold: Found Gold Message: ${chatText}`);
-        data.meta.coolholemeta.isGold = true;
+        data.meta.coolholeMeta.otherClasses.push("text-lottery");
     }
 }
 

@@ -15,8 +15,8 @@ CoolholeCommonModule.prototype = Object.create(ChannelModule.prototype);
  * @param {function} cb callback to return ChannelModule.PASSTHROUGH back
  */ 
 CoolholeCommonModule.prototype.onUserPreChat = function(user, data, cb) {
-    data.meta.coolholemeta = {
-        isGold: false
+    data.meta.coolholeMeta = {
+        otherClasses: []
     }
     cb(null, ChannelModule.PASSTHROUGH);
 }
