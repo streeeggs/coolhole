@@ -24,9 +24,6 @@ function coolholePostUserProcessMessage(channel, user, data, msgobj) {
     if(allow)
         allow = channel.modules.coolholegolds.coolholePostUserProcessMessage(user, data, msgobj);
 
-    if(allow)
-        allow = channel.modules.coolholepoints.coolholePostUserProcessMessage(user, data, msgobj);
-
     return allow;
 }
 
