@@ -166,6 +166,7 @@ html(lang="en")
             h4 User Preferences
             ul.nav.nav-tabs
               li: a(href="#us-general", data-toggle="tab") General
+              li: a(href="#us-coolhole", data-toggle="tab") Coolhole Options
               li: a(href="#us-playback", data-toggle="tab") Playback
               li: a(href="#us-chat", data-toggle="tab") Chat
               li: a(href="#us-scriptcontrol", data-toggle="tab") Script Access
@@ -173,7 +174,9 @@ html(lang="en")
           .modal-body
             .tab-content
               include useroptions
+              include useroptions-coolhole
               +us-general()
+              +us-coolhole()
               +us-playback()
               +us-chat()
               +us-scripts()

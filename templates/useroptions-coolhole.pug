@@ -1,0 +1,12 @@
+
+mixin us-coolhole
+  #us-coolhole.tab-pane
+    h4 Sound Effects
+    form.form-horizontal(action="javascript:void(0)")
+      .form-group
+        +rcheckbox("us-allow-sound-mods", "Allow sound from moderator emotes")
+        +rcheckbox("us-allow-sound-mods", "Allow sound anyone can use")
+        +rcheckbox("us-allow-sound-mods", "Allow sound stacking")
+        .col-sm-4
+        .col-sm-8
+          p.text-danger Warning: This can be very loud and may bring your browser to a crawl.
