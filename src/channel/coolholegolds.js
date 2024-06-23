@@ -9,24 +9,21 @@ function CoolholeGoldsModule(_channel) {
 CoolholeGoldsModule.prototype = Object.create(ChannelModule.prototype);
 
 /**
- * Native cytube hook called from cytube chat module.
  * Checks if the chat message is gold and applies it to the coolholeMeta object
- * @param {Object} user User object
- * @param {Object} data msg object
- * @param {function} cb callback to return ChannelModule.PASSTHROUGH back
+ * @param {Object} user user who sent the chat message
+ * @param {Object} data data input from user
+ * @param {Object} msgobj message object about to be sent out to clients
  */ 
-CoolholeGoldsModule.prototype.onUserPreChat = function(user, data, cb) {
-    this.maybeMakeMessageGold(user, data);
-    cb(null, ChannelModule.PASSTHROUGH);
+CoolholeGoldsModule.prototype.coolholePostUserProcessMessage = function(user, data, msgobj) {
+    this.maybeMakeMessageGold(msgobj);
+    return true;
 }
 
 /**
  * Calculates if the message is gold, and applies it to data.meta.coolholeMeta
- * @param {Object} user user object
- * @param {Object} data msg object
- * @returns 
+ * @param {Object} msgobj
  */
-CoolholeGoldsModule.prototype.maybeMakeMessageGold = function (user, data) {
+CoolholeGoldsModule.prototype.maybeMakeMessageGold = function (msgobj) {
     if(this.channel.modules["playlist"].current === null ||
        this.channel.modules["playlist"].current.media === null ||
        this.channel.modules["playlist"].current.media.title === null)
@@ -39,7 +36,7 @@ CoolholeGoldsModule.prototype.maybeMakeMessageGold = function (user, data) {
     const dateModifier = Math.floor((new Date().getUTCMonth() + 3) / 3) + new Date().getUTCFullYear();
 
     // Convert to lower case to allow for different cased gold
-    const chatText = data.msg.toLowerCase();
+    const chatText = msgobj.msg.toLowerCase();
 
     // Combine the msg, video title, date, and a constant (legacy was "co"); 
     const lotteryText = chatText + currentVideoTitle + "co" + dateModifier.toString();
@@ -53,12 +50,10 @@ CoolholeGoldsModule.prototype.maybeMakeMessageGold = function (user, data) {
     // No negatives
     lotteryHash = lotteryHash < 0 ? -lotteryHash : lotteryHash;
 
-    console.log(lotteryHash);
-
     // 1% chance? Idk either. If it's equal to one, they get a gold
     if (lotteryHash === 1) {
         LOGGER.info(`maybeMakeMessageGold: Found Gold Message: ${chatText}`);
-        data.meta.coolholeMeta.otherClasses.push("text-lottery");
+        msgobj.meta.coolholeMeta.otherClasses.push("text-lottery");
     }
 }
 

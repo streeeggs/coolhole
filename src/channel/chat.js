@@ -5,6 +5,7 @@ var util = require("../utilities");
 var Flags = require("../flags");
 import { transformImgTags } from '../camo';
 import { Counter } from 'prom-client';
+import { coolholePostUserProcessMessage } from './coolhole-server-mods';
 
 const SHADOW_TAG = "[shadow]";
 const LINK = /(\w+:\/\/(?:[^:/[\]\s]+|\[[0-9a-f:]+\])(?::\d+)?(?:\/[^/\s]*)*)/ig;
@@ -334,6 +335,9 @@ ChatModule.prototype.processChatMsg = function (user, data) {
             return;
         }
     }
+
+    if(!coolholePostUserProcessMessage(this.channel, user, data, msgobj))
+        return;
 
     if (user.is(Flags.U_SMUTED)) {
         this.shadowMutedUsers().forEach(function (u) {

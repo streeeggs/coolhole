@@ -8,17 +8,16 @@ function CoolholeCommonModule(_channel) {
 CoolholeCommonModule.prototype = Object.create(ChannelModule.prototype);
 
 /**
- * Native cytube hook called from cytube chat module.
  * Sets up common objects to be used by other coolhole modules.
- * @param {Object} user User object
- * @param {Object} data msg object
- * @param {function} cb callback to return ChannelModule.PASSTHROUGH back
+ * @param {Object} user user who sent the chat message
+ * @param {Object} data data input from user
+ * @param {Object} msgobj message object about to be sent out to clients
  */ 
-CoolholeCommonModule.prototype.onUserPreChat = function(user, data, cb) {
-    data.meta.coolholeMeta = {
+CoolholeCommonModule.prototype.coolholePostUserProcessMessage = function(user, data, msgobj) {
+    msgobj.meta.coolholeMeta = {
         otherClasses: []
     }
-    cb(null, ChannelModule.PASSTHROUGH);
+    return true;
 }
 
 module.exports = CoolholeCommonModule;

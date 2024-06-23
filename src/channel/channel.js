@@ -163,7 +163,7 @@ Channel.prototype.initModules = function () {
         "./ranks"         : "rank",
         "./accesscontrol" : "password",
         "./anonymouscheck": "anoncheck",
-        "./coolholecommon": "coolholecommon", //coolholecommon should be before other coolhole modules
+        "./coolholecommon": "coolholecommon",
         "./coolholegolds" : "coolholegolds"
     };
 
