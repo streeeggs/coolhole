@@ -1,6 +1,11 @@
 var ChannelModule = require("./module");
 const LOGGER = require("@calzoneman/jsli")("channel");
 
+/**
+ * A coolhole module.
+ * This module calculates if chat messages are gold.
+ * @param {Object} _channel 
+ */
 function CoolholeGoldsModule(_channel) {
     ChannelModule.apply(this, arguments);
     this.supportsDirtyCheck = false;
@@ -9,21 +14,11 @@ function CoolholeGoldsModule(_channel) {
 CoolholeGoldsModule.prototype = Object.create(ChannelModule.prototype);
 
 /**
- * Checks if the chat message is gold and applies it to the coolholeMeta object
- * @param {Object} user user who sent the chat message
- * @param {Object} data data input from user
+ * Calculates if the chat message is gold, and applies it to data.meta.coolholeMeta
  * @param {Object} msgobj message object about to be sent out to clients
- */ 
-CoolholeGoldsModule.prototype.coolholePostUserProcessMessage = function(user, data, msgobj) {
-    this.maybeMakeMessageGold(msgobj);
-    return true;
-}
-
-/**
- * Calculates if the message is gold, and applies it to data.meta.coolholeMeta
- * @param {Object} msgobj
+ * @returns always return true to let the chat message passthrough
  */
-CoolholeGoldsModule.prototype.maybeMakeMessageGold = function (msgobj) {
+CoolholeGoldsModule.prototype.calculateGold = function (msgobj) {
     if(this.channel.modules["playlist"].current === null ||
        this.channel.modules["playlist"].current.media === null ||
        this.channel.modules["playlist"].current.media.title === null)
@@ -52,9 +47,11 @@ CoolholeGoldsModule.prototype.maybeMakeMessageGold = function (msgobj) {
 
     // 1% chance? Idk either. If it's equal to one, they get a gold
     if (lotteryHash === 1) {
-        LOGGER.info(`maybeMakeMessageGold: Found Gold Message: ${chatText}`);
+        LOGGER.info(`calculateGold: Found Gold Message: ${chatText}`);
         msgobj.meta.coolholeMeta.otherClasses.push("text-lottery");
     }
+
+    return true;
 }
 
 /**
