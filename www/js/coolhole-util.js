@@ -15,9 +15,9 @@
  */
 function coolholePostFormatMessage(data, last, div, time, name, message) {
     try {
-        var timeText = time !== undefined ? time?.text()?.toLowerCase() : "";
-        var chatText = message?.text()?.toLowerCase();
-        var allText = timeText + name?.text()?.toLowerCase() + chatText;
+        let timeText = time !== undefined ? time?.text()?.toLowerCase() : "";
+        let chatText = message?.text()?.toLowerCase();
+        let allText = timeText + name?.text()?.toLowerCase() + chatText;
 
         // add all text to title. This is so if the message dissappears (debt, shrink, etc), the user can still hover over the message to read it.
         div.prop("title", allText);
@@ -31,6 +31,6 @@ function coolholePostFormatMessage(data, last, div, time, name, message) {
 
     }
     catch(ex) {
-        console.log(ex);
+        console.error(ex);
     }
 }

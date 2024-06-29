@@ -1,76 +1,72 @@
 var ChannelModule = require("./module");
-const LOGGER = require("@calzoneman/jsli")("channel");
+const LOGGER = require("@calzoneman/jsli")("golds");
 
 /**
- * A coolhole module.
  * This module calculates if chat messages are gold.
  * @param {Object} _channel 
  */
-function CoolholeGoldsModule(_channel) {
-    ChannelModule.apply(this, arguments);
-    this.supportsDirtyCheck = false;
-}
-
-CoolholeGoldsModule.prototype = Object.create(ChannelModule.prototype);
-
-/**
- * Calculates if the chat message is gold, and applies it to data.meta.coolholeMeta
- * @param {Object} msgobj message object about to be sent out to clients
- * @returns always return true to let the chat message passthrough
- */
-CoolholeGoldsModule.prototype.calculateGold = function (msgobj) {
-    if(this.channel.modules["playlist"].current === null ||
-       this.channel.modules["playlist"].current.media === null ||
-       this.channel.modules["playlist"].current.media.title === null)
-       return;
-
-    // Get current video title
-    const currentVideoTitle = this.channel.modules["playlist"].current.media.title;
-    
-    // Add some date specific modifer to let golds "go stale"; this is based on each quarter per year (~3 month period)
-    const dateModifier = Math.floor((new Date().getUTCMonth() + 3) / 3) + new Date().getUTCFullYear();
-
-    // Convert to lower case to allow for different cased gold
-    const chatText = msgobj.msg.toLowerCase();
-
-    // Combine the msg, video title, date, and a constant (legacy was "co"); 
-    const lotteryText = chatText + currentVideoTitle + "co" + dateModifier.toString();
-
-    // Hash string
-    let lotteryHash = hashFunc(lotteryText);
-
-    // Modulo hash by 100
-    lotteryHash %= 100;
-
-    // No negatives
-    lotteryHash = lotteryHash < 0 ? -lotteryHash : lotteryHash;
-
-    // 1% chance? Idk either. If it's equal to one, they get a gold
-    if (lotteryHash === 1) {
-        LOGGER.info(`calculateGold: Found Gold Message: ${chatText}`);
-        msgobj.meta.coolholeMeta.otherClasses.push("text-lottery");
+class CoolholeGoldsModule extends ChannelModule{
+    constructor(_channel) {
+        super(_channel);
     }
 
-    return true;
-}
+    /**
+     * Calculates if the chat message is gold.
+     * @param {string} msg chat message
+     * @returns returns true if gold, false if not gold
+     */
+    calculateGold(msg) {
+        if(this.channel.modules["playlist"]?.current?.media?.title === undefined)
+            return false;
 
-/**
- * Some cheap hash function grabbed off of stackoverflow.com. 
- * Returns the hash of a string.
- * @param {string} str 
- * @returns {int} returns the hash of the string
- */
-function hashFunc(str) {
-    var hash = 0,
-        i,
-        chr;
-    if (str.length === 0) return hash;
-    for (i = 0; i < str.length; i++) {
-        chr = str.charCodeAt(i);
-        hash = (hash << 5) - hash + chr;
-        hash |= 0; // Convert to 32bit integer
+        // Get current video title
+        const currentVideoTitle = this.channel.modules["playlist"].current.media.title;
+        
+        // Add some date specific modifer to let golds "go stale"; this is based on each quarter per year (~3 month period)
+        const dateModifier = Math.floor((new Date().getUTCMonth() + 3) / 3) + new Date().getUTCFullYear();
+
+        // Convert to lower case to allow for different cased gold
+        const chatText = msg.toLowerCase();
+
+        // Combine the msg, video title, date, and a constant (legacy was "co"); 
+        const lotteryText = chatText + currentVideoTitle + "co" + dateModifier.toString();
+
+        // Hash string
+        let lotteryHash = this.hashFunc(lotteryText);
+
+        // Modulo hash by 100
+        lotteryHash %= 100;
+
+        // No negatives
+        lotteryHash = lotteryHash < 0 ? -lotteryHash : lotteryHash;
+
+        // 1% chance? Idk either. If it's equal to one, they get a gold
+        if (lotteryHash === 1) {
+            LOGGER.info(`calculateGold: Found Gold Message: ${chatText}`);
+            return true;
+        }
+
+        return false;
     }
-    return hash;
+
+    /**
+     * Some cheap hash function grabbed off of stackoverflow.com. 
+     * Returns the hash of a string.
+     * @param {string} str 
+     * @returns {int} returns the hash of the string
+     */
+    hashFunc(str) {
+        var hash = 0,
+            i,
+            chr;
+        if (str.length === 0) return hash;
+        for (i = 0; i < str.length; i++) {
+            chr = str.charCodeAt(i);
+            hash = (hash << 5) - hash + chr;
+            hash |= 0; // Convert to 32bit integer
+        }
+        return hash;
+    }
 }
 
 module.exports = CoolholeGoldsModule;
