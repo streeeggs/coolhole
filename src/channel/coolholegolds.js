@@ -1,4 +1,4 @@
-var ChannelModule = require("./module");
+import ChannelModule from './module'
 const LOGGER = require("@calzoneman/jsli")("golds");
 
 /**
@@ -42,7 +42,7 @@ class CoolholeGoldsModule extends ChannelModule{
 
         // 1% chance? Idk either. If it's equal to one, they get a gold
         if (lotteryHash === 1) {
-            LOGGER.info(`calculateGold: Found Gold Message: ${chatText}`);
+            LOGGER.info("Found Gold Message (channel: %s): %s", this.channel.name, chatText);
             return true;
         }
 

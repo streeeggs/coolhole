@@ -1,4 +1,4 @@
-var ChannelModule = require("./module");
+import ChannelModule from './module'
 
 /**
  * @param {Object} _channel 
