@@ -131,7 +131,7 @@ SFX.stack.isEnabled = true;
 */
 SFX.mod.sounds = {
     eugh: {
-        src: "https://ark.augint.net/CH_Emote_SFX-eugh/CH_Emote_SFX-eugh.wav",
+        src: "https://static.dontcodethis.com/sounds/CH_Emote_SFX-eugh.wav",
         emote: "/eugh"
     },
     gunshot: {
@@ -139,7 +139,7 @@ SFX.mod.sounds = {
         emote: "/maths",
     },
     boogie: {
-        src: "https://dontcodethis.com/images/Boogie warning shot.wav",
+        src: "https://dontcodethis.com/images/Boogie%20warning%20shot.wav",
         emote: "bigiron",
     },
     fbi: {
@@ -283,14 +283,15 @@ function playSound( sfxLibItem ) {
     
             // Set to WAV
             audio.type = 'audio/wav';
-            console.log( audio );
     
             // If a volume is set and it's a number, set it.
             if ( sfxLibItem.hasOwnProperty( 'volume' ) && typeof sfxLibItem.volume === 'number' )
-            audio.volume = sfxLibItem.volume;
+                audio.volume = sfxLibItem.volume;
+            
             // If a playbackRate is set and it's a number, set it.
             if ( sfxLibItem.hasOwnProperty( 'playbackRate' ) && typeof sfxLibItem.playbackRate === 'number' )
-            audio.playbackRate = sfxLibItem.playbackRate;
+                audio.playbackRate = sfxLibItem.playbackRate;
+            
             // Play the sound
             audio.play();
             return audio
