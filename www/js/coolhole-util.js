@@ -50,7 +50,7 @@ function coolholePostFormatMessage(data, last, div, time, name, message) {
 function isMessageTooOld(msgTime) {
     let messageTime = new Date(msgTime);
     // Buffer for client -> server -> all clients
-    messageTime.setSeconds(messageTime.getSeconds() + 60);
+    messageTime.setSeconds(messageTime.getSeconds() + 5);
     return new Date() >= messageTime;
 }
 
