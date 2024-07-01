@@ -43,6 +43,7 @@
   "scripts": {
     "build-player": "./bin/build-player.js",
     "build-server": "babel -D --source-maps --out-dir lib/ src/",
+    "debug": "DEBUG=true node index.js",
     "flow": "flow",
     "lint": "eslint src",
     "pretest": "npm run lint",
