@@ -3,7 +3,6 @@ const LOGGER = require('@calzoneman/jsli')('database/tables');
 
 export async function initTables() {
     const knex = require('../database').getDB().knex;
-
     async function ensureTable(name, structure) {
         if (!await knex.schema.hasTable(name)) {
             LOGGER.info('Creating table %s', name);
@@ -166,5 +165,21 @@ export async function initTables() {
         t.text('internal_reason').notNullable();
         t.string('banned_by', 20).notNullable();
         t.timestamps(/* useTimestamps */ true, /* defaultToNow */ true);
+    });
+
+    await ensureTable('coolhole_coolpoints', t => {
+        t.increments('id').notNullable().primary();
+        t.integer('user_id')
+            .unsigned()
+            .notNullable()
+            .references('id').inTable('users')
+            .onDelete('cascade')
+            .unique();
+        t.bigInteger('coolpoints');
+        t.integer('channel_id')
+            .notNullable()
+            .unsigned()
+            .references('id').inTable('channels')
+            .onDelete('cascade');
     });
 }
