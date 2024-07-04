@@ -20,3 +20,6 @@ www/js/player.js
 tor-exit-list.json
 *.patch
 peertube-hosts.json
+cert.pem
+chain.pem
+privkey.pem
