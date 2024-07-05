@@ -301,3 +301,12 @@ function playSound( sfxLibItem ) {
 //-----------------------------------------------------------
 // [END] SOUND EFFECTS
 //-----------------------------------------------------------
+
+
+function tempHideMOTD() {
+    $("#motdwrap").hide();
+}
+
+window.setTimeout(() => {
+    tempHideMOTD();
+}, 2000);

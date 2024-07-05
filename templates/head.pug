@@ -8,7 +8,7 @@ mixin head()
   title= siteTitle
   link(href="/css/sticky-footer-navbar.css", rel="stylesheet")
   link(href="/css/cytube.css", rel="stylesheet")
-  link(href="/css/coolhole.css", rel="stylesheet")
+  
   link(id="usertheme", href=DEFAULT_THEME, rel="stylesheet")
 
   if channelName
@@ -20,7 +20,7 @@ mixin head()
     script(type="text/javascript").
       var DEFAULT_THEME = '#{DEFAULT_THEME}';
       var CHANNELPATH = '#{channelPath}';
-
+  link(href="/css/coolhole.css", rel="stylesheet")
   script(src="/js/theme.js")
   //[if lt IE 9]
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
