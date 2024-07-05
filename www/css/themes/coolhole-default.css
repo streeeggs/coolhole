@@ -1,0 +1,99 @@
+/* Coolhole theme stylings */
+
+/* Text and Background */
+html, body {
+    color: white;
+    background-color: #272729;
+}
+a {
+ color: white;
+}
+.dropdown-menu > li:not(.divider) {
+    padding: 8px 8px;
+}
+.dropdown-menu > li:not(.divider):hover {
+    background-color: #4747BA;
+}
+.dropdown-menu > li:is(.divider) {
+    min-height: 1px;
+    background-color: #ffffff25;
+}
+.btn-default     {
+    background-color: #353538;
+}
+.btn-danger {
+    background-color: #dc3545;
+}
+.btn-success {
+    background-color: #6ce218;
+}
+.btn-default:hover {
+        background-color: #242426;
+}
+.btn-default:disabled {
+    box-shadow: inset 0 0 16px 0 #00000075;
+    background-color: #242426;
+    color: #ffffff50;
+}
+.btn-default:disabled:active {
+    box-shadow: inset 0 0 16px 0 #00000075;
+    background-color: #242426;
+    color: #ffffff50;
+}
+.btn-danger:hover {
+        background-color: #B51829;
+}
+.btn-default:focus {
+    box-shadow: none;
+}
+.btn-default:active {
+    background-color: #2828ff;
+}
+#mainpage {
+    padding-top: 100px;
+}
+.navbar {
+    background-color: #1b1b1d; 
+    .navbar-header {
+        align-items: center;
+    }
+}
+.dropdown-menu {
+    background-color: #1b1b1d;
+}
+.navbar-nav {
+    align-items: center;
+    .input-group {
+        margin: 0px 10px;
+        > .form-control {
+            margin: 0px 5px;
+        }
+    }
+}
+.collapse:not(.hide) {
+    visibility: visible;
+}
+#chatwrap.input-group {
+    margin: 0px 10px;
+    > .form-control {
+        margin: 0px 5px;
+    }
+}
+#ytapiplayer {
+    background-color: #1b1b1d;
+}
+#userlist {
+    background-color: #242426;
+}
+#rightcontrols {
+    #plcontrol {
+        margin-right: 4px;
+    }
+    .btn {
+        padding: 4px 12px;
+        margin-left: 2px;
+    }
+    .btn:focus {
+        border: 0;
+    }
+}

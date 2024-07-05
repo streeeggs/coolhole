@@ -8,29 +8,29 @@ html(lang="en")
     link(rel="stylesheet", href="/css/videojs-resolution-switcher.css")
   body
     #wrap
-      nav.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+      nav.navbar.navbar-expand.fixed-top.shadow-lg(role="navigation")
         include nav
         +navheader()
         #nav-collapsible.collapse.navbar-collapse
-          ul.nav.navbar-nav
+          ul.nav.navbar-nav.mr-auto
             +navdefaultlinks()
-            li: a(href="javascript:void(0)", onclick="javascript:showUserOptions()") Options
-            li: a#showchansettings(href="javascript:void(0)", onclick="javascript:showChannelSettings()") Channel Settings
+            li: a.nav-link(href="javascript:void(0)", onclick="javascript:showUserOptions()") Options
+            li: a.nav-link#showchansettings(href="javascript:void(0)", onclick="javascript:showChannelSettings()") Channel Settings
             li.dropdown
-              a.dropdown-toggle(href="#", data-toggle="dropdown") Layout
+              a.nav-link.dropdown-toggle(href="#", data-toggle="dropdown") Layout
                 b.caret
               ul.dropdown-menu
-                li: a(href="#" onclick="javascript:chatOnly()") Chat Only
-                li: a(href="#" onclick="javascript:removeVideo(event)") Remove Video
+                li: a.nav-link(href="#" onclick="javascript:chatOnly()") Chat Only
+                li: a.nav-link(href="#" onclick="javascript:removeVideo(event)") Remove Video
             +navsuperadmin(true)
           +navloginlogout()
       section#mainpage
-        .container
+        .container-fluid
           #motdrow.row
             .col-lg-12.col-md-12
               #motdwrap.well
                 button#togglemotd.close.pull-right(type="button")
-                  span.glyphicon.glyphicon-minus
+                  span.ri.ri-minus-line
                 #motd
                 .clear
           #announcements.row
@@ -40,7 +40,7 @@ html(lang="en")
           #main.row
             #chatwrap.col-lg-5.col-md-5
               #chatheader
-                i#userlisttoggle.glyphicon.glyphicon-chevron-down.pull-left.pointer(title="Show/Hide Userlist")
+                span#userlisttoggle.ri.ri-contract-left-line.pull-left.pointer(title="Show/Hide Userlist")
                 span#usercount.pointer Not Connected
                 span#modflair.label.label-default.pull-right.pointer Name Color
               #userlist
@@ -52,9 +52,9 @@ html(lang="en")
                   input#guestname.form-control(type="text", placeholder="Name")
             #videowrap.col-lg-7.col-md-7
               p#videowrap-header
-                span#resize-video-smaller.glyphicon.glyphicon-minus.pointer(title="Make the video smaller")
-                span#resize-video-larger.glyphicon.glyphicon-plus.pointer(title="Make the video larger")
-                span#currenttitle Nothing Playing
+                span#currenttitle.ml-auto Nothing Playing
+                span#resize-video-larger.ml-auto.ri.ri-add-line(title="Make the video larger")
+                span#resize-video-smaller.ri.ri-subtract-line(title="Make the video smaller")
               .embed-responsive.embed-responsive-16by9
                 #ytapiplayer.embed-responsive-item
           #controlsrow.row
@@ -64,28 +64,28 @@ html(lang="en")
             #rightcontrols.col-lg-7.col-md-7
               #plcontrol.btn-group
                 button#showmediaurl.btn.btn-sm.btn-default(title="Add video from URL", data-toggle="collapse", data-target="#addfromurl")
-                  span.glyphicon.glyphicon-plus
+                  span.ri.ri-link
                 button#showsearch.btn.btn-sm.btn-default(title="Search for a video", data-toggle="collapse", data-target="#searchcontrol")
-                  span.glyphicon.glyphicon-search
+                  span.ri.ri-search-eye-line
                 button#showcustomembed.btn.btn-sm.btn-default(title="Embed a custom frame", data-toggle="collapse", data-target="#customembed")
-                  span.glyphicon.glyphicon-th-large
+                  span.ri.ri-gallery-view
                 button#showplaylistmanager.btn.btn-sm.btn-default(title="Manage playlists", data-toggle="collapse", data-target="#playlistmanager")
-                  span.glyphicon.glyphicon-list
+                  span.ri.ri-list-settings-line
                 button#clearplaylist.btn.btn-sm.btn-default(title="Clear the playlist")
-                  span.glyphicon.glyphicon-trash
+                  span.ri.ri-delete-bin-3-fill
                 button#shuffleplaylist.btn.btn-sm.btn-default(title="Shuffle the playlist")
-                  span.glyphicon.glyphicon-sort
+                  span.ri.ri-shuffle-line
                 button#qlockbtn.btn.btn-sm.btn-danger(title="Playlist locked")
-                  span.glyphicon.glyphicon-lock
+                  span.ri.ri-lock-line
               #videocontrols.btn-group.pull-right
                 button#mediarefresh.btn.btn-sm.btn-default(title="Reload the video player")
-                  span.glyphicon.glyphicon-retweet
+                  span.ri.ri-refresh-line
                 button#fullscreenbtn.btn.btn-sm.btn-default(title="Make the video player fullscreen")
-                  span.glyphicon.glyphicon-fullscreen
+                  span.ri.ri-fullscreen-line
                 button#getplaylist.btn.btn-sm.btn-default(title="Retrieve playlist links")
-                  span.glyphicon.glyphicon-link
+                  span.ri.ri-file-list-line
                 button#voteskip.btn.btn-sm.btn-default(title="Voteskip")
-                  span.glyphicon.glyphicon-step-forward
+                  span.ri.ri-skip-forward-fill
 
           #playlistrow.row
             #leftpane.col-lg-5.col-md-5
@@ -179,7 +179,7 @@ html(lang="en")
               +us-scripts()
               +us-mod()
           .modal-footer
-            button.btn.btn-primary(type="button", data-dismiss="modal", onclick="javascript:saveUserOptions()") Save
+            button.btn.btn-default(type="button", data-dismiss="modal", onclick="javascript:saveUserOptions()") Save
             button.btn.btn-default(type="button", data-dismiss="modal") Close
     #emotelist.modal.fade(tabindex="-1", role="dialog", aria-hidden="true")
       .modal-dialog.modal-dialog-nonfluid
