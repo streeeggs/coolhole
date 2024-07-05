@@ -1562,6 +1562,7 @@ function formatChatMessage(data, last) {
     if (data.meta.shadow) {
         div.addClass("chat-shadow");
     }
+    coolholePostFormatMessage(data, last, div, time, name, message);
     return div;
 }
 

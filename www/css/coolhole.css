@@ -1,0 +1,197 @@
+/* These are extra css classes for coolhole features */
+
+/* Gold plating */
+.text-lottery,
+.text-lottery a {
+    font-weight: bold;
+    background-image: repeating-linear-gradient(
+    4deg,
+    #462523 0,
+    #cb9b51 22%,
+    #f6e27a 45%,
+    #f6f2c0 50%,
+    #f6e27a 55%,
+    #cb9b51 78%,
+    #462523 100%
+    );
+    color: transparent;
+    -webkit-background-clip: text;
+
+    animation-name: gold;
+    animation-duration: 3.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+@-webkit-keyframes gold {
+    0% {
+    background-position: -15em;
+    }
+    100% {
+    background-position: 10em;
+    }
+}
+
+/* shrink text on 'coolhole1' text anywhere in the chat message */
+#messagebuffer div[data-text*="coolhole1"] {
+    font-size: 0px;
+    -webkit-animation: shrink 5s;
+    -moz-animation: shrink 5s;
+    -ms-animation: shrink 5s;
+    -o-animation: shrink 5s;
+    animation: shrink 5s;
+}
+@keyframes shrink {
+    from {
+      font-size: inherit;
+    }
+    to {
+      font-size: 0px;
+    }
+  }
+  @-moz-keyframes shrink {
+    from {
+      font-size: inherit;
+    }
+    to {
+      font-size: 0px;
+    }
+  }
+  @-webkit-keyframes shrink {
+    from {
+      font-size: inherit;
+    }
+    to {
+      font-size: 0px;
+    }
+  }
+  @-ms-keyframes shrink {
+    from {
+      font-size: inherit;
+    }
+    to {
+      font-size: 0px;
+    }
+  }
+  @-o-keyframes shrink {
+    from {
+      font-size: inherit;
+    }
+    to {
+      font-size: 0px;
+    }
+  }
+
+/* Rainbow effect on 'european' anywhere in the chat message */
+#messagebuffer [data-text*="european"] {
+    -webkit-animation: rainbow 5;
+    -moz-animation: rainbow 5s;
+    -ms-animation: rainbow 5s;
+    -o-animation: rainbow 5s;
+    animation: rainbow 5s;
+    animation-iteration-count: infinite;
+}
+@keyframes rainbow {
+    from {
+      color: #6666ff;
+    }
+    10% {
+      color: #0099ff;
+    }
+    50% {
+      color: #00ff00;
+    }
+    75% {
+      color: #ff3399;
+    }
+    100% {
+      color: #6666ff;
+    }
+  }
+  @-moz-keyframes rainbow {
+    from {
+      color: #6666ff;
+    }
+    10% {
+      color: #0099ff;
+    }
+    50% {
+      color: #00ff00;
+    }
+    75% {
+      color: #ff3399;
+    }
+    100% {
+      color: #6666ff;
+    }
+  }
+  @-webkit-keyframes rainbow {
+    from {
+      color: #6666ff;
+    }
+    10% {
+      color: #0099ff;
+    }
+    50% {
+      color: #00ff00;
+    }
+    75% {
+      color: #ff3399;
+    }
+    100% {
+      color: #6666ff;
+    }
+  }
+  @-ms-keyframes rainbow {
+    from {
+      color: #6666ff;
+    }
+    10% {
+      color: #0099ff;
+    }
+    50% {
+      color: #00ff00;
+    }
+    75% {
+      color: #ff3399;
+    }
+    100% {
+      color: #6666ff;
+    }
+  }
+  @-o-keyframes rainbow {
+    from {
+      color: #6666ff;
+    }
+    10% {
+      color: #0099ff;
+    }
+    50% {
+      color: #00ff00;
+    }
+    75% {
+      color: #ff3399;
+    }
+    100% {
+      color: #6666ff;
+    }
+  }
+
+/* Fast rainbow effect on gold + 'european' anywhere in the chat message */
+#messagebuffer .text-lottery[data-text*="european"] {
+    -webkit-animation: rainbow 0.5s;
+    -moz-animation: rainbow 0.5s;
+    -ms-animation: rainbow 0.5s;
+    -o-animation: rainbow 0.5s;
+    animation: rainbow 0.5s;
+    animation-iteration-count: infinite;
+}
+
+/* Fast rainbow effect on danmu + gold + 'european' anywhere in the chat message */
+.danmu .text-lottery[data-text*="european"] {
+    -webkit-animation: rainbow 0.5s;
+    -moz-animation: rainbow 0.5s;
+    -ms-animation: rainbow 0.5s;
+    -o-animation: rainbow 0.5s;
+    animation: rainbow 0.5s;
+    animation-iteration-count: infinite;
+}
