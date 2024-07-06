@@ -263,9 +263,3 @@
 .emote-overlap {
   position: absolute;
 }
-
-/* Flip emotes horizontally*/
-.channel-emote[title='/flip'] + .channel-emote {
-  -webkit-transform: scaleX(-1);
-  transform: scaleX(-1);
-}
