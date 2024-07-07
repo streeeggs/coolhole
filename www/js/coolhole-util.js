@@ -43,15 +43,16 @@ function coolholePostFormatMessage(data, last, div, time, name, message) {
 
 /**
  * Additional logic after the chat message is appended to the message buffer, such as returnfire, emote overlaps.
- * @param {*} data chat message object
- * @param {*} div jquery div object of the entire message
+ * @param {Object} data chat message object
+ * @param {Object} div jquery div object of the entire message
+ * @param {string} safeUsername username
  */
-function coolholePostAddChatMessage(data, div) {
+function coolholePostAddChatMessage(data, div, safeUsername) {
     try {
         // Jquery object; the span that contains the chat message only
         let jqueryChatSpan = div.children("span").last();
 
-        checkReturnFire(div, jqueryChatSpan);
+        checkReturnFire(div, jqueryChatSpan, safeUsername);
         checkOverlapEmotes(jqueryChatSpan);
     }
     catch(ex) {
@@ -333,10 +334,12 @@ function playSound( sfxLibItem ) {
  *   If the previous chat message is gold and the current is gold, neither message is destroyed, and play a "tink" sound effect.
  * @param {Object} div jquery div object of the entire chat message (timestamp, name, message)
  * @param {Object} jqueryChatSpan jquery span object of only the chat message
+ * @param {string} safeUsername username
  */
-function checkReturnFire(div, jqueryChatSpan) {
+function checkReturnFire(div, jqueryChatSpan, safeUsername) {
     // This prevents shadowmuted people from returnFire on non-shadowmuted people (only really applies to people who can actually SEE shadowmutes, like mods/admins viewing the chat)
-    if (div.hasClass("chat-shadow")) 
+    let user = findUserlistItem(safeUsername);
+    if (user?.data("meta")?.smuted === true)
         return;
 
     if (jqueryChatSpan.find("img[title='returnfire']").length > 0) {

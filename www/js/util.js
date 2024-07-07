@@ -1640,7 +1640,7 @@ function addChatMessage(data) {
         }
     }
 
-    coolholePostAddChatMessage(data, div);
+    coolholePostAddChatMessage(data, div, safeUsername);
     
     pingMessage(isHighlight, data.username, $(div.children()[2]).text());
 }
