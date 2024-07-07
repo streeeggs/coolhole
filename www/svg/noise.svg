@@ -21,7 +21,7 @@
             <feBlend
                 in="SourceGraphic"
                 in2="composite"
-                mode="color-burn"
+                mode="color-dodge"
             />
         </filter>
         <mask id="gradient">
@@ -32,5 +32,5 @@
             <use href="#shape" fill="url(#fade)" />
         </mask>
     </defs>
-    <use xlink:href="#shape" fill="#16181d" filter="url(#noise)"/>
+    <use xlink:href="#shape" fill="#1a2024" filter="url(#noise)"/>
 </svg>
