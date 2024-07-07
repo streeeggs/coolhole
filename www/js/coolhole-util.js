@@ -337,12 +337,12 @@ function playSound( sfxLibItem ) {
  * @param {string} safeUsername username
  */
 function checkReturnFire(div, jqueryChatSpan, safeUsername) {
-    // This prevents shadowmuted people from returnFire on non-shadowmuted people (only really applies to people who can actually SEE shadowmutes, like mods/admins viewing the chat)
-    let user = findUserlistItem(safeUsername);
-    if (user?.data("meta")?.smuted === true)
-        return;
-
     if (jqueryChatSpan.find("img[title='returnfire']").length > 0) {
+        // This prevents shadowmuted people from returnFire on non-shadowmuted people (only really applies to people who can actually SEE shadowmutes, like mods/admins viewing the chat)
+        let user = findUserlistItem(safeUsername);
+        if (user?.data("meta")?.smuted === true)
+            return;
+        
         // Only allow shooting to chat messasges
         let prevChat = div.prev("div[class*=chat-msg]");
 
