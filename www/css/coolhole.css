@@ -195,3 +195,71 @@
     animation: rainbow 0.5s;
     animation-iteration-count: infinite;
 }
+
+/* Used for returnFire emote effect */
+.shotKilled {
+  color: red;
+  opacity: 0;
+  -webkit-animation: fade 2s;
+  -moz-animation: fade 2s;
+  -ms-animation: fade 2s;
+  -o-animation: fade 2s;
+  animation: fade 2s;
+}
+
+@keyframes fade {
+  from {
+  opacity: inherit;
+  }
+  to {
+  opacity: 0;
+  }
+}
+@-moz-keyframes fade {
+  from {
+  opacity: inherit;
+  }
+  to {
+  opacity: 0;
+  }
+}
+@-webkit-keyframes fade {
+  from {
+  opacity: inherit;
+  }
+  to {
+  opacity: 0;
+  }
+}
+@-ms-keyframes fade {
+  from {
+  opacity: inherit;
+  }
+  to {
+  opacity: 0;
+  }
+}
+@-o-keyframes fade {
+  from {
+  opacity: inherit;
+  }
+  to {
+  opacity: 0;
+  }
+}
+
+/* Flip emotes horizontally*/
+.channel-emote[title='/flip'] + .channel-emote {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+/* Forces all giant emotes to only take max 100px in the chat */
+.channel-emote {
+  max-height: 100px;
+}
+
+/* Used in overlapping emote logic  */
+.emote-overlap {
+  position: absolute;
+}
