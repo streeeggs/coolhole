@@ -42,10 +42,9 @@ function coolholePostFormatMessage(data, last, div, time, name, message) {
 }
 
 /**
- * Additional logic after the chat message is appended to the message bugger, such as returnfire, emote overlaps.
+ * Additional logic after the chat message is appended to the message buffer, such as returnfire, emote overlaps.
  * @param {*} data chat message object
  * @param {*} div jquery div object of the entire message
- * @param {*} safeUsername username
  */
 function coolholePostAddChatMessage(data, div) {
     try {
@@ -397,15 +396,13 @@ const OVERLAP_EMOTES = [
  * @param {*} jqueryChatSpan jquery span object of only the chat message
  */
 function checkOverlapEmotes(jqueryChatSpan) {
-	let emotesFound = jqueryChatSpan.find("img");
+    let emotesFound = jqueryChatSpan.find("img");
     if(emotesFound.length > 0) {
 
         // Add a class to all overlapping emotes and then hide them. 
         // This is to allow the normal emotes to rearrange on the screen, so that the normal emotes have a solid x,y coordinate    
         // The "visibility" must be used instead of "display:none", otherwise the overlapping emote will have a width of 0, and won't be alligned properly
-        for(var i = 0; i < OVERLAP_EMOTES.length; i++) {
-            jqueryChatSpan.find(`img[title='${OVERLAP_EMOTES[i].name}']`).addClass("emote-overlap").css("visibility", "hidden");
-        }
+        OVERLAP_EMOTES.forEach(emote => jqueryChatSpan.find(`img[title='${emote.name}']`).addClass("emote-overlap").css("visibility", "hidden"));
         jqueryChatSpan.css("position", "relative");
 
         // A special case is if the very first emote is an "overlapping emote". 
