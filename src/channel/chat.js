@@ -5,6 +5,7 @@ var util = require("../utilities");
 var Flags = require("../flags");
 import { transformImgTags } from '../camo';
 import { Counter } from 'prom-client';
+const LOGGER = require('@calzoneman/jsli')('chat');
 
 const SHADOW_TAG = "[shadow]";
 const LINK = /(\w+:\/\/(?:[^:/[\]\s]+|\[[0-9a-f:]+\])(?::\d+)?(?:\/[^/\s]*)*)/ig;
@@ -335,6 +336,18 @@ ChatModule.prototype.processChatMsg = function (user, data) {
         }
     }
 
+    /**
+     * Coolhole addition. Return msgobj with additional coolhole features.
+     * If anything fails, do not modify msgobj and continue with cytube logic.
+     */
+    try {
+        msgobj = this.channel.modules.coolholecommon.coolholePostProcessChatMessage(this.channel, user, data, msgobj);
+        if(!!(msgobj.meta?.coolholeMeta?.deny) === true)
+            return;
+    } catch (e) {
+        LOGGER.error("Error in coolholePostProcessChatMessage (channel: %s). Stack: %s", this.channel.name, e.stack);
+    }
+
     if (user.is(Flags.U_SMUTED)) {
         this.shadowMutedUsers().forEach(function (u) {
             u.socket.emit("chatMsg", msgobj);
@@ -445,6 +458,7 @@ ChatModule.prototype.sendMessage = function (msgobj) {
     this.channel.logger.log(
         "<" + msgobj.username +
         (msgobj.meta.addClass ? "." + msgobj.meta.addClass : "") +
+        (msgobj.meta?.coolholeMeta?.otherClasses !== undefined ? msgobj.meta.coolholeMeta.otherClasses.reduce((a, c) => a + "." + c, "") : "") +
         "> " + XSS.decodeText(msgobj.msg)
     );
 };
