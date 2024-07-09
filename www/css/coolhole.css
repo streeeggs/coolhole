@@ -263,3 +263,46 @@
 .emote-overlap {
   position: absolute;
 }
+
+
+/* Migrated over from old coolhole. These are used for various icons across the site. */
+.ch-icon {
+  width: 24px;
+  height: 24px;
+  fill: #dcdedd;
+}
+.ch-icon.warning {
+  fill: #E03E40;
+}
+.ch-icon.success {
+  fill: #1a936f;
+}
+.ch-icon.info {
+  fill: #4b9eb6;
+}
+.ch-icon.input-group-addon-icon {
+  width: 22px;
+  height: 22px;
+}
+.ch-icon .job-icon .job-icon-bg .job-icon-citizen {
+  fill: #3B7B8E;
+  stroke: #F2F4F3;
+}
+.ch-icon .job-icon .job-icon-bg .job-icon-scitizen {
+  fill: #E03E40;
+  stroke: #F2F4F3;
+}
+.ch-icon .job-icon .job-icon-bg .job-icon-skeleton {
+  fill: #13171A;
+  stroke: #F2F4F3;
+}
+.ch-icon .job-icon .job-icon-person {
+  fill: #F2F4F3;
+}
+.ch-icon .job-icon .job-icon-symbol .job-icon-skeleton {
+  fill: #F2F4F3;
+}
+svg.ch-cp {
+  height: 18px;
+  width: 18px;
+}
