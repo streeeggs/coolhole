@@ -1168,7 +1168,8 @@ const Callbacks = {
     }
 };
 
-window.Callbacks = Callbacks;
+// Stuff coolhole callbacks into cytube's
+window.Callbacks = {...Callbacks, ...CoolholeCallbacks};
 
 // For sanity, do this
 //   localStorage.setItem('cytube_socket_omissions', '["mediaUpdate"]')

@@ -1,8 +1,6 @@
 /**
  * This file is additional functions/logic to make coolhole point features work.
  */
-
-
 // Globals
 const coolPointItemsPerPage = 16;
 
@@ -330,185 +328,187 @@ function updateTableCoolPointsUI(page, sorted = true) {
  * TODO: Rebuild this form with this function in mind... Lotta straightup HTML becase I'm too lazy to rebuild it atm
  */
 function updateCoolPointActionsAdminPrompt() {
-  const root = $("#cs-chancoolpoint-options");
+  const formRoot = $("#cs-chancoolpoint-options .form-group");
+  
+
   // Clear
-  root.html("");
+  // root.html("");
 
-  const toppleEconomyHTMLTemplate = `
-  <div class="row" style="justify-content: center;">
-    <div class="form-group row mb-3 mb-sm-2 px-4">
-      <div class="icon-container display-inline mt-1 ml-3 pl-2" style="align-self: center;">
-        <svg class="ch-icon form-icon info" style="width: 30px; height: 30px;">
-          <use xlink:href="#ch-icon-sign-info"></use>
-        </svg>
-      </div>
-      <div class="col ml-n2">
-        <a class="form-text text-info" style="margin-top: 5px; font-size: 25px;" target="_blank" href="https://docs.google.com/spreadsheets/d/1JDf3Dymhk1MzM_hXiMwR_tzch5QoiA3X15bWqfFpPQc/edit?usp=sharing">
-          Careful now, don't topple this economy
-        </a>
-      </div>
-    </div>
-  </div>
-  `;
+  // const toppleEconomyHTMLTemplate = `
+  // <div class="row" style="justify-content: center;">
+  //   <div class="form-group row mb-3 mb-sm-2 px-4">
+  //     <div class="icon-container display-inline mt-1 ml-3 pl-2" style="align-self: center;">
+  //       <svg class="ch-icon form-icon info" style="width: 30px; height: 30px;">
+  //         <use xlink:href="#ch-icon-sign-info"></use>
+  //       </svg>
+  //     </div>
+  //     <div class="col ml-n2">
+  //       <a class="form-text text-info" style="margin-top: 5px; font-size: 25px;" target="_blank" href="https://docs.google.com/spreadsheets/d/1JDf3Dymhk1MzM_hXiMwR_tzch5QoiA3X15bWqfFpPQc/edit?usp=sharing">
+  //         Careful now, don't topple this economy
+  //       </a>
+  //     </div>
+  //   </div>
+  // </div>
+  // `;
 
-  root.append(toppleEconomyHTMLTemplate);
+  // root.append(toppleEconomyHTMLTemplate);
 
-  const actionsCopy = {
-    active: {
-      title: "Being Active",
-      pts: "Points per Tick",
-      enable: "Enable",
-      interval: "Tick Interval"
-    },
-    addingVid: {
-      title: "Adding a video",
-      pts: "Points per Video",
-      enable: "Enable"
-    },
-    skipped: {
-      title: "Having your video skipped",
-      enable: "Enable",
-      pts: "Points lost"
-    },
-    highlight: {
-      title: "Highlight",
-      enable: "Enable",
-      pts: "Cost"
-    },
-    skip: {
-      title: "Skipping a video",
-      enable: "Enable",
-      pts: "Cost"
-    },
-    danmu: {
-      title: "Danmaku ('On Screen' Comments)",
-      enable: "Enable",
-      pts: "Cost"
-    },
-    secretary: {
-      title: "Super Invasive Chat",
-      enable: "Enable",
-      pts: "Cost"
-    },
-    debtlvl0: {
-      title: "Debt Level 0 - Stutter filter",
-      enable: "Enable",
-      pts: "Points below"
-    },
-    debtlvl1: {
-      title: "Debt Level 1 - Lisp filter",
-      enable: "Enable",
-      pts: "Points below"
-    },
-    debtlvl2: {
-      title: "Debt Level 2 - Random Ad",
-      enable: "Enable",
-      pts: "Points below"
-    },
-    debtlvl3: {
-      title: "Debt Level 3 - 'Coolhole1' Text",
-      enable: "Enable",
-      pts: "Points below"
-    },
-    debtlvl4: {
-      title: "Debt Level 4 - Letters Missing",
-      enable: "Enable",
-      pts: "Points below"
-    },
-    debtlvl5: {
-      title: "Debt Level 5 - 'Criticality Accident Animation",
-      enable: "Enable",
-      pts: "Points below"
-    },
-  };
+  // const actionsCopy = {
+  //   active: {
+  //     title: "Being Active",
+  //     pts: "Points per Tick",
+  //     enable: "Enable",
+  //     interval: "Tick Interval"
+  //   },
+  //   addingVid: {
+  //     title: "Adding a video",
+  //     pts: "Points per Video",
+  //     enable: "Enable"
+  //   },
+  //   skipped: {
+  //     title: "Having your video skipped",
+  //     enable: "Enable",
+  //     pts: "Points lost"
+  //   },
+  //   highlight: {
+  //     title: "Highlight",
+  //     enable: "Enable",
+  //     pts: "Cost"
+  //   },
+  //   skip: {
+  //     title: "Skipping a video",
+  //     enable: "Enable",
+  //     pts: "Cost"
+  //   },
+  //   danmu: {
+  //     title: "Danmaku ('On Screen' Comments)",
+  //     enable: "Enable",
+  //     pts: "Cost"
+  //   },
+  //   secretary: {
+  //     title: "Super Invasive Chat",
+  //     enable: "Enable",
+  //     pts: "Cost"
+  //   },
+  //   debtlvl0: {
+  //     title: "Debt Level 0 - Stutter filter",
+  //     enable: "Enable",
+  //     pts: "Points below"
+  //   },
+  //   debtlvl1: {
+  //     title: "Debt Level 1 - Lisp filter",
+  //     enable: "Enable",
+  //     pts: "Points below"
+  //   },
+  //   debtlvl2: {
+  //     title: "Debt Level 2 - Random Ad",
+  //     enable: "Enable",
+  //     pts: "Points below"
+  //   },
+  //   debtlvl3: {
+  //     title: "Debt Level 3 - 'Coolhole1' Text",
+  //     enable: "Enable",
+  //     pts: "Points below"
+  //   },
+  //   debtlvl4: {
+  //     title: "Debt Level 4 - Letters Missing",
+  //     enable: "Enable",
+  //     pts: "Points below"
+  //   },
+  //   debtlvl5: {
+  //     title: "Debt Level 5 - 'Criticality Accident Animation",
+  //     enable: "Enable",
+  //     pts: "Points below"
+  //   },
+  // };
 
-  for (let [type, options] of Object.entries(CHANNEL.opts.cpOpts)) {
-    const typeTitleTemplate = `
-      <div class="row">
-        <div class="col">
-            <h5 class="mb-0">CoolPoint ${capFirstLetter(type)}</h5>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <hr class="mt-1 mb-2">
-        </div>
-      </div>
-    `;
+  // for (let action of Object.entries(CHANNEL.opts.cpOpts)) {
+  //   const typeTitleTemplate = `
+  //     <div class="row">
+  //       <div class="col">
+  //           <h5 class="mb-0">CoolPoint ${capFirstLetter(action)}</h5>
+  //         </div>
+  //       </div>
+  //       <div class="row">
+  //         <div class="col">
+  //           <hr class="mt-1 mb-2">
+  //       </div>
+  //     </div>
+  //   `;
 
-    root.append(typeTitleTemplate);
+  //   root.append(typeTitleTemplate);
 
-    for (let [ruleKey, ruleTypes] of Object.entries(options)) {
-      const formRoot = $("<div />").addClass("cp-option-form");
-      root.append(formRoot);
+  //   for (let [ruleKey, ruleTypes] of Object.entries(options)) {
+  //     const formRoot = $("<div />").addClass("cp-option-form");
+  //     root.append(formRoot);
 
-      if (!(ruleKey in actionsCopy)) break;
+  //     if (!(ruleKey in actionsCopy)) break;
 
-      const copyOptionObject = actionsCopy[ruleKey];
+  //     const copyOptionObject = actionsCopy[ruleKey];
 
-      const optionLabel = $("<label />")
-        .addClass("control-label ml-1 ml-sm-0 pt-sm-2 cp-option-subheader")
-        .text(copyOptionObject?.title ?? "Unknown");
-      formRoot.append(optionLabel);
+  //     const optionLabel = $("<label />")
+  //       .addClass("control-label ml-1 ml-sm-0 pt-sm-2 cp-option-subheader")
+  //       .text(copyOptionObject?.title ?? "Unknown");
+  //     formRoot.append(optionLabel);
 
-      const formWrapper = $("<div />").addClass("cp-option-form-wrapper");
-      const form = $("<form />").attr("action", "javascript:void(0)");
-      formRoot.append(formWrapper);
-      formWrapper.append(form);
+  //     const formWrapper = $("<div />").addClass("cp-option-form-wrapper");
+  //     const form = $("<form />").attr("action", "javascript:void(0)");
+  //     formRoot.append(formWrapper);
+  //     formWrapper.append(form);
 
-      for (let [optionKey, optionValue] of Object.entries(ruleTypes)) {
-        const id = `cp-${ruleKey}-${optionKey}`;
+  //     for (let [optionKey, optionValue] of Object.entries(ruleTypes)) {
+  //       const id = `cp-${ruleKey}-${optionKey}`;
 
-        if (!(optionKey in copyOptionObject)) break;
+  //       if (!(optionKey in copyOptionObject)) break;
 
-        const checkboxInputTemplate = `
-          <div class="form-group pl-2 cp-option-form-group">
-            <input id="${id}" class="cp-checkbox" type="checkbox" data-type="${type}" rule="${ruleKey}" option="${optionKey}">
-            <label for="${id}" class="form-check-label text-sm-left">${copyOptionObject[optionKey]}</label>
-          </div>
-        `;
+  //       const checkboxInputTemplate = `
+  //         <div class="form-group pl-2 cp-option-form-group">
+  //           <input id="${id}" class="cp-checkbox" type="checkbox" data-type="${type}" rule="${ruleKey}" option="${optionKey}">
+  //           <label for="${id}" class="form-check-label text-sm-left">${copyOptionObject[optionKey]}</label>
+  //         </div>
+  //       `;
 
-        const numberInputTemplate = `
-          <div class="form-group cp-option-form-group">
-            <label for="${id}" class="pl-2 form-text text-info cp-option-label">${copyOptionObject[optionKey]}</label>
-            <div class="col">
-              <input id="${id}" class="form-control cp-option-input" type="text" placeholder="6" data-type="${type}" rule="${ruleKey}" option="${optionKey}">
-            </div>
-          </div>
-        `;
+  //       const numberInputTemplate = `
+  //         <div class="form-group cp-option-form-group">
+  //           <label for="${id}" class="pl-2 form-text text-info cp-option-label">${copyOptionObject[optionKey]}</label>
+  //           <div class="col">
+  //             <input id="${id}" class="form-control cp-option-input" type="text" placeholder="6" data-type="${type}" rule="${ruleKey}" option="${optionKey}">
+  //           </div>
+  //         </div>
+  //       `;
 
-        const timeInputTemplate = `
-          <div class="form-group cp-option-form-group">
-            <label for="${id}" class="pl-2 form-text text-info cp-option-label">${copyOptionObject[optionKey]}</label>
-            <div class="col">
-              <input id="${id}" class="form-control px-3 cp-option-timeinput" type="text" placeholder="HH:MM:SS" data-type="${type}" rule="${ruleKey}" option="${optionKey}">
-            </div>
-          </div>
-        `;
+  //       const timeInputTemplate = `
+  //         <div class="form-group cp-option-form-group">
+  //           <label for="${id}" class="pl-2 form-text text-info cp-option-label">${copyOptionObject[optionKey]}</label>
+  //           <div class="col">
+  //             <input id="${id}" class="form-control px-3 cp-option-timeinput" type="text" placeholder="HH:MM:SS" data-type="${type}" rule="${ruleKey}" option="${optionKey}">
+  //           </div>
+  //         </div>
+  //       `;
 
-        switch (optionKey) {
-          case "pts":
-            form.append(numberInputTemplate);
-            $(`#${id}`).val(optionValue);
-            break;
-          case "interval":
-            form.append(timeInputTemplate);
-            $(`#${id}`).val(formatTime(optionValue));
-            break;
-          case "enable":
-            form.append(checkboxInputTemplate);
-            $(`#${id}`).prop("checked", !!optionValue);
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  }
-  // Bind event listeners
-  bindCpOptions();
-  // Really just to ensure everything that's suppose to be disabled is
-  handleCPOptionChanges();
+  //       switch (optionKey) {
+  //         case "pts":
+  //           form.append(numberInputTemplate);
+  //           $(`#${id}`).val(optionValue);
+  //           break;
+  //         case "interval":
+  //           form.append(timeInputTemplate);
+  //           $(`#${id}`).val(formatTime(optionValue));
+  //           break;
+  //         case "enable":
+  //           form.append(checkboxInputTemplate);
+  //           $(`#${id}`).prop("checked", !!optionValue);
+  //           break;
+  //         default:
+  //           break;
+  //       }
+  //     }
+  //   }
+  // }
+  // // Bind event listeners
+  // bindCpOptions();
+  // // Really just to ensure everything that's suppose to be disabled is
+  // handleCPOptionChanges();
 }
 
 function updateCoolPointActionsUserPrompt() {

@@ -1,20 +1,14 @@
 import ChannelModule from './module'
 const LOGGER = require('@calzoneman/jsli')('channel');
 
-const TYPE_ACTION = {
-    actionName: "string",
-    optionName: "string",
-    optionValue: "string"
-};
-
 /**
  * @param {Object} _channel 
  */
 class CoolholePointsActionsOptionsModule extends ChannelModule {
     constructor(_channel) {
-        ChannelModule.apply(this, arguments);
         super(_channel);
 
+        ChannelModule.apply(this, arguments);
         const ActionType = {
             earnings: "earnings",
             losses: "losses",
@@ -195,7 +189,7 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
             this.dirty = false;
         } else {
             //otherwise, just start with defaults
-            this.actions = actionsDefault;
+            this.actions = this.actionsDefault;
 
             //set dirty flag so bgtask will save it
             this.dirty = true;
@@ -246,7 +240,7 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
      * @param {*} user user object
      */
     onUserPostJoin(user) {
-        user.socket.typecheckedOn("setCpOptions", TYPE_ACTION, this.handleSetCpOptions.bind(this, user));
+        user.socket.on("setCpOptions", this.handleSetCpOptions.bind(this, user));
 
         this.sendCpOpts([user]);
     };
@@ -256,13 +250,16 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
      * @param {Array.*} users Array of user objects
      */
     sendCpOpts(users) {
-        var opts = this.cpOpts;
+        const actions = this.actions;
 
         if (users === this.channel.users) {
-            this.channel.broadcastAll("channelCoolPointOpts", { cpOpts: opts });
+            LOGGER.error(`users === this.channel.users`);
+            this.channel.broadcastAll("channelCoolPointOpts", actions);
         } else {
+            LOGGER.error(`users !== this.channel.users`);
             users.forEach(function (user) {
-                user.socket.emit("channelCoolPointOpts", { cpOpts: opts });
+                LOGGER.error(`${user}`)
+                user.socket.emit("channelCoolPointOpts", actions);
             });
         }
     };

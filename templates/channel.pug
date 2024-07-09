@@ -221,7 +221,7 @@ html(lang="en")
                   li: a(href="#cs-chanranks", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestChannelRanks')") Moderators
               li: a(href="#cs-banlist", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestBanlist')") Ban list
               li: a(href="#cs-chanlog", data-toggle="tab", onclick="javascript:socket.emit('readChanLog')") Log
-              li: a(href="#cs-chancoolpoints-options", data-toggle="tab", tabindex="-1", onclick="updateCoolPointActionsAdminPrompt()") CoolPoints Actions
+              li: a(href="#cs-chancoolpoint-options", data-toggle="tab", tabindex="-1", onclick="updateCoolPointActionsAdminPrompt()") CoolPoints Actions
           .modal-body
             .tab-content
               include channeloptions
@@ -251,8 +251,10 @@ html(lang="en")
     script(src="/js/player.js")
     script(src="/js/paginator.js")
     script(src="/js/ui.js")
+    script(src="/js/coolhole-callbacks.js")
     script(src="/js/callbacks.js")
     script(src="/js/coolhole-util.js")
+    script(src="/js/coolpoints-util.js")
     script(defer, src="/js/vjs/dash.all.min.js")
     script(defer, src="/js/vjs/video.js")
     script(defer, src="/js/vjs/videojs-dash.js")
