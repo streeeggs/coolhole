@@ -12,7 +12,15 @@ document.onscroll = () => {
     if (scrollY < 45) {
         navbar.style.backgroundColor = "transparent";
     } else {
-        navbar.style.backgroundColor = "#0C1214";
+        navbar.style.backgroundColor = "#13191C";
     }
 };
 
+(function styleIcons(){
+    setTimeout(() => {
+        let chIcons = document.querySelectorAll(".ch-icon");
+        chIcons.forEach(i => {
+            i.style = "width: 24px; height: 24px; margin-top: -2px;";
+        });
+    }, 1000);
+})();

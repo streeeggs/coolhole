@@ -306,3 +306,8 @@ svg.ch-cp {
   height: 18px;
   width: 18px;
 }
+/* For the logo to be displayed on the nav */
+.ch-brand {
+  width: 120px;
+  height: 40px;
+}
