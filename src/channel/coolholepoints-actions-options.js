@@ -253,12 +253,9 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
         const actions = this.actions;
 
         if (users === this.channel.users) {
-            LOGGER.error(`users === this.channel.users`);
             this.channel.broadcastAll("channelCoolPointOpts", actions);
         } else {
-            LOGGER.error(`users !== this.channel.users`);
             users.forEach(function (user) {
-                LOGGER.error(`${user}`)
                 user.socket.emit("channelCoolPointOpts", actions);
             });
         }

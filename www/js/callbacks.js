@@ -1165,11 +1165,13 @@ const Callbacks = {
         if (CHANNEL.opts.allow_voteskip && hasPermission("voteskip")) {
             $("#voteskip").attr("disabled", false);
         }
-    }
+    },
 };
 
-// Stuff coolhole callbacks into cytube's
-window.Callbacks = {...Callbacks, ...CoolholeCallbacks};
+// Stuff Coolhole callbacks into Callbacks
+Object.assign(Callbacks, CoolholeCallbacks)
+
+window.Callbacks = Callbacks;
 
 // For sanity, do this
 //   localStorage.setItem('cytube_socket_omissions', '["mediaUpdate"]')
