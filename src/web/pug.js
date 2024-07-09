@@ -48,6 +48,9 @@ function sendPug(res, view, locals) {
     if (!renderFn || Config.get("debug")) {
         LOGGER.debug("Loading template %s", view);
 
+        console.log('++++ INSIDE SEND PUG +++++');
+        console.log(view);
+        console.log(locals);
         var file = path.join(templates, view + ".pug");
         renderFn = pug.compile(fs.readFileSync(file), {
             filename: file,

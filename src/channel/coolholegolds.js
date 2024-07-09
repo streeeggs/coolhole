@@ -1,6 +1,125 @@
 import ChannelModule from './module'
 const LOGGER = require("@calzoneman/jsli")("golds");
 
+const ActionType = {
+    earnings: "earnings",
+    losses: "losses",
+    expenditures: "expenditures",
+    statues: "statuses"
+};
+
+const cpOptsDefaults = [
+    {
+        name: "active",
+        actionType: ActionType["earnings"],
+        options: {
+            enabled: true,
+            points: 6,
+            interval: 100
+        }
+    },
+    {
+        name: "addingVid",
+        actionType: ActionType["earnings"],
+        options: {
+            enabled: true,
+            points: 6
+        }
+    },
+    {
+        name: "skipped",
+        actionType: ActionType["losses"],
+        options: {
+            enabled: true,
+            points: 6
+        }
+    },
+    {
+        name: "highlight",
+        actionType: ActionType["expenditures"],
+        options: {
+            enabled: true,
+            points: 15,
+            command: "/highlight"
+        }
+    },
+    {
+        name: "skip",
+        actionType: ActionType["expenditures"],
+        options: {
+            enabled: true,
+            points: 20
+        }
+    },
+    {
+        name: "danmu",
+        actionType: ActionType["expenditures"],
+        options: {
+            enabled: true,
+            points: 250,
+            command: "/danmu"
+        }
+    },
+    {
+        name: "secretary",
+        actionType: ActionType["expenditures"],
+        options: {
+            enabled: true,
+            points: 10000,
+            command: "/secretary"
+        }
+    },
+    {
+        name: "debtlvl0",
+        actionType: ActionType["statuses"],
+        options: {
+            enabled: true,
+            points: 5
+        }
+    },
+    {
+        name: "debtlvl1",
+        actionType: ActionType["statuses"],
+        options: {
+            enabled: true,
+            points: -10
+        }
+    },
+    {
+        name: "debtlvl2",
+        actionType: ActionType["statuses"],
+        options: {
+            enabled: true,
+            points: -100
+        }
+    },
+    {
+        name: "debtlvl3",
+        actionType: ActionType["statuses"],
+        options: {
+            enabled: true,
+            points: -500
+        }
+    },
+    {
+        name: "debtlvl4",
+        actionType: ActionType["statuses"],
+        options: {
+            enabled: true,
+            points: -1000
+        }
+    },
+    {
+        name: "debtlvl5",
+        actionType: ActionType["statuses"],
+        options: {
+            enabled: true,
+            points: -2000
+        }
+    }
+];
+
+
 /**
  * This module calculates if chat messages are gold.
  * @param {Object} _channel 
@@ -70,3 +189,5 @@ class CoolholeGoldsModule extends ChannelModule{
 }
 
 module.exports = CoolholeGoldsModule;
+exports = module.exports;
+exports.cpOptsDefaults = cpOptsDefaults;
