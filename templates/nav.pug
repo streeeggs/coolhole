@@ -4,7 +4,7 @@ mixin navheader()
       span.icon-bar
       span.icon-bar
       span.icon-bar
-    img.navbar-brand(href="/", src="../../img/brand.png")
+    a.navbar-brand(href="/")
 
 mixin navdefaultlinks()
   li
@@ -14,7 +14,7 @@ mixin navdefaultlinks()
       b.caret
     ul.dropdown-menu
       if loggedIn
-        li: a(href="javascript:$('#logoutform').submit();") Log out
+        li: a#logoutbtn(href="javascript:$('#logoutform').submit();") Log out
         li.divider
         li: a(href="/account/channels") Channels
         li: a(href="/account/profile") Profile
