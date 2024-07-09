@@ -1,6 +1,11 @@
 import ChannelModule from './module'
 const LOGGER = require('@calzoneman/jsli')('channel');
-import { merge } from '../config';
+
+const TYPE_ACTION = {
+    actionName: "string",
+    optionName: "string",
+    optionValue: "string"
+};
 
 /**
  * @param {Object} _channel 
@@ -219,22 +224,6 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
     };
 
     /**
-     * Generic "is object empty or even an object" check from https://stackoverflow.com/a/32108184
-     * "Do not use Object.keys(obj).length. It is O(N) complexity"
-     * @param {*} obj 
-     * @returns Boolean if parameter is empty or not
-     */
-    isObjectEmpty(obj) {
-        for (const prop in obj) {
-            if (Object.hasOwn(obj, prop)) {
-                return false;
-            }
-        }
-
-        return true;
-    };
-
-    /**
      * Set Action Options based on name
      * @param {String} actionName 
      * @param {String} optionName
@@ -246,25 +235,25 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
             if (optionName in action.options)
                 action.options[optionName] = optionValue;
             else
-                LOGGER.error(`Unable to find option ${optionName} for action ${actionName} CoolholePointsActionsOptionsModule.`);
+                LOGGER.error(`Unable to find option ${optionName} for action ${actionName} for CoolholePointsActionsOptionsModule.`);
         }
         else
             LOGGER.error(`Unable to find action ${actionName} for CoolholePointsActionsOptionsModule.`);
     }
 
     /**
-     * 
-     * @param {*} user 
+     * Post join hook
+     * @param {*} user user object
      */
     onUserPostJoin(user) {
-        user.socket.on("setCpOptions", this.handleSetCpOptions.bind(this, user));
+        user.socket.typecheckedOn("setCpOptions", TYPE_ACTION, this.handleSetCpOptions.bind(this, user));
 
         this.sendCpOpts([user]);
     };
 
     /**
-     * 
-     * @param {*} users 
+     * Send options to each provided user
+     * @param {Array.*} users Array of user objects
      */
     sendCpOpts(users) {
         var opts = this.cpOpts;
@@ -279,17 +268,20 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
     };
 
     /**
-     * 
-     * @returns 
+     * Gets permissions. Copied from opts... Seems kinda silly
+     * @returns permissions class
      */
     getPermissions() {
         return this.channel.modules.permissions;
     };
 
     /**
-     * 
-     * @param {*} user 
-     * @param {*} data 
+     * Validate and update options based on data provided
+     * @param {*} user Users object
+     * @param {Object} data Data object
+     * @param {String} data.actionName Name of the action we want updated
+     * @param {String} data.optionName Name of the option within the action we want updated
+     * @param {*} data.optionValue value of the option within the action we want updated
      */
     handleSetCpOptions(user, data) {
         if (typeof data !== "object") {
