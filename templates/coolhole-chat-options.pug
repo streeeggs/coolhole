@@ -1,0 +1,79 @@
+mixin coolhole-chat-options-modal
+  #chatOptions.modal.fade(role="dialog", aria-hidden="true", tabindex="-1")
+    .modal-dialog.modal-lg(role="document")
+      .modal-content
+        .modal-header.pb-0.mb-0
+          .row.modal-header-row
+            .header-icon-container.display-inline.mt-1.ml-3.pl-2
+              svg.ch-icon.header-icon.mt-n2: use(xlink:href="#ch-icon-chat-opts")
+            .col
+              h4.modal-title.mt-n1.mb-2 Chat Options
+          button.close(data-dismiss="modal", aria-label="Close"): span(aria-hidden="true") &times;
+        .modal-body.mt-0.pt-0.px-0.pb-2
+          .container-fluid.mt-2.px-3
+            #coTabContent.tab-content.row.pt-2
+              #co-general.col-12
+                .row
+                  .col
+                    p
+                      b.text-info Note:&nbsp
+                      span These options only apply to you
+                .row
+                  .col
+                    h5.mb-0 Sound Effects
+                .row
+                  .col: hr.mt-1.mb-2
+                .row
+                  .col-12
+                    form(action="javascript:void(0)")
+                      .form-group.row.mb-3.mb-sm-2.px-4
+                        .col-sm-4
+                        .col-sm-8
+                          .form-check
+                            input#chatOptions-sfx-mod-cb.form-check-input(type="checkbox", value="1", name="chatOptions-sfx-mod-cb")
+                            label.form-check-label(for="chatOptions-mod-sfx-cb") Allow sounds from Moderator emotes
+                      .form-group.row.mb-3.mb-sm-2.px-4
+                        .col-sm-4
+                        .col-sm-8
+                          .form-check
+                            input#chatOptions-sfx-global-cb.form-check-input(type="checkbox", value="1", name="chatOptions-global-sfx-cb")
+                            label.form-check-label(for="chatOptions-sfx-global-cb") Allow sounds anyone can use
+                      .form-group.row.mb-3.mb-sm-2.px-4
+                        .col-sm-4
+                        .col-sm-8
+                          .form-check
+                            input#chatOptions-sfx-stack-cb.form-check-input(type="checkbox", value="1", name="chatOptions-stack-sfx-cb")
+                            label.form-check-label(for="chatOptions-sfx-stack-cb") Allow sound stacking
+                        .col-sm-4
+                        .col-sm-8
+                          span.pl-2.form-text.text-info
+                            b Warning:&nbsp
+                            span This can be very loud and may bring your browser to a crawl
+                .row
+                  .col
+                    h5.mb-0 Other
+                .row
+                  .col: hr.mt-1.mb-2
+                .row
+                  .col-12
+                    form(action="javascript:void(0)")
+                      .form-group.row.mb-3.mb-sm-2.px-4
+                        label.control-label.col-sm-4.text-sm-right.ml-1.ml-sm-0.pt-sm-2(for="#chatOptions-chatbg-select") Chat Background
+                        .col-sm-8
+                          select#chatOptions-chatbg-select.form-control
+                            option(value="off") None
+                            option(value="skull") Skull
+                            option(value="bliss") Bliss
+                      .form-group.row.mb-3.mb-sm-2.px-4
+                        .col-sm-4
+                        .col-sm-8
+                          .form-check
+                            input#chatOptions-fb-cb.form-check-input(type="checkbox", value="1", name="chatOptions-fb-cb")
+                            label.form-check-label(for="chatOptions-fb-cb", value="1") Allow Facebook Tracking Algorithms
+                      .form-group.row.mb-3.mb-sm-2.px-4
+                        .col-sm-4
+                        .col-sm-8
+                          .form-check
+                            input#chatOptions-stockheimer-cb.form-check-input(type="checkbox", name="chatOptions-stockheimer-cb")
+                            label.form-check-label(for="chatOptions-stockheimer-cb"): a(target="_blank", href="https://stockheimergame.com") Stockheimer
+        .modal-footer
