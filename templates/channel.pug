@@ -112,9 +112,9 @@ html(lang="en")
                   .input-group
                     input#mediaurl.form-control(type="text", placeholder="Media URL")
                     span.input-group-btn
-                      button#queue_next.btn.btn-default Queue next
+                      button#queue_next.btn.btn-default: svg.ch-icon: use(xlink:href="/svg/coolhole-icons.svg#ch-icon-ui-video-play-next")
                     span.input-group-btn
-                      button#queue_end.btn.btn-default Queue last
+                      button#queue_end.btn.btn-default: svg.ch-icon: use(xlink:href="/svg/coolhole-icons.svg#ch-icon-ui-video-play-end")
                   .checkbox
                     label
                       input.add-temp(type="checkbox")
@@ -250,6 +250,7 @@ html(lang="en")
     script(src="/js/ui.js")
     script(src="/js/callbacks.js")
     script(src="/js/coolhole-util.js")
+    script(src="/js/coolhole-style.js")
     script(defer, src="/js/vjs/dash.all.min.js")
     script(defer, src="/js/vjs/video.js")
     script(defer, src="/js/vjs/videojs-dash.js")
