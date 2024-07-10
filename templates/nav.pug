@@ -23,7 +23,8 @@ mixin navdefaultlinks()
       else
         li: a(href="/login") Login
         li: a(href="/register") Register
-
+  include socials
+  +sociallinks() 
 mixin navsuperadmin(newTab)
   if superadmin
     if newTab
