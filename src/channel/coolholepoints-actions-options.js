@@ -1,7 +1,332 @@
 import ChannelModule from './module'
 const LOGGER = require('@calzoneman/jsli')('channel');
 
+const ActionType = {
+    Earnings: "Earnings",
+    Losses: "Losses",
+    Expenditures: "Expenditures",
+    Statuses: "Statuses"
+};
+
+
 /**
+ * Default options for cool points
+ * @namespace
+ * @property {String} name Name of the option
+ * @property {String} actionType Type of action
+ * @property {String} modTitle Title for mod options page
+ * @property {String} userTitle Title for user status page
+ * @property {String} userDescription Description for user status page
+ * @property {Array} options Array of option objects
+ * @property {String} options.optionName Name of the option
+ * @property {String} options.optionType Type of the option
+ * @property {*} options.optionValue Value of the option
+ * @property {String} options.optionDescription Description of the option
+ */
+const cpOptsDefaults = [
+    {
+        name: "active",
+        actionType: ActionType["Earnings"],
+        modTitle: "Being Active",
+        userTitle: "Active",
+        userDescription: "Participation is key. A reward to those that are present",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: 6,
+                optionDescription: "Points per Tick"
+            },
+            {
+                optionName: "interval",
+                optionType: "time",
+                optionValue: 100,
+                optionDescription: "Tick Interval"
+            }
+        ]
+    },
+    {
+        name: "addingVid",
+        actionType: ActionType["Earnings"],
+        modTitle: "Adding a video",
+        userTitle: "Submitting Media",
+        userDescription: "Providing media is the foundation of the application and is the catalyst for valuable data",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: 6,
+                optionDescription: "Points per Video"
+            }
+        ]
+    },
+    {
+        name: "skipped",
+        actionType: ActionType["Losses"],
+        modTitle: "Having your video skipped",
+        userTitle: "Unsatisfactory Media",
+        userDescription: "Not all media is created equal and it's important to ensure you're providing the highest quality content. Please do better in the future. Don't fucking post family guy. Or anime.",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: 6,
+                optionDescription: "Points lost"
+            }
+        ]
+    },
+    {
+        name: "highlight",
+        actionType: ActionType["Expenditures"],
+        modTitle: "Highlight",
+        userTitle: "Highlight",
+        userDescription: "Individuality provides a sense of self-expression and personal fulfillment. While modest, this chat message will help you stand out",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: 15,
+                optionDescription: "Cost"
+            },
+            {
+                optionName: "command",
+                optionType: "string",
+                optionValue: "/highlight",
+                optionDescription: "Usage: /highlight"
+            }
+        ]
+    },
+    {
+        name: "skip",
+        actionType: ActionType["Expenditures"],
+        modTitle: "Skipping a video",
+        userTitle: `"Sister"ing Content`,
+        userDescription: "As a publicly accountable organization, we are compelled to express our sincerest apprehension regarding the participation of incest.",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: 20,
+                optionDescription: "Cost"
+            }
+        ]
+    },
+    {
+        name: "danmu",
+        actionType: ActionType["Expenditures"],
+        modTitle: "Danmaku ('On Screen' Comments)",
+        userTitle: "Danmu",
+        userDescription: `AKA: Danmaku or barrage or niconico video is usually described as は、ニコニコ動画で流れる文字コメントのことで、動画をより楽しい \ (•◡•) /コメントが彩ります`,
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: 250,
+                optionDescription: "Cost"
+            },
+            {
+                optionName: "command",
+                optionType: "string",
+                optionValue: "/danmu",
+                optionDescription: "Usage: /danmu"
+            }
+        ]
+    },
+    {
+        name: "secretary",
+        actionType: ActionType["Expenditures"],
+        modTitle: "Super Invasive Chat",
+        userTitle: "Invasive Chat Message",
+        userDescription: "Children who are often deprived of attention resort to frequent disruptions through auditory and visual harassment. To be noticed, to be seen, is to be reminded that you're alive; that you matter. Use her wisely.",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: 10000,
+                optionDescription: "Cost"
+            },
+            {
+                optionName: "command",
+                optionType: "string",
+                optionValue: "/secretary",
+                optionDescription: "Usage: /secretary"
+            }
+        ]
+    },
+    {
+        name: "debtlvl0",
+        actionType: ActionType["Statuses"],
+        modTitle: "Debt Level 0 - Stutter filter",
+        userTitle: "Debt Level 0 - Repeating Interruptions of Typical Speech",
+        userDescription: "Our bio-integrated cryptocurrency may cause speech repetition due to additional Proof of Work requirements for users below a certain threshold.",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: 5,
+                optionDescription: "Points below"
+            }
+        ]
+    },
+    {
+        name: "debtlvl1",
+        actionType: ActionType["Statuses"],
+        modTitle: "Debt Level 1 - Lisp filter",
+        userTitle: "Debt Level 1 - Further Degradation of Speech",
+        userDescription: "It's unsure if this effect is the result of impaired faculties or if it's a best estimation of what the fiscally irresponsible sound like.",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: -10,
+                optionDescription: "Points below"
+            }
+        ]
+    },
+    {
+        name: "debtlvl2",
+        actionType: ActionType["Statuses"],
+        modTitle: "Debt Level 2 - Random Ad",
+        userTitle: "Debt Level 2 - Occasional Content Insertion to Recoup Cost",
+        userDescription: "To avoid the ability to provide you with more opportunities to contribute, we require external sources to keep operating costs nominal.",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: -100,
+                optionDescription: "Points below"
+            }
+        ]
+    },
+    {
+        name: "debtlvl3",
+        actionType: ActionType["Statuses"],
+        modTitle: "Debt Level 3 - 'Coolhole1' Text",
+        userTitle: "Debt Level 3 - Lower Physical Footprint",
+        userDescription: "As your brain and body begin to degrade, it becomes necessary to reduce swelling by reducing the text size reducing necessary throughput to continue minimal cognitive development.",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: -500,
+                optionDescription: "Points below"
+            }
+        ]
+    },
+    {
+        name: "debtlvl4",
+        actionType: ActionType["Statuses"],
+        modTitle: "Debt Level 4 - Letters Missing",
+        userTitle: "Debt Level 4 - Reduced Bandwidth",
+        userDescription: "It's at this point that your brainwaves have become unstable and we cannot guarantee total transmission of your messages.",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: -1000,
+                optionDescription: "Points below"
+            }
+        ]
+    },
+    {
+        name: "debtlvl5",
+        actionType: ActionType["Statuses"],
+        modTitle: "Debt Level 5 - 'Criticality Animation'",
+        userTitle: "Debt Level 5 - Criticality Event",
+        userDescription: "Criticality accident likely. May God have mercy on your soul.",
+        options: [
+            {
+                optionName: "enabled",
+                optionType: "bool",
+                optionValue: true,
+                optionDescription: "Enable"
+            },
+            {
+                optionName: "points",
+                optionType: "int",
+                optionValue: -2000,
+                optionDescription: "Points below"
+            }
+        ]
+    }
+];
+
+const cpOptTypes = Object.keys(ActionType);
+
+/**
+ * Coolpoints options control how users earn, lose, spend and are effected by coolpoints
  * @param {Object} _channel 
  */
 class CoolholePointsActionsOptionsModule extends ChannelModule {
@@ -9,12 +334,6 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
         super(_channel);
 
         ChannelModule.apply(this, arguments);
-        const ActionType = {
-            earnings: "earnings",
-            losses: "losses",
-            expenditures: "expenditures",
-            statues: "statuses"
-        };
 
         this.supportsDirtyCheck = true;
         this.actionTypes = ActionType;
@@ -23,124 +342,8 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
         /**
          * cpActions defines the list of actions available
          * @type {Array.<Object>}
-         * @public
          */
-        this.actionsDefault = [
-            /** 
-             * @namespace
-             * @property {string} name Name of the option
-             * @property {ActionType} actionType Type of action
-             * @property {Object} options Object to store mutable attributes about the action
-             */
-            {
-                name: "active",
-                actionType: ActionType["earnings"],
-                options: {
-                    enabled: true,
-                    points: 6,
-                    interval: 100
-                }
-            },
-            {
-                name: "addingVid",
-                actionType: ActionType["earnings"],
-                options: {
-                    enabled: true,
-                    points: 6
-                }
-            },
-            {
-                name: "skipped",
-                actionType: ActionType["losses"],
-                options: {
-                    enabled: true,
-                    points: 6
-                }
-            },
-            {
-                name: "highlight",
-                actionType: ActionType["expenditures"],
-                options: {
-                    enabled: true,
-                    points: 15,
-                    command: "/highlight"
-                }
-            },
-            {
-                name: "skip",
-                actionType: ActionType["expenditures"],
-                options: {
-                    enabled: true,
-                    points: 20
-                }
-            },
-            {
-                name: "danmu",
-                actionType: ActionType["expenditures"],
-                options: {
-                    enabled: true,
-                    points: 250,
-                    command: "/danmu"
-                }
-            },
-            {
-                name: "secretary",
-                actionType: ActionType["expenditures"],
-                options: {
-                    enabled: true,
-                    points: 10000,
-                    command: "/secretary"
-                }
-            },
-            {
-                name: "debtlvl0",
-                actionType: ActionType["statuses"],
-                options: {
-                    enabled: true,
-                    points: 5
-                }
-            },
-            {
-                name: "debtlvl1",
-                actionType: ActionType["statuses"],
-                options: {
-                    enabled: true,
-                    points: -10
-                }
-            },
-            {
-                name: "debtlvl2",
-                actionType: ActionType["statuses"],
-                options: {
-                    enabled: true,
-                    points: -100
-                }
-            },
-            {
-                name: "debtlvl3",
-                actionType: ActionType["statuses"],
-                options: {
-                    enabled: true,
-                    points: -500
-                }
-            },
-            {
-                name: "debtlvl4",
-                actionType: ActionType["statuses"],
-                options: {
-                    enabled: true,
-                    points: -1000
-                }
-            },
-            {
-                name: "debtlvl5",
-                actionType: ActionType["statuses"],
-                options: {
-                    enabled: true,
-                    points: -2000
-                }
-            }
-        ];
+        this.actionsDefault = cpOptsDefaults;
     }
 
     /**
@@ -226,8 +429,8 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
     set(actionName, optionName, optionValue) {
         if (this.actions.includes(action => action.name === actionName)) {
             const action = this.actions.find(action => action.name === actionName);
-            if (optionName in action.options)
-                action.options[optionName] = optionValue;
+            if (action.options.includes(option => option.optionName === optionName))
+                action.options.find(option => option.optionName === optionName).optionValue = optionValue;
             else
                 LOGGER.error(`Unable to find option ${optionName} for action ${actionName} for CoolholePointsActionsOptionsModule.`);
         }
@@ -356,3 +559,5 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
 }
 
 module.exports = CoolholePointsActionsOptionsModule;
+module.exports.cpOptsDefaults = cpOptsDefaults;
+module.exports.cpOptTypes = cpOptTypes;

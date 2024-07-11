@@ -221,7 +221,13 @@ html(lang="en")
                   li: a(href="#cs-chanranks", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestChannelRanks')") Moderators
               li: a(href="#cs-banlist", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestBanlist')") Ban list
               li: a(href="#cs-chanlog", data-toggle="tab", onclick="javascript:socket.emit('readChanLog')") Log
-              li: a(href="#cs-chancoolpoint-options", data-toggle="tab", tabindex="-1", onclick="updateCoolPointActionsAdminPrompt()") CoolPoints Actions
+              li.dropdown
+                a#cs-coolpoints-dd-toggle(href="#", data-toggle="dropdown") CoolPoints
+                  span.caret
+                ul.dropdown-menu
+                  li: a(href="#cs-chancoolpoint-options", data-toggle="tab", tabindex="-1") CoolPoints Actions
+                  li: a(href="#cs-chancoolpoint-user-table", data-toggle="tab", tabindex="-1") CoolPoints User Table
+
           .modal-body
             .tab-content
               include channeloptions
@@ -237,8 +243,9 @@ html(lang="en")
               +emotes()
               +chanlog()
               +permeditor()
-              include coolhole-channeloptions
+              include coolhole-coolpoints
               +coolpointoptions()
+              +coolpointsusertable()
           .modal-footer
             button.btn.btn-default(type="button", data-dismiss="modal") Close
     #pmbar

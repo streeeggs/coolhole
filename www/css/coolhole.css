@@ -263,3 +263,64 @@
 .emote-overlap {
   position: absolute;
 }
+
+.cp-option-action-label {
+  text-align: right;
+}
+
+.cp-option-form {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  justify-items: stretch;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 5rem;
+}
+.cp-option-form:hover {
+  background-color: hsla(0, 0%, 100%, 0.05);
+}
+.cp-option-subheader {
+  text-align: center;
+  font-weight: bold;
+}
+.cp-option-form-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.cp-option-form-group {
+  gap: 5px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.cp-option-justify-center {
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.cp-option-label {
+  -webkit-box-flex: 0.3;
+      -ms-flex: 0.3;
+          flex: 0.3;
+}
+.cp-option-input {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+.cp-option-timeinput {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
