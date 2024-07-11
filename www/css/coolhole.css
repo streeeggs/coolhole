@@ -310,6 +310,7 @@ svg.ch-cp {
 .ch-brand {
   width: 120px;
   height: 40px;
+  fill: #fff;
 }
 /* Spacing for the text next to the icons */
 .ch-nav-text {

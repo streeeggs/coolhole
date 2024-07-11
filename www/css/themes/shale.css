@@ -122,12 +122,24 @@ svg {
 #pollwrap {
   padding-left: 0;
   padding-right: 10px;
-  >.well.active {
-    background-color: #181E22;
+}
 
-    .btn-default {
-      background-color: #0A0C0D;
-    }
+#pollwrap >.well.active {
+  -moz-background-color: #181E22;
+  background-color: #181E22;
+
+  .btn-default {
+    -moz-background-color: #475151;
+    background-color: #475151;
+  }
+}
+#pollwrap > .well.muted {
+  -moz-background-color: #1C2124;
+  background-color: #1C2124;
+
+  .btn-default {
+    -moz-background-color: #0F1213;
+    background-color: #0F1213;
   }
 }
 
