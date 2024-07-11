@@ -125,6 +125,7 @@ svg {
 }
 
 #pollwrap >.well.active {
+  padding: 35px;
   -moz-background-color: #181E22;
   background-color: #181E22;
 
@@ -134,6 +135,7 @@ svg {
   }
 }
 #pollwrap > .well.muted {
+  padding: 35px;
   -moz-background-color: #1C2124;
   background-color: #1C2124;
 
@@ -153,6 +155,11 @@ svg {
 
 #queuefail {
   padding: 0;
+}
+
+#queueinfo {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 #queue_next, #queue_end {
