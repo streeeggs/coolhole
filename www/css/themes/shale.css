@@ -60,6 +60,11 @@ svg {
 
 }
 
+#rightpane-inner {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 #socialsmenu {
   align-content: center;
 }
@@ -114,12 +119,28 @@ svg {
   background-color: #212A2E;
 }
 
+#pollwrap {
+  padding-left: 0;
+  padding-right: 10px;
+  >.well.active {
+    background-color: #181E22;
+
+    .btn-default {
+      background-color: #0A0C0D;
+    }
+  }
+}
+
 #chatwrap, #videowrap {
   padding: 0;
 }
 
 #chatwrap {
   padding-right: 10px;
+}
+
+#queuefail {
+  padding: 0;
 }
 
 #queue_next, #queue_end {
