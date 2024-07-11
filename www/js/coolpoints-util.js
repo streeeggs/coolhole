@@ -803,6 +803,11 @@ const bindCpOptions = () => {
     }, 1000);
   });
 }
+function showCoolPointsUserPrompt() {
+  //updateCoolPointActionsUserPrompt();
+  $("#coolPointsPrompt").modal();
+}
+
 //-----------------------------------------------------------
 // [END] COOL POINTS
 //-----------------------------------------------------------
