@@ -90,11 +90,12 @@ svg {
   background-color: #212A2E;
 }
 
-#chatwrap {
-  padding-left: 0;
+#chatwrap, #videowrap {
+  padding: 0;
 }
-#videowrap {
-  padding-right: 0;
+
+#chatwrap {
+  padding-right: 10px;
 }
 
 #queue_next, #queue_end {
@@ -148,19 +149,6 @@ input.form-control[type="email"], textarea.form-control {
 
 input[type="checkbox"] {
   accent-color: #59FFFF;
-}
-
-.queue_active {
-  background-image: -webkit-linear-gradient(#8a9196, #7a8288 60%, #70787d);
-  background-image: linear-gradient(#8a9196, #7a8288, #70787d);
-  background-repeat: no-repeat;
-}
-
-.queue_active.queue_temp {
-  background-color: #292F35;
-  background-image: url(/img/stripe-diagonal-black.png);
-  background-repeat: repeat;
-  background-blend-mode: color-burn;
 }
 
 .profile-box, .user-dropdown, .emotelist-table td {
@@ -278,9 +266,40 @@ input[type="checkbox"] {
   border: 0;
 }
 
+#leftcontrols, #rightcontrols {
+  padding: 0;
+}
+
+#rightpane {
+  padding: 0;
+}
+
 .queue_entry {
+  padding: 0;
   border-color: #aaaaaa;
   background-color: #272b30;
+  > .btn-group {
+    display: flex;
+    height: 30px;
+    margin-top: 10px;
+    > * {
+      width: 100%;
+    }
+  }
+}
+
+.queue_active {
+  background-image: -webkit-linear-gradient(45deg, #21242B, #A4AFC6, #E4E6F4, #828CA0, #21242B);
+  background-image: linear-gradient(15deg, #21242B, #A4AFC6 50%, #E4E6F4, #828CA0 10%, #21242B);
+  background-repeat: no-repeat;
+}
+
+.queue_active.queue_temp {
+  background-color: #292F35;
+  background-image: url(/img/stripe-diagonal-black.png);
+  background-repeat: repeat;
+  background-blend-mode: color-burn;
+
 }
 
 .navbar-inverse .navbar-text-nofloat {
@@ -293,5 +312,10 @@ input[type="checkbox"] {
 }
 
 .qe_title {
-  color: #D7DAD7;
+  font-size: 16px;
+  color: #A4AFA9;
+}
+
+.qe_title:hover {
+  color: #D6DBD6;
 }
