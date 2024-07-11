@@ -311,3 +311,7 @@ svg.ch-cp {
   width: 120px;
   height: 40px;
 }
+/* Spacing for the text next to the icons */
+.ch-nav-text {
+  margin-left: 10px;
+}

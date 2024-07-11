@@ -2,10 +2,14 @@ mixin sociallinks()
     li.dropdown
         a.dropdown-toggle(href="#", data-toggle="dropdown") Socials
             b.caret 
-        ul.dropdown-menu
-            li: a(href="https://www.patreon.com/broteam"): svg.ch-icon(viewbox="0 0 24 24"): use(href="/svg/coolhole-icons.svg#ch-icon-social-patreon") Patreon
-            li: a(href="https://twitter.com/getincoolhole"): svg.ch-icon(viewbox="0 0 24 24"): use(href="/svg/coolhole-icons.svg#ch-icon-social-twitter") Twitter
-            li: a(href="https://videos.coolhole.org/"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="/svg/coolhole-icons.svg#ch-icon-social-pill") Videos
-            li: a(href="https://streamlabs.com/broteam/tip"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="/svg/coolhole-icons.svg#ch-icon-social-donate") Donate
-            li: a(href="https://hole.gold/"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="/svg/coolhole-icons.svg#ch-icon-social-golds") Golds
-            li: a(href="https://discord.gg/gh25Pe8eaK"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="/svg/coolhole-icons.svg#ch-icon-social-discord") 
+        ul#socialsmenu.dropdown-menu
+            li: a#patreonlink(href="https://twitter.com/getincoolhole"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-social-patreon")
+                span.ch-nav-text Patreon
+            li: a#twitterlink(href="https://twitter.com/getincoolhole"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-social-twitter")
+                span.ch-nav-text Twitter
+            li: a#donatelink(href="https://streamlabs.com/broteam/tip"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-social-donate")
+                span.ch-nav-text Donate
+            li: a#videoslink(href="https://videos.coolhole.org/"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-social-videos")
+                span.ch-nav-text Videos
+            li: a#discordlink(href="https://discord.gg/gh25Pe8eaK"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-social-discord")
+                span.ch-nav-text Discord

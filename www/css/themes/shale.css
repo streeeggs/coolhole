@@ -60,6 +60,30 @@ svg {
 
 }
 
+#socialsmenu {
+  align-content: center;
+}
+
+#patreonlink:hover {
+  color: #FFFEFC;
+  background-color: #DE3F00;
+}
+
+#twitterlink:hover {
+  color: #FCFDFF;
+  background-color: #2094FF;
+}
+
+#donatelink:hover {
+  color: #0A3506;
+  background-color: #53E542;
+}
+
+#discordlink:hover {
+  color: #0D1628;
+  background-color: #9DAADF;
+}
+
 .form-control {
   color: #C3CACF;
   background-color: #15181A;
@@ -276,6 +300,7 @@ input[type="checkbox"] {
 
 .queue_entry {
   padding: 0;
+  padding-top: 10px;
   border-color: #aaaaaa;
   background-color: #272b30;
   > .btn-group {
@@ -283,15 +308,26 @@ input[type="checkbox"] {
     height: 30px;
     margin-top: 10px;
     > * {
+      transition: all;
+      transition-duration: 350ms;
       width: 100%;
+    }
+    > *:hover {
+      background-color: #3E97A2;
+    }
+    > .qbtn-delete:hover {
+      background-color: #A6272D;
     }
   }
 }
 
-.queue_active {
-  background-image: -webkit-linear-gradient(45deg, #21242B, #A4AFC6, #E4E6F4, #828CA0, #21242B);
-  background-image: linear-gradient(15deg, #21242B, #A4AFC6 50%, #E4E6F4, #828CA0 10%, #21242B);
-  background-repeat: no-repeat;
+.queue_active:not(.queue_temp) {
+  background-color: #26272D;
+  box-shadow: inset 0 0 30px #08080A;
+  & .qbtn-tmp {
+    background-image: linear-gradient(45deg, #26272D, #4D505E, #737A90, #E8E5EF, #4D505E, #0F0F13);
+    background-blend-mode: normal;
+  }
 }
 
 .queue_active.queue_temp {
@@ -312,6 +348,7 @@ input[type="checkbox"] {
 }
 
 .qe_title {
+  margin-left: 10px;
   font-size: 16px;
   color: #A4AFA9;
 }
