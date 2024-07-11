@@ -61,6 +61,7 @@ html(lang="en")
             #leftcontrols.col-lg-5.col-md-5
               button#newpollbtn.btn.btn-sm.btn-default New Poll
               button#emotelistbtn.btn.btn-sm.btn-default Emote List
+              button#coolpointsbtn.btn.btn-sm.btn-default(onclick="javascript:showCoolPointsUserPrompt()") CoolPoints
             #rightcontrols.col-lg-7.col-md-7
               #plcontrol.btn-group
                 button#showmediaurl.btn.btn-sm.btn-default(title="Add video from URL", data-toggle="collapse", data-target="#addfromurl")
@@ -226,7 +227,7 @@ html(lang="en")
                   span.caret
                 ul.dropdown-menu
                   li: a(href="#cs-chancoolpoint-options", data-toggle="tab", tabindex="-1") CoolPoints Actions
-                  li: a(href="#cs-chancoolpoint-user-table", data-toggle="tab", tabindex="-1") CoolPoints User Table
+                  li: a(href="#cs-chancoolpoint-user-table", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestCoolpointsUserList')") CoolPoints User Table
 
           .modal-body
             .tab-content
@@ -248,6 +249,7 @@ html(lang="en")
               +coolpointsusertable()
           .modal-footer
             button.btn.btn-default(type="button", data-dismiss="modal") Close
+    +coolpointsuserprompt()
     #pmbar
     include footer
     +footer()

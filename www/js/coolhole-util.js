@@ -483,3 +483,8 @@ function checkOverlapEmotes(jqueryChatSpan) {
 // [END] EMOTE EFFECTS
 //-----------------------------------------------------------
 
+function showCoolPointsUserPrompt() {
+    //updateCoolPointActionsUserPrompt();
+    $("#coolPointsPrompt").modal();
+  }
+  
