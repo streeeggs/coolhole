@@ -7,6 +7,7 @@ html(lang="en")
     link(rel="stylesheet", href="/css/video-js.css")
     link(rel="stylesheet", href="/css/videojs-resolution-switcher.css")
   body
+    include ../www/svg/coolhole-icons.svg
     #wrap
       nav.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
         include nav
@@ -59,8 +60,8 @@ html(lang="en")
                 #ytapiplayer.embed-responsive-item
           #controlsrow.row
             #leftcontrols.col-lg-5.col-md-5
-              button#newpollbtn.btn.btn-sm.btn-default New Poll
-              button#emotelistbtn.btn.btn-sm.btn-default Emote List
+              button#newpollbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-poll")
+              button#emotelistbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-emote-dead")
             #rightcontrols.col-lg-7.col-md-7
               #plcontrol.btn-group
                 button#showmediaurl.btn.btn-sm.btn-default(title="Add video from URL", data-toggle="collapse", data-target="#addfromurl")
@@ -112,9 +113,9 @@ html(lang="en")
                   .input-group
                     input#mediaurl.form-control(type="text", placeholder="Media URL")
                     span.input-group-btn
-                      button#queue_next.btn.btn-default Queue next
+                      button#queue_next.btn.btn-default: svg.ch-icon(viewbox="0 0 24 24"): use(href="/svg/coolhole-icons.svg#ch-icon-ui-video-play-next")
                     span.input-group-btn
-                      button#queue_end.btn.btn-default Queue last
+                      button#queue_end.btn.btn-default: svg.ch-icon(viewbox="0 0 24 24"): use(href="/svg/coolhole-icons.svg#ch-icon-ui-video-play-end")
                   .checkbox
                     label
                       input.add-temp(type="checkbox")
@@ -148,7 +149,7 @@ html(lang="en")
                   ul#userpl_list.videolist
                 #queuefail.col-lg-12.col-md-12
                   .vertical-spacer
-                .col-lg-12.col-md-12
+                #queueinfo.col-lg-12.col-md-12
                   ul#queue.videolist
                   #plmeta
                     span#plcount 0 items
@@ -250,6 +251,7 @@ html(lang="en")
     script(src="/js/ui.js")
     script(src="/js/callbacks.js")
     script(src="/js/coolhole-util.js")
+    script(src="/js/coolhole-style.js")
     script(defer, src="/js/vjs/dash.all.min.js")
     script(defer, src="/js/vjs/video.js")
     script(defer, src="/js/vjs/videojs-dash.js")

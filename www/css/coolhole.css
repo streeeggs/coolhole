@@ -306,3 +306,26 @@ svg.ch-cp {
   height: 18px;
   width: 18px;
 }
+/* For the logo to be displayed on the nav */
+.ch-brand {
+  width: 120px;
+  height: 40px;
+  fill: #fff;
+}
+/* Spacing for the text next to the icons */
+.ch-nav-text {
+  margin-left: 10px;
+}
+
+.drink {
+  background-image: url("../img/beer.avif");
+  padding-left: 5px;
+  margin: 0;
+  height: 60px;
+  border: 1px;
+  font-size: 30px;
+  > * {
+    font-weight: bolder;
+    color: #351200;
+  }
+}
