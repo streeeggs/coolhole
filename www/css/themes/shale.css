@@ -108,6 +108,8 @@ svg {
 
 #modflair {
   align-content: center;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 #modflair.label-default {
@@ -239,18 +241,20 @@ input[type="checkbox"] {
 .server-msg-reconnect {
   height: 45px;
   align-content: center;
-  border-color: none;
+  border: none;
   background-color: #60FF57;
-  font-size: 20px;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .server-msg-disconnect {
   height: 45px;
   align-content: center;
-  border-color: none;
+  border: none;
   color: #3D0000;
   background-color: #FF3344;
-  font-size: 20px;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .btn-default {
@@ -263,6 +267,15 @@ input[type="checkbox"] {
 
 .embed-responsive-item {
   background-color: #181E22;
+}
+
+[class^="userlist_"] {
+  font-size: 14px;
+}
+
+div[class^="chat-msg-"] {
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 #drinkcount {

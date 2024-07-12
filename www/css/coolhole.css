@@ -316,3 +316,16 @@ svg.ch-cp {
 .ch-nav-text {
   margin-left: 10px;
 }
+
+.drink {
+  background-image: url("../img/beer.avif");
+  padding-left: 5px;
+  margin: 0;
+  height: 60px;
+  border: 1px;
+  font-size: 30px;
+  > * {
+    font-weight: bolder;
+    color: #351200;
+  }
+}
