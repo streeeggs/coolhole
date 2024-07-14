@@ -22,3 +22,6 @@ tor-exit-list.json
 peertube-hosts.json
 *.pem
 .DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
