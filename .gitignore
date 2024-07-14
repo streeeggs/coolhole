@@ -21,4 +21,3 @@ tor-exit-list.json
 *.patch
 peertube-hosts.json
 *.pem
-www/css/themes/less/**/theme.less
