@@ -271,6 +271,11 @@
   height: 24px;
   fill: #dcdedd;
 }
+.ch-icon-anim {
+  width: 28px;
+  height: 24px;
+  fill: #dcdedd;
+}
 .ch-icon.warning {
   fill: #E03E40;
 }
