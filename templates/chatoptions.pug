@@ -5,6 +5,12 @@ mixin checkbox(id, label)
         label(for=id)
           input(type="checkbox", id=id)
           = label
+mixin slider(id, label)
+  .form-group
+  .col-sm-12
+    label.col-sm-3(for=id)= label
+    .col-sm-9
+      input(type="range", id=id, min="0", max="100", step="1")
 mixin chat-general
     #ch-chat
         h4 Sound Effects
@@ -16,4 +22,5 @@ mixin chat-general
             .col-sm-2
             .col-sm-10 
                 p.text-danger Warning: This can be very loud and may bring your browser to a crawl.
+            +slider("chatOptions-sfx-secvolume-cb", "Woman Volume")
             .clear
