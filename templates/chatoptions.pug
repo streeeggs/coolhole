@@ -1,0 +1,15 @@
+mixin lcheckbox(id, label)
+  .form-group
+    label.control-label.col-sm-4(for=id)= label
+    .col-sm-8
+      .checkbox
+        input(type="checkbox", id=id)
+mixin chat-general
+    #us-chat-general
+    h4 Sound Effects
+    form.form-horizontal
+        .form-group
+            .col-sm-8
+                +lcheckbox("us-chat-modsound", "Allow sounds from Moderator emotes")
+                +lcheckbox("us-chat-allsound", "Allow sounds anyone can use")
+                +lcheckbox("us-chat-soundstack", "Allow sound stacking")

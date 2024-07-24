@@ -62,6 +62,7 @@ html(lang="en")
             #leftcontrols.col-lg-5.col-md-5
               button#newpollbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-poll")
               button#emotelistbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-emote-dead")
+              button#chatoptsbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-preferences")
             #rightcontrols.col-lg-7.col-md-7
               #plcontrol.btn-group
                 button#showmediaurl.btn.btn-sm.btn-default(title="Add video from URL", data-toggle="collapse", data-target="#addfromurl")
@@ -159,6 +160,18 @@ html(lang="en")
             #videowidth.col-lg-7.col-md-7
           #sitefooter
             include pagefooter
+    #chatoptions.model.fade(tabindex="-1", role="dialog", aria-hidden="true")
+      .modal-dialog
+        .modal-content 
+          .modal-header
+            button.close(data-dismiss="modal", aria-hidden="true") &times;
+            h4 Chat Options
+          .modal-body 
+            include chatoptions
+            +chat-general()
+          .modal-footer 
+            button.btn.btn-primary(type="button", data-dismiss="modal", onclick="javascript:saveUserOptions()") Save
+            button.btn.btn-default(type="button", data-dismiss="modal") Close
     #useroptions.modal.fade(tabindex="-1", role="dialog", aria-hidden="true")
       .modal-dialog
         .modal-content
