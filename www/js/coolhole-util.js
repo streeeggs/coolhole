@@ -74,6 +74,20 @@ function isMessageTooOld(msgTime) {
 }
 
 //-----------------------------------------------------------
+// [START] CHAT OPTIONS MODAL
+//-----------------------------------------------------------
+
+var CHATOPTIONSMODAL = $("#ch-chatoptions");
+$("#chatoptsbtn").on('click', function () {
+    CHATOPTIONSMODAL.modal();
+});
+
+//-----------------------------------------------------------
+// [END] CHAT OPTIONS MODAL
+//-----------------------------------------------------------
+
+
+//-----------------------------------------------------------
 // [START] SOUND EFFECTS
 //-----------------------------------------------------------
 // Define options object
@@ -99,44 +113,44 @@ const SFX = {
     secretary: {} // empty object since no ui tied to it
 };
 
-  
-// 06-29-2024 Miles - temporarily commented this out until we have coolhole options built.
-// Initialize
-// [ 'global', 'mod', 'stack' ].forEach( type => {
-  
-//     // Bind Element
-//     SFX[ type ].checkbox = document.getElementById( SFX[ type ].checkboxId );
-  
-//     // Get Checkbox State Function
-//     SFX[ type ].getState.cb = () => SFX[ type ].checkbox.checked;
-//     // Get LocalStorage State Function
-//     SFX[ type ].getState.ls = () => window.localStorage[ SFX[ type ].localStorageTag ];
-  
-//     // Set Checkbox State Function
-//     SFX[ type ].setState.cb = ( s ) => SFX[ type ].checkbox.checked = s;
-//     // Set LocalStorage State Function
-//     SFX[ type ].setState.ls = ( s ) => window.localStorage.setItem( SFX[ type ].localStorageTag, s );
-  
-//     // Check if this has been set by user before
-//     SFX[ type ].isEnabled = SFX[ type ].getState.ls() === 'true';
-  
-//     // If not, we disable by default (and set it in localStorage)
-//     if ( SFX[ type ].getState.ls() === undefined ) {
-//       SFX[ type ].isEnabled = false;
-//       SFX[ type ].setState.ls( false );
-//     }
-  
-//     // Reflect state on the checkbox itself
-//     SFX[ type ].setState.cb( SFX[ type ].isEnabled );
-  
-//     // Attach listener
-//     $( document ).on( 'change', `#${ SFX[ type ].checkboxId }[type=checkbox]`, function () {
-//       let state = SFX[ type ].getState.cb();
-//       // Updates LocalStorage item to match checkbox state
-//        SFX[ type ].setState.ls( state );
-//        SFX[ type ].isEnabled = state;
-//     });
-// });
+
+//06-29-2024 Miles - temporarily commented this out until we have coolhole options built.
+//Initialize
+[ 'global', 'mod', 'stack' ].forEach( type => {
+
+    // Bind Element
+    SFX[ type ].checkbox = document.getElementById( SFX[ type ].checkboxId );
+
+    // Get Checkbox State Function
+    SFX[ type ].getState.cb = () => SFX[ type ].checkbox.checked;
+    // Get LocalStorage State Function
+    SFX[ type ].getState.ls = () => window.localStorage[ SFX[ type ].localStorageTag ];
+
+    // Set Checkbox State Function
+    SFX[ type ].setState.cb = ( s ) => SFX[ type ].checkbox.checked = s;
+    // Set LocalStorage State Function
+    SFX[ type ].setState.ls = ( s ) => window.localStorage.setItem( SFX[ type ].localStorageTag, s );
+
+    // Check if this has been set by user before
+    SFX[ type ].isEnabled = SFX[ type ].getState.ls() === 'true';
+
+    // If not, we disable by default (and set it in localStorage)
+    if ( SFX[ type ].getState.ls() === undefined ) {
+      SFX[ type ].isEnabled = false;
+      SFX[ type ].setState.ls( false );
+    }
+
+    // Reflect state on the checkbox itself
+    SFX[ type ].setState.cb( SFX[ type ].isEnabled );
+
+    // Attach listener
+    $( document ).on( 'change', `#${ SFX[ type ].checkboxId }[type=checkbox]`, function () {
+      let state = SFX[ type ].getState.cb();
+      // Updates LocalStorage item to match checkbox state
+       SFX[ type ].setState.ls( state );
+       SFX[ type ].isEnabled = state;
+    });
+});
 
 // 2024-06-24 Miles - temporarily manually setting sfx options for testing.
 SFX.global.isEnabled = true;
@@ -627,3 +641,4 @@ applyAutoHideUserlist();
 //-----------------------------------------------------------
 // [END] CLIENT PREFERENCES
 //-----------------------------------------------------------
+

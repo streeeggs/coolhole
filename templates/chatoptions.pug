@@ -1,15 +1,19 @@
-mixin lcheckbox(id, label)
+mixin checkbox(id, label)
   .form-group
-    label.control-label.col-sm-4(for=id)= label
-    .col-sm-8
+    .col-sm-8.col-sm-offset-4
       .checkbox
-        input(type="checkbox", id=id)
+        label(for=id)
+          input(type="checkbox", id=id)
+          = label
 mixin chat-general
-    #us-chat-general
-    h4 Sound Effects
-    form.form-horizontal
-        .form-group
-            .col-sm-8
-                +lcheckbox("us-chat-modsound", "Allow sounds from Moderator emotes")
-                +lcheckbox("us-chat-allsound", "Allow sounds anyone can use")
-                +lcheckbox("us-chat-soundstack", "Allow sound stacking")
+    #ch-chat
+        h4 Sound Effects
+        form.form-horizontal(action="javascript:void(0)")
+            .form-group
+                +checkbox("chatOptions-sfx-mod-cb", "Allow sounds from Moderator emotes")
+                +checkbox("chatOptions-sfx-global-cb", "Allow sounds anyone can use")
+                +checkbox("chatOptions-sfx-stack-cb", "Allow sound stacking")
+            .col-sm-2
+            .col-sm-10 
+                p.text-danger Warning: This can be very loud and may bring your browser to a crawl.
+            .clear
