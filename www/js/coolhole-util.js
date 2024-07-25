@@ -481,4 +481,152 @@ function checkOverlapEmotes(jqueryChatSpan) {
 
 //-----------------------------------------------------------
 // [END] EMOTE EFFECTS
+<<<<<<< HEAD
+=======
+//-----------------------------------------------------------
+
+
+//-----------------------------------------------------------
+// [START] CLIENT PREFERENCES
+//-----------------------------------------------------------
+/**
+ * Constants for autoresizing
+ */
+const AUTO_RESIZE_MAX = 9;                                  // 2024-07-12 - hardcoded to be 9 based on cytube's changeVideoWidth() function 
+const AUTO_RESIZE_MIN = 3;                                  // 2024-07-12 - hardcoded to be 3 based on cytube's changeVideoWidth() function 
+const AUTO_RESIZE_STORAGE_NAME = "autoResizeVideoWidth";    // auto resize key for local storage
+const AUTO_HIDE_USERLIST_STORAGE_NAME = "autoHideUserlist";    // hide userlist key for local storage
+
+/**
+ * Sets up auto resizing functionality.
+ * AutoResizing is when coolhole remembers what size the video was set at (via +/- button) and resize it accordingly when the user refreshes the browser.
+ */
+function setupAutoResizing() {
+    try {
+        $("#resize-video-smaller").click(() => saveAutoResizing());
+        $("#resize-video-larger").click(() => saveAutoResizing());
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+/**
+ * Saves the current video width in local storage.
+ */
+function saveAutoResizing() {
+    try {
+        const videoWidth = getVideoWrapSize();
+        if(videoWidth < AUTO_RESIZE_MIN || videoWidth > AUTO_RESIZE_MAX) {
+            return
+        }
+    
+        window.localStorage.setItem(AUTO_RESIZE_STORAGE_NAME, videoWidth);
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+
+/**
+ * Auto resizes the video when the user refreshes the browser
+ */
+function applyAutoResizing() {
+    try {
+        // Video cannot be resized when its in HD layout (based on cytube code as of 2024-07-12)
+        if(isHdLayout())
+            return;
+
+        let videoWidth = getVideoWrapSize();
+        const storageVideoWidth = parseInt(window.localStorage.getItem(AUTO_RESIZE_STORAGE_NAME), 10);
+        
+        if(videoWidth < AUTO_RESIZE_MIN || videoWidth > AUTO_RESIZE_MAX)
+            return;
+        if (isNaN(storageVideoWidth) || storageVideoWidth < AUTO_RESIZE_MIN || storageVideoWidth > AUTO_RESIZE_MAX)
+            return;
+    
+        let counter = 0;
+        const safetyCounter = AUTO_RESIZE_MAX - AUTO_RESIZE_MIN + 1;
+        // Repeatedly click on the +/- button to resize the video
+        while(videoWidth !== storageVideoWidth && counter < safetyCounter) {
+            if(videoWidth < storageVideoWidth) {
+                document.getElementById("resize-video-larger").click();
+                videoWidth++;
+            }
+            else if (videoWidth > storageVideoWidth) {
+                document.getElementById("resize-video-smaller").click();
+                videoWidth--;
+            }
+            else
+                break;
+            counter++;
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+
+/**
+ * Sets up auto hiding the userlist when the user first sees the screen.
+ */
+function setupAutoHideUserlist() {
+    try {
+        $("#usercount").click(() => saveHideUserlist());
+        $("#userlisttoggle").click(() => saveHideUserlist());
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+/**
+ * Saves whether or not to hide the userlist in local storage
+ */
+function saveHideUserlist() {
+    try {
+        window.localStorage.setItem(AUTO_HIDE_USERLIST_STORAGE_NAME, isUserlistHidden());
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+/**
+ * Auto hides the userlist when the user refreshes the browser.
+ */
+function applyAutoHideUserlist() {
+    try {
+        if(window.localStorage.getItem(AUTO_HIDE_USERLIST_STORAGE_NAME) === 'true')
+            $("#usercount").click();
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+/**
+ * Helper functions for client side preferences.
+ */
+function getVideoWrapSize() {
+    let videoWrap = document.getElementById("videowrap");
+    let match = videoWrap.className.match(/col-md-(\d+)/);
+    if (!match) {
+        throw new Error("ui::changeVideoWidth: videowrap is missing bootstrap class!");
+    }
+    return parseInt(match[1], 10);
+}
+
+function isHdLayout() {
+    return /hd/.test(document.body.className);
+}
+
+function isUserlistHidden() {
+    return $("#userlist")[0].style.display === "none";
+}
+
+setupAutoResizing();
+applyAutoResizing();
+setupAutoHideUserlist();
+applyAutoHideUserlist();
+
+//-----------------------------------------------------------
+// [END] CLIENT PREFERENCES
+>>>>>>> 3.0
 //-----------------------------------------------------------

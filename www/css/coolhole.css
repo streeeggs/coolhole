@@ -264,6 +264,7 @@
   position: absolute;
 }
 
+<<<<<<< HEAD
 .cp-option-action-label {
   text-align: right;
 }
@@ -323,4 +324,75 @@
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
+=======
+
+/* Migrated over from old coolhole. These are used for various icons across the site. */
+.ch-icon {
+  width: 24px;
+  height: 24px;
+  fill: #dcdedd;
+}
+.ch-icon-anim {
+  width: 28px;
+  height: 24px;
+  fill: #dcdedd;
+}
+.ch-icon.warning {
+  fill: #E03E40;
+}
+.ch-icon.success {
+  fill: #1a936f;
+}
+.ch-icon.info {
+  fill: #4b9eb6;
+}
+.ch-icon.input-group-addon-icon {
+  width: 22px;
+  height: 22px;
+}
+.ch-icon .job-icon .job-icon-bg .job-icon-citizen {
+  fill: #3B7B8E;
+  stroke: #F2F4F3;
+}
+.ch-icon .job-icon .job-icon-bg .job-icon-scitizen {
+  fill: #E03E40;
+  stroke: #F2F4F3;
+}
+.ch-icon .job-icon .job-icon-bg .job-icon-skeleton {
+  fill: #13171A;
+  stroke: #F2F4F3;
+}
+.ch-icon .job-icon .job-icon-person {
+  fill: #F2F4F3;
+}
+.ch-icon .job-icon .job-icon-symbol .job-icon-skeleton {
+  fill: #F2F4F3;
+}
+svg.ch-cp {
+  height: 18px;
+  width: 18px;
+}
+/* For the logo to be displayed on the nav */
+.ch-brand {
+  width: 120px;
+  height: 40px;
+  fill: #fff;
+}
+/* Spacing for the text next to the icons */
+.ch-nav-text {
+  margin-left: 10px;
+}
+
+.drink {
+  background-image: url("../img/beer.avif");
+  padding-left: 5px;
+  margin: 0;
+  height: 60px;
+  border: 1px;
+  font-size: 30px;
+  > * {
+    font-weight: bolder;
+    color: #351200;
+  }
+>>>>>>> 3.0
 }

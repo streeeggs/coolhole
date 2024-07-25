@@ -1,0 +1,36 @@
+<svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <rect width="1000" height="1000" id="shape"/>
+        <filter id="noise">
+            <feTurbulence 
+                type="fractalNoise" 
+                baseFrequency="16"
+                numOctaves="13"
+                result="turbulence"
+            />
+            <feComposite
+                operator="in"
+                in="turbulence"
+                in2="SourceAlpha"
+                result="composite"
+            />
+            <feColorMatrix
+                in="composite"
+                type="luminanceToAlpha"
+            />
+            <feBlend
+                in="SourceGraphic"
+                in2="composite"
+                mode="color-burn"
+            />
+        </filter>
+        <mask id="gradient">
+            <linearGradient id="fade" gradientTransform="rotate(90)">
+                <stop offset="50%" stop-color="black" stop-opacity="0.5" />
+                <stop offset="100%" stop-color="white" stop-opacity="1" />
+            </linearGradient>
+            <use href="#shape" fill="url(#fade)" />
+        </mask>
+    </defs>
+    <use xlink:href="#shape" fill="#111923" mask="url(#gradient)" filter="url(#noise)"/>
+</svg>
