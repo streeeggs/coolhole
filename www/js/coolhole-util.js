@@ -151,12 +151,6 @@ const SFX = {
        SFX[ type ].isEnabled = state;
     });
 });
-
-// 2024-06-24 Miles - temporarily manually setting sfx options for testing.
-SFX.global.isEnabled = true;
-SFX.mod.isEnabled = true;
-SFX.stack.isEnabled = true;
-
 // SFX Library
 /**
 * Can build this out to be something configurable
