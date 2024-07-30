@@ -4459,8 +4459,8 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   padding: 6px 12px;
   line-height: 1.42857143;
   text-decoration: none;
-  color: #5ca2b9;
-  background-color: #fff;
+  color: #35818a;
+  background-color: #688591;
   border: 1px solid #ddd;
   margin-left: -1px;
 }
@@ -4479,8 +4479,8 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 .pagination > li > span:hover,
 .pagination > li > a:focus,
 .pagination > li > span:focus {
-  color: #3c788c;
-  background-color: #ffffff;
+  color: #204d53;
+  background-color: #cad4d9;
   border-color: #ddd;
 }
 .pagination > .active > a,
@@ -4501,8 +4501,8 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 .pagination > .disabled > a,
 .pagination > .disabled > a:hover,
 .pagination > .disabled > a:focus {
-  color: #a6abb0;
-  background-color: #fff;
+  color: #ffffff;
+  background-color: #1d2528;
   border-color: #ddd;
   cursor: not-allowed;
 }
@@ -4549,14 +4549,14 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 .pager li > span {
   display: inline-block;
   padding: 5px 14px;
-  background-color: #fff;
+  background-color: #688591;
   border: 1px solid #ddd;
   border-radius: 15px;
 }
 .pager li > a:hover,
 .pager li > a:focus {
   text-decoration: none;
-  background-color: #ffffff;
+  background-color: #cad4d9;
 }
 .pager .next > a,
 .pager .next > span {
@@ -4570,8 +4570,8 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 .pager .disabled > a:hover,
 .pager .disabled > a:focus,
 .pager .disabled > span {
-  color: #a6abb0;
-  background-color: #fff;
+  color: #ffffff;
+  background-color: #688591;
   cursor: not-allowed;
 }
 .label {
@@ -6854,4 +6854,7 @@ input[type="checkbox"] {
 #plonotification > div > .btn {
   border: none;
   background-color: #742c00;
+}
+#ch-chat > .form-horizontal > .form-group {
+  margin-bottom: 5px;
 }
