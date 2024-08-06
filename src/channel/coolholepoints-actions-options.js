@@ -1,4 +1,4 @@
-import ChannelModule from './module'
+var ChannelModule = require('./module');
 const LOGGER = require('@calzoneman/jsli')('channel');
 
 const ActionType = {
@@ -413,7 +413,7 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
      * @returns 
      */
     get(name) {
-        if (this.actions.includes(action => action.name === name)) {
+        if (this.actions.some(action => action.name === name)) {
             throw new Error("CP Action Not found");
         }
 
@@ -427,9 +427,9 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
      * @param {*} optionValue
      */
     set(actionName, optionName, optionValue) {
-        if (this.actions.includes(action => action.name === actionName)) {
+        if (this.actions.some(action => action.name === actionName)) {
             const action = this.actions.find(action => action.name === actionName);
-            if (action.options.includes(option => option.optionName === optionName))
+            if (action.options.some(option => option.optionName === optionName))
                 action.options.find(option => option.optionName === optionName).optionValue = optionValue;
             else
                 LOGGER.error(`Unable to find option ${optionName} for action ${actionName} for CoolholePointsActionsOptionsModule.`);

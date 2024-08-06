@@ -511,152 +511,152 @@ function updateCoolPointActionsAdminPrompt() {
   // handleCPOptionChanges();
 }
 
-function updateCoolPointActionsUserPrompt() {
-  const rootId = "cp-status-of-actions-accordion";
-  const root = $(`#${rootId}`);
-  const cpOpts = CHANNEL.opts.cpOpts;
-  const actionsCopy = {
-    active: {
-      title: "Active",
-      description: "Participation is key. A reward to those that are present"
-    },
-    addingVid: {
-      title: "Submitting Media",
-      description: "Providing media is the foundation of the application and is the catalyst for valuable data"
-    },
-    skipped: {
-      title: "Unsatisfactory Media",
-      description: "Not all media is created equal and it's important to ensure you're providing the highest quality content. Please do better in the future. Don't fucking post family guy. Or anime."
-    },
-    highlight: {
-      title: "Highlight",
-      description: "Individuality provides a sense of self-expression and personal fulfillment. While modest, this chat message will help you standout",
-      usage: "/highlight"
-    },
-    skip: {
-      title: `"Sister"ing Content`,
-      description: "As a publically accountable organization, we are compelled to express our sincerest apprehension regarding the participation of incest.",
-      usage: "Skip Button"
-    },
-    danmu: {
-      title: "Danmu",
-      description: `AKA: Danmaku or barrage or niconico video is usually described as は、ニコニコ動画で流れる文字コメントのことで、動画をより楽しい \ (•◡•) /コメントが彩ります`,
-      usage: "/danmu"
-    },
-    secretary: {
-      title: "Invasive Chat Message",
-      description: "Children who are often deprived of attention resort to frequent disruptions through auditory and visual harassment. To be noticed, to be seen, is to be reminded that you're alive; that you matter. User her wisely.",
-      usage: "/secretary"
-    },
-    debtlvl0: {
-      title: "Debt Level 0 - Repeating Interruptions of Typical Speech",
-      description: "Our bio-integrated cryptocurrency may cause speech repetition due to additional Proof of Work requirements for users below a certain threshold."
-    },
-    debtlvl1: {
-      title: "Debt Level 1 - Further Degredation of Speech",
-      description: "It's unsure if this effect is the result of impaired faculties or if it's a best estimation of what the fiscally irresponsible sound like."
-    },
-    debtlvl2: {
-      title: "Debt Level 2 - Occasional Content Insertion to Recoup Cost",
-      description: "To avoid the ability to provide you with more opportunities to contribute, we require external sources to keep operating costs nominal."
-    },
-    debtlvl3: {
-      title: "Debt Level 3 - Lower Physical Footprint",
-      description: "As your brain and body begins to degrade, it becomes necessary to reduce swelling by reducing the text size reducing necessary throughput to continue minimal cognative development."
-    },
-    debtlvl4: {
-      title: "Debt Level 4 - Reduced bandwidth",
-      description: "It's at this point that your brainwaves have become unstable and we cannot gaurentee total transmission of your messages."
-    },
-    debtlvl5: {
-      title: "Debt Level 5 - Volatile transmission",
-      description: "Criticality accident likely. May God have mercy on your soul."
-    }
-  }
+// function updateCoolPointActionsUserPrompt() {
+//   const rootId = "cp-status-of-actions-accordion";
+//   const root = $(`#${rootId}`);
+//   const cpOpts = CHANNEL.opts.cpOpts;
+//   const actionsCopy = {
+//     active: {
+//       title: "Active",
+//       description: "Participation is key. A reward to those that are present"
+//     },
+//     addingVid: {
+//       title: "Submitting Media",
+//       description: "Providing media is the foundation of the application and is the catalyst for valuable data"
+//     },
+//     skipped: {
+//       title: "Unsatisfactory Media",
+//       description: "Not all media is created equal and it's important to ensure you're providing the highest quality content. Please do better in the future. Don't fucking post family guy. Or anime."
+//     },
+//     highlight: {
+//       title: "Highlight",
+//       description: "Individuality provides a sense of self-expression and personal fulfillment. While modest, this chat message will help you standout",
+//       usage: "/highlight"
+//     },
+//     skip: {
+//       title: `"Sister"ing Content`,
+//       description: "As a publically accountable organization, we are compelled to express our sincerest apprehension regarding the participation of incest.",
+//       usage: "Skip Button"
+//     },
+//     danmu: {
+//       title: "Danmu",
+//       description: `AKA: Danmaku or barrage or niconico video is usually described as は、ニコニコ動画で流れる文字コメントのことで、動画をより楽しい \ (•◡•) /コメントが彩ります`,
+//       usage: "/danmu"
+//     },
+//     secretary: {
+//       title: "Invasive Chat Message",
+//       description: "Children who are often deprived of attention resort to frequent disruptions through auditory and visual harassment. To be noticed, to be seen, is to be reminded that you're alive; that you matter. User her wisely.",
+//       usage: "/secretary"
+//     },
+//     debtlvl0: {
+//       title: "Debt Level 0 - Repeating Interruptions of Typical Speech",
+//       description: "Our bio-integrated cryptocurrency may cause speech repetition due to additional Proof of Work requirements for users below a certain threshold."
+//     },
+//     debtlvl1: {
+//       title: "Debt Level 1 - Further Degredation of Speech",
+//       description: "It's unsure if this effect is the result of impaired faculties or if it's a best estimation of what the fiscally irresponsible sound like."
+//     },
+//     debtlvl2: {
+//       title: "Debt Level 2 - Occasional Content Insertion to Recoup Cost",
+//       description: "To avoid the ability to provide you with more opportunities to contribute, we require external sources to keep operating costs nominal."
+//     },
+//     debtlvl3: {
+//       title: "Debt Level 3 - Lower Physical Footprint",
+//       description: "As your brain and body begins to degrade, it becomes necessary to reduce swelling by reducing the text size reducing necessary throughput to continue minimal cognative development."
+//     },
+//     debtlvl4: {
+//       title: "Debt Level 4 - Reduced bandwidth",
+//       description: "It's at this point that your brainwaves have become unstable and we cannot gaurentee total transmission of your messages."
+//     },
+//     debtlvl5: {
+//       title: "Debt Level 5 - Volatile transmission",
+//       description: "Criticality accident likely. May God have mercy on your soul."
+//     }
+//   }
 
-  // Clear the content of the root element
-  root.html("");
+//   // Clear the content of the root element
+//   root.html("");
 
-  Object.entries(cpOpts).forEach(([type, options], index) => {
-    const headerId = `cpActionsCardHeader-${type}`;
-    const collapseId = `cpActionsCardContent-${type}`;
+//   Object.entries(cpOpts).forEach(([type, options], index) => {
+//     const headerId = `cpActionsCardHeader-${type}`;
+//     const collapseId = `cpActionsCardContent-${type}`;
 
-    // Create Type Card
-    const typeCard = $("<div />").addClass("card").attr("id", `cpActionsCard-${type}`);
-    root.append(typeCard);
+//     // Create Type Card
+//     const typeCard = $("<div />").addClass("card").attr("id", `cpActionsCard-${type}`);
+//     root.append(typeCard);
 
-    // Create Type Card's Header
-    const typeHeader = $("<div />")
-      .addClass("h3 btn-primary card-header")
-      .attr({
-        "id": headerId,
-        "type": "button",
-        "data-toggle": "collapse",
-        "data-target": `#${collapseId}`,
-        "aria-expanded": index === 0 ? "true" : "false", // Expand first by default
-        "aria-controls": collapseId
-      })
-      .text(capFirstLetter(type))
-    typeCard.append(typeHeader);
+//     // Create Type Card's Header
+//     const typeHeader = $("<div />")
+//       .addClass("h3 btn-primary card-header")
+//       .attr({
+//         "id": headerId,
+//         "type": "button",
+//         "data-toggle": "collapse",
+//         "data-target": `#${collapseId}`,
+//         "aria-expanded": index === 0 ? "true" : "false", // Expand first by default
+//         "aria-controls": collapseId
+//       })
+//       .text(capFirstLetter(type))
+//     typeCard.append(typeHeader);
 
-    // Create Type Card's Collapsible Area
-    const typeCardBodyContainer = $("<div />")
-      .addClass(`collapse${index === 0 ? " show" : ""}`) // Expand first by default
-      .attr({
-        "id": collapseId,
-        "aria-labelledby": headerId,
-        "data-target": `#${typeCard.attr("id")}`
-      });
-    typeCard.append(typeCardBodyContainer);
+//     // Create Type Card's Collapsible Area
+//     const typeCardBodyContainer = $("<div />")
+//       .addClass(`collapse${index === 0 ? " show" : ""}`) // Expand first by default
+//       .attr({
+//         "id": collapseId,
+//         "aria-labelledby": headerId,
+//         "data-target": `#${typeCard.attr("id")}`
+//       });
+//     typeCard.append(typeCardBodyContainer);
 
-    const typeCardBody = $("<div />").addClass("card-body");
-    typeCardBodyContainer.append(typeCardBody);
+//     const typeCardBody = $("<div />").addClass("card-body");
+//     typeCardBodyContainer.append(typeCardBody);
 
-    // Loop through options
-    for (const [optionName, optionTypes] of Object.entries(options)) {
-      if (!(optionName in actionsCopy)) continue;
+//     // Loop through options
+//     for (const [optionName, optionTypes] of Object.entries(options)) {
+//       if (!(optionName in actionsCopy)) continue;
 
-      const copyObj = actionsCopy[optionName];
-      const row = $("<div/>")
-        .attr("id", `cp-userprompt-${optionName}`)
-        .addClass(`cpActionRow${!optionTypes.enable ? " cpActionDisabled" : ""}`);
-      typeCardBody.append(row);
+//       const copyObj = actionsCopy[optionName];
+//       const row = $("<div/>")
+//         .attr("id", `cp-userprompt-${optionName}`)
+//         .addClass(`cpActionRow${!optionTypes.enable ? " cpActionDisabled" : ""}`);
+//       typeCardBody.append(row);
 
-      const descriptionWrapper = $("<div/>").addClass("cpActionDescription");
-      row.append(descriptionWrapper);
+//       const descriptionWrapper = $("<div/>").addClass("cpActionDescription");
+//       row.append(descriptionWrapper);
 
-      // Populate Description Title
-      descriptionWrapper.append($("<div/>").text(copyObj.title));
+//       // Populate Description Title
+//       descriptionWrapper.append($("<div/>").text(copyObj.title));
 
-      // Populate Description Text
-      descriptionWrapper.append(
-        $("<div/>").addClass("text-info").text(copyObj.description)
-      );
+//       // Populate Description Text
+//       descriptionWrapper.append(
+//         $("<div/>").addClass("text-info").text(copyObj.description)
+//       );
 
-      // If Expenditure Type & has chat command, describe usage
-      if (type === "expenditures" && copyObj.hasOwnProperty("usage")) {
-        descriptionWrapper.append($("<code/>").text(copyObj.usage));
-      }
+//       // If Expenditure Type & has chat command, describe usage
+//       if (type === "expenditures" && copyObj.hasOwnProperty("usage")) {
+//         descriptionWrapper.append($("<code/>").text(copyObj.usage));
+//       }
 
-      // Create Cost Wrapper
-      const costWrapperId = `cpActionCostWrap-${type}-${optionName}`;
-      const costWrapper = $("<div/>")
-        .attr("id", costWrapperId)
-        .addClass(`cpActionCost cp-${type}`);
-      row.append(costWrapper);
+//       // Create Cost Wrapper
+//       const costWrapperId = `cpActionCostWrap-${type}-${optionName}`;
+//       const costWrapper = $("<div/>")
+//         .attr("id", costWrapperId)
+//         .addClass(`cpActionCost cp-${type}`);
+//       row.append(costWrapper);
 
-      const coinSvg = useSVG("#ch-icon-ui-coin", "ch-icon alert-icon", document.getElementById(costWrapperId));
-      costWrapper.append(coinSvg);
+//       const coinSvg = useSVG("#ch-icon-ui-coin", "ch-icon alert-icon", document.getElementById(costWrapperId));
+//       costWrapper.append(coinSvg);
 
-      costWrapper.append(
-        $("<span/>")
-          .text(`${optionTypes.pts} CP`)
-          .attr("id", `cp-userprompt-${optionName}-pts`)
-          .addClass("cpActionCostValue")
-      );
-    }
-  });
-}
+//       costWrapper.append(
+//         $("<span/>")
+//           .text(`${optionTypes.pts} CP`)
+//           .attr("id", `cp-userprompt-${optionName}-pts`)
+//           .addClass("cpActionCostValue")
+//       );
+//     }
+//   });
+// }
 
 function greatResetOnClick() {
   if (CLIENT.rank < 3) {
@@ -670,144 +670,171 @@ function greatResetOnClick() {
 }
 
 /**
- * Updates each of the CP prices for all of the UI options
- * @returns 
+ * Updates UI with latest values for each action
+ * @returns void
  */
 function handleCPOptionChanges() {
   if (!CHANNEL.opts.cpOpts) return
 
-  /**
-   *  user
-   */
-  for (const [actionType, options] of Object.entries(CHANNEL.opts.cpOpts)) {
-    for (const [optionName, optionTypes] of Object.entries(options)) {
-      
+  CHANNEL.opts.cpOpts.forEach(action => {
+    const { name: actionName } = action;
+    action.options.forEach(option => {
+      const { optionName, optionType, optionValue } = option;
       if (CLIENT.rank >= 3) {
-            $(`#cp-${optionName}-enable`).prop("checked", optionTypes.enable);
-            $(`#cp-${optionName}-pts`).val(optionTypes.pts);
-            if (optionTypes.hasOwnProperty("interval") && $(`#cp-${optionName}-interval`)) {
-              $(`#cp-${optionName}-interval`).val(formatTime(optionTypes.interval));
-            }
-            toggleDisabledOptions(`cp-${optionName}-enable`, actionType, optionName, !optionTypes.enable);
+        // Update option inputs
+        switch (optionType) {
+          case "time":
+            $(`#cp-${actionName}-${optionName}`).val(formatTime(optionValue));
+            break;
+          case "bool":
+            $(`#cp-${actionName}-${optionName}`).prop("checked", optionValue);
+            setDisableOnRelatedOptions(`cp-${actionName}-${optionName}`, actionName, !optionValue);
+            break;
+          case "int":
+          default:
+            $(`#cp-${actionName}-${optionName}`).val(optionValue);
+            break;
+        }
       }
-      
-      if (!optionTypes.enable) {
-        $(`#cp-userprompt-${optionName}`).addClass("cpActionDisabled");
-      } else {
-        $(`#cp-userprompt-${optionName}`).removeClass("cpActionDisabled");
+      // Update user prompt/status of actions
+      if (optionType === "bool" && optionName === "enabled") {
+        if (optionValue) {
+          $(`#cp-userprompt-${actionName}`).removeClass("cpActionDisabled");
+        } else {
+          $(`#cp-userprompt-${actionName}`).addClass("cpActionDisabled");
+        }
       }
+      if (optionType === "int" && optionName === "points") {
+        $(`#cp-userprompt-${actionName}-pts`).text(`${optionValue} CP`);
+      }
+    })
+  })
+}
 
-      $(`#cp-userprompt-${optionName}-pts`).text(`${optionTypes.pts} CP`);
-    }
+/**
+ * Applies a function after a given delay and restarts if called again before the delay is up
+ * @param {*} delay number of milliseconds to wait before calling the function
+ * @param {*} fn function to call
+ * @returns function
+ */
+const debounce = (delay, fn) => {
+  let timer;
+
+  return (...arg) => {
+      if (timer) {
+          clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+          fn.apply(this, arg);
+      }, delay)
   }
 }
 
 /**
- * CoolPoint options 
- * TODO: Potential for reuse here; just update existing functions to allow for a little more inversion of control
- * Also, again, over engineered but at least uses attributes instead of specific id format
+* Disable all options related to an action not including the id provided
+* @param {String} id id that toggles these elements
+* @param {String} actionName action name of the elements we want disabled
+* @param {Bool} value should be disabled or not
+*/
+const setDisableOnRelatedOptions = (id, actionName, value) => {
+  $(`[data-actionname='${actionName}']`).not(`#${id}`).prop('disabled', value)
+}
+
+/**
+ * Sends the updated option to the server and disables related options
+ * @param {*} event event object
+ * @returns void
  */
-const toggleDisabledOptions = (enableId, dataType, rule, value) => {
-  $(`[data-type="${dataType}"][rule="${rule}"]`)
-    .filter(function () { return $(this).attr("id") !== enableId })
-    .prop('disabled', value);
+function cpCheckboxChange(event) {
+  const el = $(event.target);
+
+  const actionName = el.attr("data-actionName");
+  const optionName = el.attr("data-optionName");
+  const optionValue = el.prop("checked");
+
+  const data = {
+      actionName,
+      optionName,
+      optionValue,
+  }
+
+  if (optionName === "enabled") {
+      setDisableOnRelatedOptions(el.attr("id"), actionName, !optionValue);
+  }
+
+  socket.emit("setCpOptions", data);
 }
 
+/**
+ * Sends the updated option to the server and validates time input
+ * @param {*} event event object
+ * @returns void
+ */
+function cpTimeInputChange(event) {
+  const el = $(event.target);
 
-// Need to bind everything on command since we dont render the elements until requested
-const bindCpOptions = () => {
-  $(".cp-checkbox").change(function () {
-    const el = $(this);
+  const key = el.attr("id");
+  const actionName = el.attr("data-actionName");
+  const optionName = el.attr("data-optionName");
+  let optionValue = el.val();
 
-    const dataType = el.attr("data-type");
-    const rule = el.attr("rule");
-    const option = el.attr("option");
-    const value = el.prop("checked");
+  $("#cs-textbox-timeinput-validation-error-" + key).remove();
+  el.parent().removeClass("has-error");
 
-    const data = {
-      [dataType]: {
-        [rule]: {
-          [option]: value
-        }
-      }
-    }
-
-    if (option === "enable") {
-      toggleDisabledOptions(el.attr("id"), dataType, rule, !value);
-    }
-
-    socket.emit("setCpOptions", data);
-  });
-
-  $(".cp-option-timeinput").on("keyup keypress", function (event) {
-    const curInput = String.fromCharCode(event.which) || event.key;
-
-    const el = $(this);
-    const key = `${el.attr("data-type")}-${el.attr("rule")}-${el.attr("option")}`
-    const value = el.val();
-    const lastkey = Date.now();
-    el.data("lastkey", lastkey);
-
-    setTimeout(function () {
-      if (el.data("lastkey") !== lastkey || el.val() !== value) {
-        return;
-      }
-
-      $("#cs-textbox-timeinput-validation-error-" + key).remove();
-      $(event.target).parent().removeClass("has-error");
-
-      try {
-        const data = {
-          [el.attr("data-type")]: {
-            [el.attr("rule")]: {
-              [el.attr("option")]: parseTimeout(value)
-            }
-          }
-        }
-        socket.emit("setCpOptions", data);
-      } catch (error) {
-        const msg = "Invalid timespan value '" + value + "'.  Please use the format " +
-          "HH:MM:SS or enter a single number for the number of seconds.";
-        const validationError = $("<p/>").addClass("form-text text-danger font-italic ml-2 mb-1").text(msg)
+  try {
+      optionValue = parseTimeout(el.val());
+  } catch (error) {
+      const msg = `Invalid timespan value '${optionValue}'. Please use the format HH:MM:SS or enter a single number for the number of seconds.`;
+      const validationError = $("<p/>")
+          .addClass("text-danger")
+          .text(msg)
           .attr("id", "cs-textbox-timeinput-validation-error-" + key);
-        validationError.insertAfter(event.target);
-        $(event.target).parent().addClass("has-error");
-        return;
-      }
-    }, 1000);
-  });
+      validationError.insertAfter(event.target);
+      el.parent().addClass("has-error");
+      return;
+  }
 
-  $(".cp-option-input").on("keyup keypress", function (e) {
-    const curInput = String.fromCharCode(e.which) || e.key;
-
-    const el = $(this);
-    const key = `${el.attr("data-type")}-${el.attr("rule")}-${el.attr("option")}`
-    const value = el.val();
-    const lastkey = Date.now();
-    el.data("lastkey", lastkey);
-
-    setTimeout(function () {
-      if (el.data("lastkey") !== lastkey || el.val() !== value) {
-        return;
-      }
-
-      const data = {
-        [el.attr("data-type")]: {
-          [el.attr("rule")]: {
-            [el.attr("option")]: value
-          }
-        }
-      }
-
-      socket.emit("setCpOptions", data);
-    }, 1000);
-  });
+  const data = {
+      actionName,
+      optionName,
+      optionValue,
+  };
+  socket.emit("setCpOptions", data);
 }
+
+/**
+ * Sends the updated option to the server
+ * @param {*} event event object
+ * @returns void
+ */
+function cpNumericInputChange(event) {
+  const el = $(event.target);
+
+  const actionName = el.attr("data-actionName");
+  const optionName = el.attr("data-optionName");
+  const optionValue = el.val();
+
+  const data = {
+      actionName,
+      optionName,
+      optionValue,
+  }
+  socket.emit("setCpOptions", data);
+}
+
+// Bind event listeners
+$(".cp-option-form-group input").each(function () {
+  const classNames = $(this).attr("class").split(" ");
+  if (classNames.includes("cs-checkbox")) {
+      $(this).change(cpCheckboxChange);
+  } else if (classNames.includes("cp-option-input")) {
+      $(this).on("keyup keypress", debounce(1000, cpNumericInputChange));
+  } else if (classNames.includes("cp-option-timeinput")) {
+      $(this).on("keyup keypress", debounce(1000, cpTimeInputChange));
+  }
+})
+
 function showCoolPointsUserPrompt() {
   //updateCoolPointActionsUserPrompt();
   $("#coolPointsPrompt").modal();
 }
-
-//-----------------------------------------------------------
-// [END] COOL POINTS
-//-----------------------------------------------------------

@@ -10,21 +10,21 @@ mixin coolpointoptions
                         form(action="javascript:void(0)")
                             each option in action.options
                                 .form-group.pl-2.cp-option-form-group
-                                    - var inputId = `#cp-${action.name}-${option.optionName}`;
+                                    - var inputId = `cp-${action.name}-${option.optionName}`;
                                     case option.optionType
                                         when "bool"
                                             .checkbox
                                                 label(for=inputId)
-                                                    input(id=inputId, type="checkbox").cs-checkbox
+                                                    input(id=inputId, type="checkbox", checked=`${option.optionValue}`, data-actionName=action.name, data-optionName=option.optionName).cs-checkbox
                                                     = option.optionDescription
                                         when "time"
                                             div.col-sm-12
-                                                input(id=inputId, type="text", placeholder="HH:MM:SS").form-control.px-3.cp-option-timeinput
+                                                input(id=inputId, type="text", placeholder="HH:MM:SS", value=`${option.optionValue}`, data-actionName=action.name, data-optionName=option.optionName).form-control.px-3.cp-option-timeinput
                                                 span.text-info
                                                     =option.optionDescription
                                         when "int"
                                             div.col-sm-12
-                                                input(id=inputId, type="text", placeholder=`${option.optionValue}`).form-control.px-3.cp-option-input
+                                                input(id=inputId, type="text", placeholder=`${option.optionValue}`, value=`${option.optionValue}`, data-actionName=action.name, data-optionName=option.optionName).form-control.px-3.cp-option-input
                                                 span.text-info
                                                     =option.optionDescription
                                         when "string"
@@ -61,7 +61,7 @@ mixin coolpointsuserprompt
                 +casino
 
 mixin coolpoints-prompt
-  #cp-prompt.tab-pane.fade.col-12.active.show(role="tabpanel", aria-labelledby="cpPromptTab")
+  #cp-prompt.tab-pane.fade.col-12.active.in(role="tabpanel", aria-labelledby="cpPromptTab")
     .row(style="justify-content: space-evenly; align-items: center;")
       .col
         img(src="/img/gold-bar.gif", width="175")

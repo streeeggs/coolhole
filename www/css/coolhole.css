@@ -264,7 +264,6 @@
   position: absolute;
 }
 
-<<<<<<< HEAD
 .cp-option-action-label {
   text-align: right;
 }
@@ -324,7 +323,7 @@
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
-=======
+}
 
 /* Migrated over from old coolhole. These are used for various icons across the site. */
 .ch-icon {
@@ -394,5 +393,4 @@ svg.ch-cp {
     font-weight: bolder;
     color: #351200;
   }
->>>>>>> 3.0
 }
