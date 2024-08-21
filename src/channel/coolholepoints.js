@@ -73,7 +73,7 @@ const LISP_FILTER = makePointsFilter(
 );
 const MISSING_LETTERS_FILTER = makePointsFilter(
   "debt level 4",
-  "([a-z])",
+  "([a-z])", // To be replaced when applied
   "gi",
   ""
 );
@@ -90,6 +90,14 @@ class Coolpoints extends ChannelModule {
 
     this.supportsDirtyCheck = true;
     this.coolpoints = [];
+  }
+
+  /**
+   * Post join hook
+   * @param {*} user user object
+   */
+  onUserPostJoin(user) {
+    this.init(user);
   }
 
   /**
@@ -147,7 +155,16 @@ class Coolpoints extends ChannelModule {
    * @returns {PointData} User's coolpoints object
    */
   get(name) {
-    return this.coolpoints.find((cp) => cp.name === name);
+    return this.coolpoints.find((cp) => cp.user === name);
+  }
+
+  /**
+   * Exists check for a user's coolpoints
+   * @param {String} name User's name
+   * @returns {Boolean} if user exists
+   */
+  exists(name) {
+    return this.coolpoints.some((cp) => cp.user === name);
   }
 
   /**
@@ -163,6 +180,22 @@ class Coolpoints extends ChannelModule {
       this.coolpoints.push(new PointData(name, points));
     }
     this.dirty = true;
+  }
+
+  /**
+   * Initialize coolpoints for a user
+   * @param {Object} user User object
+   * @emits coolpointsInitResponse
+   */
+  init(user) {
+    if (!this.exists(user.getName())) {
+      this.set(user.getName(), 0);
+    }
+
+    user.socket.emit(
+      "coolpointsInitResponse",
+      new ReturnMsg("success", "Here's everyones' points", this.coolpoints)
+    );
   }
 
   /**
@@ -197,7 +230,7 @@ class Coolpoints extends ChannelModule {
         user,
         callingFunction: "canUpdateOthersPoints",
         returnSocket: socketName,
-        err: `User's rank does not allow ${user.account.name} update other's points`,
+        err: `User's rank does not allow ${user.getName()} update other's points`,
         data: user.account.effectiveRank,
         userMessage:
           "Error: Your rank does not allow you update other's points",
@@ -240,8 +273,8 @@ class Coolpoints extends ChannelModule {
           mod.socket.emit(
             "applyPointsToOtherModReponse",
             new ReturnMsg(
-              `${user.account.name} applied ${points} to user ${targetName}`,
-              `${user.account.name} applied ${points} to user ${targetName}`,
+              `${user.getName()} applied ${points} to user ${targetName}`,
+              `${user.getName()} applied ${points} to user ${targetName}`,
               { user: targetName, points }
             )
           )
@@ -251,15 +284,13 @@ class Coolpoints extends ChannelModule {
       this.channel.boradcastAll(
         "applyPointsToOtherResponse",
         new ReturnMsg(
-          `${user.account.name} applied ${points} to user ${targetName}`,
+          `${user.getName()} applied ${points} to user ${targetName}`,
           `Powers that be applied ${points} to user ${targetName}`,
           { user: targetName, points }
         )
       );
 
-      LOGGER.info(
-        `${user.account.name} applied ${points} to user ${targetName}`
-      );
+      LOGGER.info(`${user.getName()} applied ${points} to user ${targetName}`);
     } catch (err) {
       this.logError({
         user,
@@ -281,14 +312,14 @@ class Coolpoints extends ChannelModule {
    * @returns boolean
    */
   isValidAction(user, action, expectedActionType, callingFunction) {
-    const pointData = this.get(user.account.name);
+    const pointData = this.get(user.getName());
     if (!pointData) {
       this.logError({
         user,
         callingFunction,
         returnSocket: "coolpointsFailure",
-        err: `User ${user.account.name} not found for point ${action}`,
-        data: user.account.name,
+        err: `User ${user.getName()} not found for point ${action}`,
+        data: user.getName(),
         userMessage: `Error: You were not found... Good luck with that`,
       });
       return false;
@@ -301,7 +332,7 @@ class Coolpoints extends ChannelModule {
         callingFunction,
         returnSocket: "coolpointsFailure",
         err: `Action ${action} is not an ${expectedActionType}`,
-        data: user.account.name,
+        data: user.getName(),
         userMessage: `Error: Action ${action} is not an ${expectedActionType}`,
       });
       return false;
@@ -316,7 +347,7 @@ class Coolpoints extends ChannelModule {
         callingFunction,
         returnSocket: "coolpointsFailure",
         err: `Action ${action} is not enabled`,
-        data: user.account.name,
+        data: user.getName(),
         userMessage: `Error: Action ${action} is not enabled`,
       });
       return false;
@@ -333,8 +364,8 @@ class Coolpoints extends ChannelModule {
             user,
             callingFunction,
             returnSocket: "coolpointsFailure",
-            err: `User ${user.account.name} does not have enough points to spend on ${action}`,
-            data: user.account.name,
+            err: `User ${user.getName()} does not have enough points to spend on ${action}`,
+            data: user.getName(),
             userMessage: `Error: You do not have enough points to spend on ${action}`,
           });
           return false;
@@ -368,13 +399,13 @@ class Coolpoints extends ChannelModule {
         return;
 
       this.subtract(
-        user.account.name,
+        user.getName(),
         actionData.options.find((opt) => opt.optionName === "points")
           .optionValue
       );
 
       LOGGER.info(
-        `User ${user.account.name} spent ${actionData.options.find((opt) => opt.optionName === "points")?.optionValue} points on ${action}`
+        `User ${user.getName()} spent ${actionData.options.find((opt) => opt.optionName === "points")?.optionValue} points on ${action}`
       );
     } catch (err) {
       this.logError({
@@ -382,7 +413,7 @@ class Coolpoints extends ChannelModule {
         callingFunction: "spend",
         returnSocket: "coolpointsFailure",
         err,
-        data: user.account.name,
+        data: user.getName(),
         userMessage: `Error: Unable to spend points. Let the head monkey in charge know`,
       });
     }
@@ -399,13 +430,13 @@ class Coolpoints extends ChannelModule {
         return;
 
       this.add(
-        user.account.name,
+        user.getName(),
         actionData.options.find((opt) => opt.optionName === "points")
           .optionValue
       );
 
       LOGGER.info(
-        `User ${user.account.name} was awarded ${actionData.options.find((opt) => opt.optionName === "points")?.optionValue} points for ${action}`
+        `User ${user.getName()} was awarded ${actionData.options.find((opt) => opt.optionName === "points")?.optionValue} points for ${action}`
       );
     } catch (err) {
       this.logError({
@@ -413,7 +444,7 @@ class Coolpoints extends ChannelModule {
         callingFunction: "earn",
         returnSocket: "coolpointsFailure",
         err,
-        data: user.account.name,
+        data: user.getName(),
         userMessage: `Error: Unable to award points. Let the head monkey in charge know`,
       });
     }
@@ -429,13 +460,13 @@ class Coolpoints extends ChannelModule {
       if (!this.isValidAction(user, action, ActionType.Losses, "lose")) return;
 
       this.subtract(
-        user.account.name,
+        user.getName(),
         actionData.options.find((opt) => opt.optionName === "points")
           .optionValue
       );
 
       LOGGER.info(
-        `User ${user.account.name} lost ${actionData.options.find((opt) => opt.optionName === "points")?.optionValue} points for ${action}`
+        `User ${user.getName()} lost ${actionData.options.find((opt) => opt.optionName === "points")?.optionValue} points for ${action}`
       );
     } catch (err) {
       this.logError({
@@ -443,7 +474,7 @@ class Coolpoints extends ChannelModule {
         callingFunction: "lose",
         returnSocket: "coolpointsFailure",
         err,
-        data: user.account.name,
+        data: user.getName(),
         userMessage: `Error: Unable to lose points. Let the head monkey in charge know`,
       });
     }
@@ -521,6 +552,11 @@ class Coolpoints extends ChannelModule {
     return res;
   }
 
+  /**
+   * Flips a coin and maybe appends an ad to a chat message
+   * @param {String} msg chat message
+   * @returns new chat message
+   */
   maybeAppendAdToChat(msg) {
     // ~50% odds.. Maybe make this configurable
     const randomIndex = Math.floor(Math.random() * (ADS.length * 2));

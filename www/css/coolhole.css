@@ -3,8 +3,8 @@
 /* Gold plating */
 .text-lottery,
 .text-lottery a {
-    font-weight: bold;
-    background-image: repeating-linear-gradient(
+  font-weight: bold;
+  background-image: repeating-linear-gradient(
     4deg,
     #462523 0,
     #cb9b51 22%,
@@ -13,187 +13,187 @@
     #f6e27a 55%,
     #cb9b51 78%,
     #462523 100%
-    );
-    color: transparent;
-    -webkit-background-clip: text;
+  );
+  color: transparent;
+  background-clip: text;
 
-    animation-name: gold;
-    animation-duration: 3.5s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
+  animation-name: gold;
+  animation-duration: 3.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
-@-webkit-keyframes gold {
-    0% {
+@keyframes gold {
+  0% {
     background-position: -15em;
-    }
-    100% {
+  }
+  100% {
     background-position: 10em;
-    }
+  }
 }
 
 /* shrink text on 'coolhole1' text anywhere in the chat message */
 #messagebuffer div[data-text*="coolhole1"] {
-    font-size: 0px;
-    -webkit-animation: shrink 5s;
-    -moz-animation: shrink 5s;
-    -ms-animation: shrink 5s;
-    -o-animation: shrink 5s;
-    animation: shrink 5s;
+  font-size: 0px;
+  -webkit-animation: shrink 5s;
+  -moz-animation: shrink 5s;
+  -ms-animation: shrink 5s;
+  -o-animation: shrink 5s;
+  animation: shrink 5s;
 }
 @keyframes shrink {
-    from {
-      font-size: inherit;
-    }
-    to {
-      font-size: 0px;
-    }
+  from {
+    font-size: inherit;
   }
-  @-moz-keyframes shrink {
-    from {
-      font-size: inherit;
-    }
-    to {
-      font-size: 0px;
-    }
+  to {
+    font-size: 0px;
   }
-  @-webkit-keyframes shrink {
-    from {
-      font-size: inherit;
-    }
-    to {
-      font-size: 0px;
-    }
+}
+@-moz-keyframes shrink {
+  from {
+    font-size: inherit;
   }
-  @-ms-keyframes shrink {
-    from {
-      font-size: inherit;
-    }
-    to {
-      font-size: 0px;
-    }
+  to {
+    font-size: 0px;
   }
-  @-o-keyframes shrink {
-    from {
-      font-size: inherit;
-    }
-    to {
-      font-size: 0px;
-    }
+}
+@-webkit-keyframes shrink {
+  from {
+    font-size: inherit;
   }
+  to {
+    font-size: 0px;
+  }
+}
+@-ms-keyframes shrink {
+  from {
+    font-size: inherit;
+  }
+  to {
+    font-size: 0px;
+  }
+}
+@-o-keyframes shrink {
+  from {
+    font-size: inherit;
+  }
+  to {
+    font-size: 0px;
+  }
+}
 
 /* Rainbow effect on 'european' anywhere in the chat message */
 #messagebuffer [data-text*="european"] {
-    -webkit-animation: rainbow 5;
-    -moz-animation: rainbow 5s;
-    -ms-animation: rainbow 5s;
-    -o-animation: rainbow 5s;
-    animation: rainbow 5s;
-    animation-iteration-count: infinite;
+  -webkit-animation: rainbow 5;
+  -moz-animation: rainbow 5s;
+  -ms-animation: rainbow 5s;
+  -o-animation: rainbow 5s;
+  animation: rainbow 5s;
+  animation-iteration-count: infinite;
 }
 @keyframes rainbow {
-    from {
-      color: #6666ff;
-    }
-    10% {
-      color: #0099ff;
-    }
-    50% {
-      color: #00ff00;
-    }
-    75% {
-      color: #ff3399;
-    }
-    100% {
-      color: #6666ff;
-    }
+  from {
+    color: #6666ff;
   }
-  @-moz-keyframes rainbow {
-    from {
-      color: #6666ff;
-    }
-    10% {
-      color: #0099ff;
-    }
-    50% {
-      color: #00ff00;
-    }
-    75% {
-      color: #ff3399;
-    }
-    100% {
-      color: #6666ff;
-    }
+  10% {
+    color: #0099ff;
   }
-  @-webkit-keyframes rainbow {
-    from {
-      color: #6666ff;
-    }
-    10% {
-      color: #0099ff;
-    }
-    50% {
-      color: #00ff00;
-    }
-    75% {
-      color: #ff3399;
-    }
-    100% {
-      color: #6666ff;
-    }
+  50% {
+    color: #00ff00;
   }
-  @-ms-keyframes rainbow {
-    from {
-      color: #6666ff;
-    }
-    10% {
-      color: #0099ff;
-    }
-    50% {
-      color: #00ff00;
-    }
-    75% {
-      color: #ff3399;
-    }
-    100% {
-      color: #6666ff;
-    }
+  75% {
+    color: #ff3399;
   }
-  @-o-keyframes rainbow {
-    from {
-      color: #6666ff;
-    }
-    10% {
-      color: #0099ff;
-    }
-    50% {
-      color: #00ff00;
-    }
-    75% {
-      color: #ff3399;
-    }
-    100% {
-      color: #6666ff;
-    }
+  100% {
+    color: #6666ff;
   }
+}
+@-moz-keyframes rainbow {
+  from {
+    color: #6666ff;
+  }
+  10% {
+    color: #0099ff;
+  }
+  50% {
+    color: #00ff00;
+  }
+  75% {
+    color: #ff3399;
+  }
+  100% {
+    color: #6666ff;
+  }
+}
+@-webkit-keyframes rainbow {
+  from {
+    color: #6666ff;
+  }
+  10% {
+    color: #0099ff;
+  }
+  50% {
+    color: #00ff00;
+  }
+  75% {
+    color: #ff3399;
+  }
+  100% {
+    color: #6666ff;
+  }
+}
+@-ms-keyframes rainbow {
+  from {
+    color: #6666ff;
+  }
+  10% {
+    color: #0099ff;
+  }
+  50% {
+    color: #00ff00;
+  }
+  75% {
+    color: #ff3399;
+  }
+  100% {
+    color: #6666ff;
+  }
+}
+@-o-keyframes rainbow {
+  from {
+    color: #6666ff;
+  }
+  10% {
+    color: #0099ff;
+  }
+  50% {
+    color: #00ff00;
+  }
+  75% {
+    color: #ff3399;
+  }
+  100% {
+    color: #6666ff;
+  }
+}
 
 /* Fast rainbow effect on gold + 'european' anywhere in the chat message */
 #messagebuffer .text-lottery[data-text*="european"] {
-    -webkit-animation: rainbow 0.5s;
-    -moz-animation: rainbow 0.5s;
-    -ms-animation: rainbow 0.5s;
-    -o-animation: rainbow 0.5s;
-    animation: rainbow 0.5s;
-    animation-iteration-count: infinite;
+  -webkit-animation: rainbow 0.5s;
+  -moz-animation: rainbow 0.5s;
+  -ms-animation: rainbow 0.5s;
+  -o-animation: rainbow 0.5s;
+  animation: rainbow 0.5s;
+  animation-iteration-count: infinite;
 }
 
 /* Fast rainbow effect on danmu + gold + 'european' anywhere in the chat message */
 .danmu .text-lottery[data-text*="european"] {
-    -webkit-animation: rainbow 0.5s;
-    -moz-animation: rainbow 0.5s;
-    -ms-animation: rainbow 0.5s;
-    -o-animation: rainbow 0.5s;
-    animation: rainbow 0.5s;
-    animation-iteration-count: infinite;
+  -webkit-animation: rainbow 0.5s;
+  -moz-animation: rainbow 0.5s;
+  -ms-animation: rainbow 0.5s;
+  -o-animation: rainbow 0.5s;
+  animation: rainbow 0.5s;
+  animation-iteration-count: infinite;
 }
 
 /* Used for returnFire emote effect */
@@ -209,47 +209,47 @@
 
 @keyframes fade {
   from {
-  opacity: inherit;
+    opacity: inherit;
   }
   to {
-  opacity: 0;
+    opacity: 0;
   }
 }
 @-moz-keyframes fade {
   from {
-  opacity: inherit;
+    opacity: inherit;
   }
   to {
-  opacity: 0;
+    opacity: 0;
   }
 }
 @-webkit-keyframes fade {
   from {
-  opacity: inherit;
+    opacity: inherit;
   }
   to {
-  opacity: 0;
+    opacity: 0;
   }
 }
 @-ms-keyframes fade {
   from {
-  opacity: inherit;
+    opacity: inherit;
   }
   to {
-  opacity: 0;
+    opacity: 0;
   }
 }
 @-o-keyframes fade {
   from {
-  opacity: inherit;
+    opacity: inherit;
   }
   to {
-  opacity: 0;
+    opacity: 0;
   }
 }
 
 /* Flip emotes horizontally*/
-.channel-emote[title='/flip'] + .channel-emote {
+.channel-emote[title="/flip"] + .channel-emote {
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
 }
@@ -264,6 +264,8 @@
   position: absolute;
 }
 
+/* Coolpoints option styling */
+
 .cp-option-action-label {
   text-align: right;
 }
@@ -273,8 +275,8 @@
   grid-template-columns: 0.5fr 1fr;
   justify-items: stretch;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   gap: 5rem;
 }
 .cp-option-form:hover {
@@ -290,8 +292,8 @@
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
 .cp-option-form-group {
   gap: 5px;
@@ -299,30 +301,30 @@
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 .cp-option-justify-center {
   -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
 }
 .cp-option-label {
   -webkit-box-flex: 0.3;
-      -ms-flex: 0.3;
-          flex: 0.3;
+  -ms-flex: 0.3;
+  flex: 0.3;
 }
 .cp-option-input {
   -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  -ms-flex: 1;
+  flex: 1;
 }
 .cp-option-timeinput {
   -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  -ms-flex: 1;
+  flex: 1;
 }
 
 /* Migrated over from old coolhole. These are used for various icons across the site. */
@@ -337,7 +339,7 @@
   fill: #dcdedd;
 }
 .ch-icon.warning {
-  fill: #E03E40;
+  fill: #e03e40;
 }
 .ch-icon.success {
   fill: #1a936f;
@@ -350,22 +352,22 @@
   height: 22px;
 }
 .ch-icon .job-icon .job-icon-bg .job-icon-citizen {
-  fill: #3B7B8E;
-  stroke: #F2F4F3;
+  fill: #3b7b8e;
+  stroke: #f2f4f3;
 }
 .ch-icon .job-icon .job-icon-bg .job-icon-scitizen {
-  fill: #E03E40;
-  stroke: #F2F4F3;
+  fill: #e03e40;
+  stroke: #f2f4f3;
 }
 .ch-icon .job-icon .job-icon-bg .job-icon-skeleton {
-  fill: #13171A;
-  stroke: #F2F4F3;
+  fill: #13171a;
+  stroke: #f2f4f3;
 }
 .ch-icon .job-icon .job-icon-person {
-  fill: #F2F4F3;
+  fill: #f2f4f3;
 }
 .ch-icon .job-icon .job-icon-symbol .job-icon-skeleton {
-  fill: #F2F4F3;
+  fill: #f2f4f3;
 }
 svg.ch-cp {
   height: 18px;
@@ -392,5 +394,172 @@ svg.ch-cp {
   > * {
     font-weight: bolder;
     color: #351200;
+  }
+}
+
+/* CoolPoints User Styling */
+#coinWrapper {
+  display: flex;
+  grid-gap: 3px;
+  gap: 3px;
+}
+#coinAmt::after {
+  content: " CP";
+}
+#coinMsg {
+  opacity: 0%;
+}
+.cpBounce {
+  -webkit-animation: bounce 0.8s ease-in-out 0s 1 normal none;
+  animation: bounce 0.8s ease-in-out 0s 1 normal none;
+}
+@-webkit-keyframes bounce {
+  0%,
+  35%,
+  55%,
+  75%,
+  100% {
+    -webkit-transform: translateY(0);
+  }
+  20% {
+    -webkit-transform: translateY(-8px);
+  }
+  40% {
+    -webkit-transform: translateY(-4px);
+  }
+  60% {
+    -webkit-transform: translateY(-2px);
+  }
+}
+@keyframes bounce {
+  0%,
+  35%,
+  55%,
+  75%,
+  100% {
+    -webkit-transform: translateY(0);
+  }
+  20% {
+    -webkit-transform: translateY(-8px);
+  }
+  40% {
+    -webkit-transform: translateY(-4px);
+  }
+  60% {
+    -webkit-transform: translateY(-2px);
+  }
+}
+.cpShake {
+  -webkit-animation: shake 0.8s ease-in-out 0s 1 normal none;
+  animation: shake 0.8s ease-in-out 0s 1 normal none;
+}
+@-webkit-keyframes shake {
+  0%,
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70% {
+    -webkit-transform: translateX(-5px);
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60% {
+    -webkit-transform: translateX(5px);
+    transform: translateX(5px);
+  }
+  80% {
+    -webkit-transform: translateX(3px);
+    transform: translateX(3px);
+  }
+  90% {
+    -webkit-transform: translateX(-3px);
+    transform: translateX(-3px);
+  }
+}
+@keyframes shake {
+  0%,
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70% {
+    -webkit-transform: translateX(-5px);
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60% {
+    -webkit-transform: translateX(5px);
+    transform: translateX(5px);
+  }
+  80% {
+    -webkit-transform: translateX(3px);
+    transform: translateX(3px);
+  }
+  90% {
+    -webkit-transform: translateX(-3px);
+    transform: translateX(-3px);
+  }
+}
+.cpFadeIn {
+  -webkit-animation: fadeIn 1.3s ease-in-out 0s 1;
+  animation: fadeIn 1.3s ease-in-out 0s 1;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+.cpFadeGreen {
+  -webkit-animation: fade 1.3s ease-in-out 0s 1;
+  animation: fade 1.3s ease-in-out 0s 1;
+  color: #009900;
+}
+.cpFadeRed {
+  -webkit-animation: fade 1.3s ease-in-out 0s 1;
+  animation: fade 1.3s ease-in-out 0s 1;
+  color: #e03e40;
+}
+@-webkit-keyframes fade {
+  0% {
+    opacity: 0%;
+  }
+  20% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0%;
+  }
+}
+@keyframes fade {
+  0% {
+    opacity: 0%;
+  }
+  20% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0%;
   }
 }

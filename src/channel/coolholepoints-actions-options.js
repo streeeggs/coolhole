@@ -22,7 +22,7 @@ const ActionType = {
  * @property {*} options.optionValue Value of the option
  * @property {String} options.optionDescription Description of the option
  */
-const cpOptsDefaults = [
+const CP_OPTS_DEFAULTS = [
   {
     name: "active",
     actionType: ActionType["Earnings"],
@@ -353,7 +353,7 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
      * cpActions defines the list of actions available
      * @type {Array.<Object>}
      */
-    this.actionsDefault = cpOptsDefaults;
+    this.actionsDefault = CP_OPTS_DEFAULTS;
   }
 
   /**
@@ -497,7 +497,7 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
         user,
         callingFunction: "handleSetCpOptions",
         returnSocket: "coolpointsFailure",
-        err: `User ${user.account.name} is not a moderator`,
+        err: `User ${user.getName()} is not a moderator`,
         data,
         userMessage: "You are not a moderator",
       });
@@ -581,6 +581,6 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
 }
 
 module.exports = CoolholePointsActionsOptionsModule;
-module.exports.cpOptsDefaults = cpOptsDefaults;
+module.exports.cpOptsDefaults = CP_OPTS_DEFAULTS;
 module.exports.cpOptTypes = cpOptTypes;
 module.exports.ActionType = ActionType;

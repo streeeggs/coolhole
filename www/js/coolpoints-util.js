@@ -1,43 +1,20 @@
 /**
  * This file is additional functions/logic to make coolhole point features work.
+ * It's grown big enough to deserve multiple files to make organization easier
+ * but this is a fork and one file keeps required imports minimal.
  */
-// Globals
-const coolPointItemsPerPage = 16;
-
-// Common Functions
-const namesOfPlayersVisibleOnTable = () => $(".cp-table-user-name").map(function () { return $(this).text() }).toArray();
-const capFirstLetter = (str) => str.at(0).toUpperCase() + str.slice(1);
-const actionIsEnabled = ({ type, action }) => CHANNEL.opts.cpOpts[type][action]["enable"];
-const userHaveEnoughPoints = ({ type, action }) => {
-  if (isEmpty(CLIENT_USER.user)) return false;
-  const cost = CHANNEL.opts.cpOpts[type][action]["pts"];
-  const currPoints = CHANNEL.users.find(u => CLIENT_USER.user.name === u.name).player.iCoolPoints;
-
-  return currPoints >= cost;
-};
-
-// Bindings
-$("#cp-greatreset").on("click", greatResetOnClick);
-
-// FIXME: Jank global var to store filtered results for pagination without updating NewPaginator
-let coolPointFilteredResults = null;
 
 /**
- * 
- * @param {*} ptEl 
- * @param {*} msgEl 
- * @param {*} diff 
+ *
+ * Global Variables
+ *
  */
-function animatePointUpdate(ptEl, msgEl, diff) {
-  const isPositive = diff > 0;
-  const bounceAnimationName = isPositive ? "cpBounce" : "cpShake"
-  const fadeAnimationName = isPositive ? "cpFadeGreen" : "cpFadeRed"
-  const msgText = isPositive ? `+${diff}` : `${diff}`;
 
-  msgEl.text(msgText);
-  updateAnimation(ptEl.attr("id"), bounceAnimationName);
-  updateAnimation(msgEl.attr("id"), fadeAnimationName);
-}
+/**
+ *
+ * Global functions
+ *
+ */
 
 function updateAnimation(id, animationName) {
   const el = document.getElementById(id);
@@ -49,113 +26,94 @@ function updateAnimation(id, animationName) {
     .catch((err) => console.error(err));
 }
 
-function updateSelfCoolPointsUI(coolPoints) {
-  CLIENT_USER.user.player.iCoolPoints = coolPoints;
-  CHANNEL.users.find((u) => CLIENT_USER.user.name === u.name).player.iCoolPoints = coolPoints;
-
-  const pointsEl = $("#coinAmt");
-  const messageEl = $("#coinMsg");
-  const currPoints = isNaN(pointsEl.text()) ? 0 : parseInt(pointsEl.text());
-
-  const diff = coolPoints - currPoints;
-
-  if (diff === 0) return;
-
-  // TODO: Counter animation UI
-  pointsEl.text(coolPoints);
-
-  animatePointUpdate(pointsEl, messageEl, diff);
-}
-
 /**
- * Find all affected players O(n^2) (have to compare all players against themselves if all are visible)
- * Could be made faster if we used a hashmap of uuid to user but would need to be built when a users joins
- * @param {Array} incomingPlayerData Array of players
- * @returns {Array} Array of players with differences as coolPointsDifference
- */
-function getPlayersWithChangeInPoints(incomingPlayerData) {
-  const result = [];
-  const visiblePlayers = namesOfPlayersVisibleOnTable().map(vp => ({ name: vp, iCoolPoints: $(`#${vp}-points`).text() }))
-
-  for (const player of incomingPlayerData) {
-    const user = visiblePlayers.find(vp => vp.name === player.name);
-
-    if (user && parseInt(user.iCoolPoints) !== player.iCoolPoints) {
-      // No absolute value since postive and negative change the animation shown
-      const coolPointsDifference = player.iCoolPoints - user.iCoolPoints;
-      const playerWithDifference = { ...player, coolPointsDifference };
-      result.push(playerWithDifference);
-    }
-  }
-
-  return result;
-}
-
-/**
- * Update Point UI elements with animations on table based on provided object
- * @param {Object} affectedPlayers players with "coolPointsDifference" attribute
+ * Updates UI with latest values for each action
  * @returns void
  */
-function updateVisibleUsersOnTable(affectedPlayers) {
-  const visiblePlayers = namesOfPlayersVisibleOnTable();
-  const playersUIToUpdate = affectedPlayers.filter((ap) => visiblePlayers.find((vp) => ap.name === vp));
+function handleCPOptionChanges() {
+  if (!CHANNEL.opts.cpOpts) return;
 
-  if (!playersUIToUpdate) return;
-
-  playersUIToUpdate.forEach((player) => {
-    const pointEl = $(`#${player.name}-points`);
-    const messageEl = $(`#${player.name}-points-msg`);
-    pointEl.text(player.iCoolPoints);
-
-    animatePointUpdate(pointEl, messageEl, player.coolPointsDifference)
+  CHANNEL.opts.cpOpts.forEach((action) => {
+    const { name: actionName } = action;
+    action.options.forEach((option) => {
+      const { optionName, optionType, optionValue } = option;
+      if (CLIENT.rank >= 3) {
+        // Update option inputs
+        switch (optionType) {
+          case "time":
+            $(`#cp-${actionName}-${optionName}`).val(formatTime(optionValue));
+            break;
+          case "bool":
+            $(`#cp-${actionName}-${optionName}`).prop("checked", optionValue);
+            setDisableOnRelatedOptions(
+              `cp-${actionName}-${optionName}`,
+              actionName,
+              !optionValue
+            );
+            break;
+          case "int":
+          default:
+            $(`#cp-${actionName}-${optionName}`).val(optionValue);
+            break;
+        }
+      }
+      // Update user prompt/status of actions
+      if (optionType === "bool" && optionName === "enabled") {
+        if (optionValue) {
+          $(`#cp-userprompt-${actionName}`).removeClass("cpActionDisabled");
+        } else {
+          $(`#cp-userprompt-${actionName}`).addClass("cpActionDisabled");
+        }
+      }
+      if (optionType === "int" && optionName === "points") {
+        $(`#cp-userprompt-${actionName}-pts`).text(`${optionValue} CP`);
+      }
+    });
   });
 }
 
-function updateTagetUserOnTable({ user: name, coolPoints }) {
-  const pointEl = $(`#${name}-points`);
-  const messageEl = $(`#${name}-points-msg`);
-  const currPoints = parseInt(pointEl.text());
+/**
+ * Applies a function after a given delay and restarts if called again before the delay is up
+ * @param {*} delay number of milliseconds to wait before calling the function
+ * @param {*} fn function to call
+ * @returns function
+ */
+const debounce = (delay, fn) => {
+  let timer;
 
-  if (pointEl && messageEl && coolPoints !== currPoints) {
-    pointEl.text(coolPoints);
-    animatePointUpdate(pointEl, messageEl, coolPoints - currPoints);
-  }
-}
+  return (...arg) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(() => {
+      fn.apply(this, arg);
+    }, delay);
+  };
+};
 
 /**
- * Updates CoolPoints mod table for all visible users
- * @param {Array} playerData Players updated 
+ *
+ * Bindings
+ *
  */
-function playerUpdateCoolPointsTable(playerData) {
-  if (!$("#cs-chancoolpoints").is(":visible")) return;
 
-  // Gather players with their new difference in points shown vs what playerData has
-  const affectedPlayers = getPlayersWithChangeInPoints(playerData);
+// Bind event listeners
+$(".cp-option-form-group input").each(function () {
+  const classNames = $(this).attr("class").split(" ");
+  if (classNames.includes("cs-checkbox")) {
+    $(this).change(cpCheckboxChange);
+  } else if (classNames.includes("cp-option-input")) {
+    $(this).on("keyup keypress", debounce(1000, cpNumericInputChange));
+  } else if (classNames.includes("cp-option-timeinput")) {
+    $(this).on("keyup keypress", debounce(1000, cpTimeInputChange));
+  }
+});
 
-  // Update Table UI
-  updateVisibleUsersOnTable(affectedPlayers);
-}
-
-function targetUpdateCoolPointsTable(pointData) {
-  if (CLIENT.rank < 3) return;
-
-  if (!namesOfPlayersVisibleOnTable().some(vp => vp === pointData.user)) return;
-
-  updateTagetUserOnTable(pointData);
-}
-
-function addUserCoolPointsTable(userData) {
-  //TODO: Upon addUser firing, update table with new user
-  //How to handle paged or filtered data?
-}
-
-function initPointsForSelf(pts) {
-  const pointsEl = $("#coinAmt");
-  pointsEl.text(`${pts}`);
-
-  $("#coinWrapper").addClass("cpFadeIn");
-}
-
+/**
+ *
+ * Coolpoints Admin Table
+ *
+ */
 function initCoolPointsTable() {
   updatePaginator();
   initSearchCoolPointsTable();
@@ -197,9 +155,265 @@ function updatePaginator() {
 }
 
 /**
- * 
- * @param {*} page 
- * @param {*} sorted 
+ *
+ * Coolpoints Admin Options
+ *
+ */
+function showCoolPointsUserPrompt() {
+  //updateCoolPointActionsUserPrompt();
+  $("#coolPointsPrompt").modal();
+}
+
+/**
+ * Sends the updated option to the server
+ * @param {*} event event object
+ * @returns void
+ */
+function cpNumericInputChange(event) {
+  const el = $(event.target);
+
+  const actionName = el.attr("data-actionName");
+  const optionName = el.attr("data-optionName");
+  const optionValue = el.val();
+
+  const data = {
+    actionName,
+    optionName,
+    optionValue,
+  };
+  socket.emit("setCpOptions", data);
+}
+
+/**
+ * Disable all options related to an action not including the id provided
+ * @param {String} id id that toggles these elements
+ * @param {String} actionName action name of the elements we want disabled
+ * @param {Bool} value should be disabled or not
+ */
+const setDisableOnRelatedOptions = (id, actionName, value) => {
+  $(`[data-actionname='${actionName}']`).not(`#${id}`).prop("disabled", value);
+};
+
+/**
+ * Sends the updated option to the server and disables related options
+ * @param {*} event event object
+ * @returns void
+ */
+function cpCheckboxChange(event) {
+  const el = $(event.target);
+
+  const actionName = el.attr("data-actionName");
+  const optionName = el.attr("data-optionName");
+  const optionValue = el.prop("checked");
+
+  const data = {
+    actionName,
+    optionName,
+    optionValue,
+  };
+
+  if (optionName === "enabled") {
+    setDisableOnRelatedOptions(el.attr("id"), actionName, !optionValue);
+  }
+
+  socket.emit("setCpOptions", data);
+}
+
+/**
+ * Sends the updated option to the server and validates time input
+ * @param {*} event event object
+ * @returns void
+ */
+function cpTimeInputChange(event) {
+  const el = $(event.target);
+
+  const key = el.attr("id");
+  const actionName = el.attr("data-actionName");
+  const optionName = el.attr("data-optionName");
+  let optionValue = el.val();
+
+  $("#cs-textbox-timeinput-validation-error-" + key).remove();
+  el.parent().removeClass("has-error");
+
+  try {
+    optionValue = parseTimeout(el.val());
+  } catch (error) {
+    const msg = `Invalid timespan value '${optionValue}'. Please use the format HH:MM:SS or enter a single number for the number of seconds.`;
+    const validationError = $("<p/>")
+      .addClass("text-danger")
+      .text(msg)
+      .attr("id", "cs-textbox-timeinput-validation-error-" + key);
+    validationError.insertAfter(event.target);
+    el.parent().addClass("has-error");
+    return;
+  }
+
+  const data = {
+    actionName,
+    optionName,
+    optionValue,
+  };
+  socket.emit("setCpOptions", data);
+}
+
+// Globals
+const coolPointItemsPerPage = 16;
+
+// Common Functions
+const namesOfPlayersVisibleOnTable = () =>
+  $(".cp-table-user-name")
+    .map(function () {
+      return $(this).text();
+    })
+    .toArray();
+const capFirstLetter = (str) => str.at(0).toUpperCase() + str.slice(1);
+const actionIsEnabled = ({ type, action }) =>
+  CHANNEL.opts.cpOpts[type][action]["enable"];
+const userHaveEnoughPoints = ({ type, action }) => {
+  if (isEmpty(CLIENT_USER.user)) return false;
+  const cost = CHANNEL.opts.cpOpts[type][action]["pts"];
+  const currPoints = CHANNEL.users.find((u) => CLIENT_USER.user.name === u.name)
+    .player.iCoolPoints;
+
+  return currPoints >= cost;
+};
+
+// Bindings
+$("#cp-greatreset").on("click", greatResetOnClick);
+
+// FIXME: Jank global var to store filtered results for pagination without updating NewPaginator
+let coolPointFilteredResults = null;
+
+function animatePointUpdate(ptEl, msgEl, diff) {
+  const isPositive = diff > 0;
+  const bounceAnimationName = isPositive ? "cpBounce" : "cpShake";
+  const fadeAnimationName = isPositive ? "cpFadeGreen" : "cpFadeRed";
+  const msgText = isPositive ? `+${diff}` : `${diff}`;
+
+  msgEl.text(msgText);
+  updateAnimation(ptEl.attr("id"), bounceAnimationName);
+  updateAnimation(msgEl.attr("id"), fadeAnimationName);
+}
+
+function updateSelfCoolPointsUI(coolPoints) {
+  CLIENT_USER.user.player.iCoolPoints = coolPoints;
+  CHANNEL.users.find(
+    (u) => CLIENT_USER.user.name === u.name
+  ).player.iCoolPoints = coolPoints;
+
+  const pointsEl = $("#coinAmt");
+  const messageEl = $("#coinMsg");
+  const currPoints = isNaN(pointsEl.text()) ? 0 : parseInt(pointsEl.text());
+
+  const diff = coolPoints - currPoints;
+
+  if (diff === 0) return;
+
+  // TODO: Counter animation UI
+  pointsEl.text(coolPoints);
+
+  animatePointUpdate(pointsEl, messageEl, diff);
+}
+
+/**
+ * Find all affected players O(n^2) (have to compare all players against themselves if all are visible)
+ * Could be made faster if we used a hashmap of uuid to user but would need to be built when a users joins
+ * @param {Array} incomingPlayerData Array of players
+ * @returns {Array} Array of players with differences as coolPointsDifference
+ */
+function getPlayersWithChangeInPoints(incomingPlayerData) {
+  const result = [];
+  const visiblePlayers = namesOfPlayersVisibleOnTable().map((vp) => ({
+    name: vp,
+    iCoolPoints: $(`#${vp}-points`).text(),
+  }));
+
+  for (const player of incomingPlayerData) {
+    const user = visiblePlayers.find((vp) => vp.name === player.name);
+
+    if (user && parseInt(user.iCoolPoints) !== player.iCoolPoints) {
+      // No absolute value since postive and negative change the animation shown
+      const coolPointsDifference = player.iCoolPoints - user.iCoolPoints;
+      const playerWithDifference = { ...player, coolPointsDifference };
+      result.push(playerWithDifference);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Update Point UI elements with animations on table based on provided object
+ * @param {Object} affectedPlayers players with "coolPointsDifference" attribute
+ * @returns void
+ */
+function updateVisibleUsersOnTable(affectedPlayers) {
+  const visiblePlayers = namesOfPlayersVisibleOnTable();
+  const playersUIToUpdate = affectedPlayers.filter((ap) =>
+    visiblePlayers.find((vp) => ap.name === vp)
+  );
+
+  if (!playersUIToUpdate) return;
+
+  playersUIToUpdate.forEach((player) => {
+    const pointEl = $(`#${player.name}-points`);
+    const messageEl = $(`#${player.name}-points-msg`);
+    pointEl.text(player.iCoolPoints);
+
+    animatePointUpdate(pointEl, messageEl, player.coolPointsDifference);
+  });
+}
+
+function updateTagetUserOnTable({ user: name, coolPoints }) {
+  const pointEl = $(`#${name}-points`);
+  const messageEl = $(`#${name}-points-msg`);
+  const currPoints = parseInt(pointEl.text());
+
+  if (pointEl && messageEl && coolPoints !== currPoints) {
+    pointEl.text(coolPoints);
+    animatePointUpdate(pointEl, messageEl, coolPoints - currPoints);
+  }
+}
+
+/**
+ * Updates CoolPoints mod table for all visible users
+ * @param {Array} playerData Players updated
+ */
+function playerUpdateCoolPointsTable(playerData) {
+  if (!$("#cs-chancoolpoints").is(":visible")) return;
+
+  // Gather players with their new difference in points shown vs what playerData has
+  const affectedPlayers = getPlayersWithChangeInPoints(playerData);
+
+  // Update Table UI
+  updateVisibleUsersOnTable(affectedPlayers);
+}
+
+function targetUpdateCoolPointsTable(pointData) {
+  if (CLIENT.rank < 3) return;
+
+  if (!namesOfPlayersVisibleOnTable().some((vp) => vp === pointData.user))
+    return;
+
+  updateTagetUserOnTable(pointData);
+}
+
+function addUserCoolPointsTable(userData) {
+  //TODO: Upon addUser firing, update table with new user
+  //How to handle paged or filtered data?
+}
+
+function initPointsForSelf(pts) {
+  const pointsEl = $("#coinAmt");
+  pointsEl.text(`${pts}`);
+
+  $("#coinWrapper").addClass("cpFadeIn");
+}
+
+/**
+ *
+ * @param {*} page
+ * @param {*} sorted
  */
 function updateTableCoolPointsUI(page, sorted = true) {
   const entries = coolPointFilteredResults ?? CHANNEL.users;
@@ -208,7 +422,9 @@ function updateTableCoolPointsUI(page, sorted = true) {
   // HACK: Need to prevent sorting when updating to avoid users "jumping" the list
   if (sorted) {
     entries.sort(
-      (a, b) => b.player.iCoolPoints - a.player.iCoolPoints || a.name.localeCompare(b.name)
+      (a, b) =>
+        b.player.iCoolPoints - a.player.iCoolPoints ||
+        a.name.localeCompare(b.name)
     );
   }
 
@@ -322,519 +538,17 @@ function updateTableCoolPointsUI(page, sorted = true) {
   });
 }
 
-/**
- * Function to rerender the prompt each time it's opened
- * Was done to try and make it eaiser to add new options without updating pug templates with the same, confusing attributes
- * TODO: Rebuild this form with this function in mind... Lotta straightup HTML becase I'm too lazy to rebuild it atm
- */
-function updateCoolPointActionsAdminPrompt() {
-  const formRoot = $("#cs-chancoolpoint-options .form-group");
-  
-
-  // Clear
-  // root.html("");
-
-  // const toppleEconomyHTMLTemplate = `
-  // <div class="row" style="justify-content: center;">
-  //   <div class="form-group row mb-3 mb-sm-2 px-4">
-  //     <div class="icon-container display-inline mt-1 ml-3 pl-2" style="align-self: center;">
-  //       <svg class="ch-icon form-icon info" style="width: 30px; height: 30px;">
-  //         <use xlink:href="#ch-icon-sign-info"></use>
-  //       </svg>
-  //     </div>
-  //     <div class="col ml-n2">
-  //       <a class="form-text text-info" style="margin-top: 5px; font-size: 25px;" target="_blank" href="https://docs.google.com/spreadsheets/d/1JDf3Dymhk1MzM_hXiMwR_tzch5QoiA3X15bWqfFpPQc/edit?usp=sharing">
-  //         Careful now, don't topple this economy
-  //       </a>
-  //     </div>
-  //   </div>
-  // </div>
-  // `;
-
-  // root.append(toppleEconomyHTMLTemplate);
-
-  // const actionsCopy = {
-  //   active: {
-  //     title: "Being Active",
-  //     pts: "Points per Tick",
-  //     enable: "Enable",
-  //     interval: "Tick Interval"
-  //   },
-  //   addingVid: {
-  //     title: "Adding a video",
-  //     pts: "Points per Video",
-  //     enable: "Enable"
-  //   },
-  //   skipped: {
-  //     title: "Having your video skipped",
-  //     enable: "Enable",
-  //     pts: "Points lost"
-  //   },
-  //   highlight: {
-  //     title: "Highlight",
-  //     enable: "Enable",
-  //     pts: "Cost"
-  //   },
-  //   skip: {
-  //     title: "Skipping a video",
-  //     enable: "Enable",
-  //     pts: "Cost"
-  //   },
-  //   danmu: {
-  //     title: "Danmaku ('On Screen' Comments)",
-  //     enable: "Enable",
-  //     pts: "Cost"
-  //   },
-  //   secretary: {
-  //     title: "Super Invasive Chat",
-  //     enable: "Enable",
-  //     pts: "Cost"
-  //   },
-  //   debtlvl0: {
-  //     title: "Debt Level 0 - Stutter filter",
-  //     enable: "Enable",
-  //     pts: "Points below"
-  //   },
-  //   debtlvl1: {
-  //     title: "Debt Level 1 - Lisp filter",
-  //     enable: "Enable",
-  //     pts: "Points below"
-  //   },
-  //   debtlvl2: {
-  //     title: "Debt Level 2 - Random Ad",
-  //     enable: "Enable",
-  //     pts: "Points below"
-  //   },
-  //   debtlvl3: {
-  //     title: "Debt Level 3 - 'Coolhole1' Text",
-  //     enable: "Enable",
-  //     pts: "Points below"
-  //   },
-  //   debtlvl4: {
-  //     title: "Debt Level 4 - Letters Missing",
-  //     enable: "Enable",
-  //     pts: "Points below"
-  //   },
-  //   debtlvl5: {
-  //     title: "Debt Level 5 - 'Criticality Accident Animation",
-  //     enable: "Enable",
-  //     pts: "Points below"
-  //   },
-  // };
-
-  // for (let action of Object.entries(CHANNEL.opts.cpOpts)) {
-  //   const typeTitleTemplate = `
-  //     <div class="row">
-  //       <div class="col">
-  //           <h5 class="mb-0">CoolPoint ${capFirstLetter(action)}</h5>
-  //         </div>
-  //       </div>
-  //       <div class="row">
-  //         <div class="col">
-  //           <hr class="mt-1 mb-2">
-  //       </div>
-  //     </div>
-  //   `;
-
-  //   root.append(typeTitleTemplate);
-
-  //   for (let [ruleKey, ruleTypes] of Object.entries(options)) {
-  //     const formRoot = $("<div />").addClass("cp-option-form");
-  //     root.append(formRoot);
-
-  //     if (!(ruleKey in actionsCopy)) break;
-
-  //     const copyOptionObject = actionsCopy[ruleKey];
-
-  //     const optionLabel = $("<label />")
-  //       .addClass("control-label ml-1 ml-sm-0 pt-sm-2 cp-option-subheader")
-  //       .text(copyOptionObject?.title ?? "Unknown");
-  //     formRoot.append(optionLabel);
-
-  //     const formWrapper = $("<div />").addClass("cp-option-form-wrapper");
-  //     const form = $("<form />").attr("action", "javascript:void(0)");
-  //     formRoot.append(formWrapper);
-  //     formWrapper.append(form);
-
-  //     for (let [optionKey, optionValue] of Object.entries(ruleTypes)) {
-  //       const id = `cp-${ruleKey}-${optionKey}`;
-
-  //       if (!(optionKey in copyOptionObject)) break;
-
-  //       const checkboxInputTemplate = `
-  //         <div class="form-group pl-2 cp-option-form-group">
-  //           <input id="${id}" class="cp-checkbox" type="checkbox" data-type="${type}" rule="${ruleKey}" option="${optionKey}">
-  //           <label for="${id}" class="form-check-label text-sm-left">${copyOptionObject[optionKey]}</label>
-  //         </div>
-  //       `;
-
-  //       const numberInputTemplate = `
-  //         <div class="form-group cp-option-form-group">
-  //           <label for="${id}" class="pl-2 form-text text-info cp-option-label">${copyOptionObject[optionKey]}</label>
-  //           <div class="col">
-  //             <input id="${id}" class="form-control cp-option-input" type="text" placeholder="6" data-type="${type}" rule="${ruleKey}" option="${optionKey}">
-  //           </div>
-  //         </div>
-  //       `;
-
-  //       const timeInputTemplate = `
-  //         <div class="form-group cp-option-form-group">
-  //           <label for="${id}" class="pl-2 form-text text-info cp-option-label">${copyOptionObject[optionKey]}</label>
-  //           <div class="col">
-  //             <input id="${id}" class="form-control px-3 cp-option-timeinput" type="text" placeholder="HH:MM:SS" data-type="${type}" rule="${ruleKey}" option="${optionKey}">
-  //           </div>
-  //         </div>
-  //       `;
-
-  //       switch (optionKey) {
-  //         case "pts":
-  //           form.append(numberInputTemplate);
-  //           $(`#${id}`).val(optionValue);
-  //           break;
-  //         case "interval":
-  //           form.append(timeInputTemplate);
-  //           $(`#${id}`).val(formatTime(optionValue));
-  //           break;
-  //         case "enable":
-  //           form.append(checkboxInputTemplate);
-  //           $(`#${id}`).prop("checked", !!optionValue);
-  //           break;
-  //         default:
-  //           break;
-  //       }
-  //     }
-  //   }
-  // }
-  // // Bind event listeners
-  // bindCpOptions();
-  // // Really just to ensure everything that's suppose to be disabled is
-  // handleCPOptionChanges();
-}
-
-// function updateCoolPointActionsUserPrompt() {
-//   const rootId = "cp-status-of-actions-accordion";
-//   const root = $(`#${rootId}`);
-//   const cpOpts = CHANNEL.opts.cpOpts;
-//   const actionsCopy = {
-//     active: {
-//       title: "Active",
-//       description: "Participation is key. A reward to those that are present"
-//     },
-//     addingVid: {
-//       title: "Submitting Media",
-//       description: "Providing media is the foundation of the application and is the catalyst for valuable data"
-//     },
-//     skipped: {
-//       title: "Unsatisfactory Media",
-//       description: "Not all media is created equal and it's important to ensure you're providing the highest quality content. Please do better in the future. Don't fucking post family guy. Or anime."
-//     },
-//     highlight: {
-//       title: "Highlight",
-//       description: "Individuality provides a sense of self-expression and personal fulfillment. While modest, this chat message will help you standout",
-//       usage: "/highlight"
-//     },
-//     skip: {
-//       title: `"Sister"ing Content`,
-//       description: "As a publically accountable organization, we are compelled to express our sincerest apprehension regarding the participation of incest.",
-//       usage: "Skip Button"
-//     },
-//     danmu: {
-//       title: "Danmu",
-//       description: `AKA: Danmaku or barrage or niconico video is usually described as は、ニコニコ動画で流れる文字コメントのことで、動画をより楽しい \ (•◡•) /コメントが彩ります`,
-//       usage: "/danmu"
-//     },
-//     secretary: {
-//       title: "Invasive Chat Message",
-//       description: "Children who are often deprived of attention resort to frequent disruptions through auditory and visual harassment. To be noticed, to be seen, is to be reminded that you're alive; that you matter. User her wisely.",
-//       usage: "/secretary"
-//     },
-//     debtlvl0: {
-//       title: "Debt Level 0 - Repeating Interruptions of Typical Speech",
-//       description: "Our bio-integrated cryptocurrency may cause speech repetition due to additional Proof of Work requirements for users below a certain threshold."
-//     },
-//     debtlvl1: {
-//       title: "Debt Level 1 - Further Degredation of Speech",
-//       description: "It's unsure if this effect is the result of impaired faculties or if it's a best estimation of what the fiscally irresponsible sound like."
-//     },
-//     debtlvl2: {
-//       title: "Debt Level 2 - Occasional Content Insertion to Recoup Cost",
-//       description: "To avoid the ability to provide you with more opportunities to contribute, we require external sources to keep operating costs nominal."
-//     },
-//     debtlvl3: {
-//       title: "Debt Level 3 - Lower Physical Footprint",
-//       description: "As your brain and body begins to degrade, it becomes necessary to reduce swelling by reducing the text size reducing necessary throughput to continue minimal cognative development."
-//     },
-//     debtlvl4: {
-//       title: "Debt Level 4 - Reduced bandwidth",
-//       description: "It's at this point that your brainwaves have become unstable and we cannot gaurentee total transmission of your messages."
-//     },
-//     debtlvl5: {
-//       title: "Debt Level 5 - Volatile transmission",
-//       description: "Criticality accident likely. May God have mercy on your soul."
-//     }
-//   }
-
-//   // Clear the content of the root element
-//   root.html("");
-
-//   Object.entries(cpOpts).forEach(([type, options], index) => {
-//     const headerId = `cpActionsCardHeader-${type}`;
-//     const collapseId = `cpActionsCardContent-${type}`;
-
-//     // Create Type Card
-//     const typeCard = $("<div />").addClass("card").attr("id", `cpActionsCard-${type}`);
-//     root.append(typeCard);
-
-//     // Create Type Card's Header
-//     const typeHeader = $("<div />")
-//       .addClass("h3 btn-primary card-header")
-//       .attr({
-//         "id": headerId,
-//         "type": "button",
-//         "data-toggle": "collapse",
-//         "data-target": `#${collapseId}`,
-//         "aria-expanded": index === 0 ? "true" : "false", // Expand first by default
-//         "aria-controls": collapseId
-//       })
-//       .text(capFirstLetter(type))
-//     typeCard.append(typeHeader);
-
-//     // Create Type Card's Collapsible Area
-//     const typeCardBodyContainer = $("<div />")
-//       .addClass(`collapse${index === 0 ? " show" : ""}`) // Expand first by default
-//       .attr({
-//         "id": collapseId,
-//         "aria-labelledby": headerId,
-//         "data-target": `#${typeCard.attr("id")}`
-//       });
-//     typeCard.append(typeCardBodyContainer);
-
-//     const typeCardBody = $("<div />").addClass("card-body");
-//     typeCardBodyContainer.append(typeCardBody);
-
-//     // Loop through options
-//     for (const [optionName, optionTypes] of Object.entries(options)) {
-//       if (!(optionName in actionsCopy)) continue;
-
-//       const copyObj = actionsCopy[optionName];
-//       const row = $("<div/>")
-//         .attr("id", `cp-userprompt-${optionName}`)
-//         .addClass(`cpActionRow${!optionTypes.enable ? " cpActionDisabled" : ""}`);
-//       typeCardBody.append(row);
-
-//       const descriptionWrapper = $("<div/>").addClass("cpActionDescription");
-//       row.append(descriptionWrapper);
-
-//       // Populate Description Title
-//       descriptionWrapper.append($("<div/>").text(copyObj.title));
-
-//       // Populate Description Text
-//       descriptionWrapper.append(
-//         $("<div/>").addClass("text-info").text(copyObj.description)
-//       );
-
-//       // If Expenditure Type & has chat command, describe usage
-//       if (type === "expenditures" && copyObj.hasOwnProperty("usage")) {
-//         descriptionWrapper.append($("<code/>").text(copyObj.usage));
-//       }
-
-//       // Create Cost Wrapper
-//       const costWrapperId = `cpActionCostWrap-${type}-${optionName}`;
-//       const costWrapper = $("<div/>")
-//         .attr("id", costWrapperId)
-//         .addClass(`cpActionCost cp-${type}`);
-//       row.append(costWrapper);
-
-//       const coinSvg = useSVG("#ch-icon-ui-coin", "ch-icon alert-icon", document.getElementById(costWrapperId));
-//       costWrapper.append(coinSvg);
-
-//       costWrapper.append(
-//         $("<span/>")
-//           .text(`${optionTypes.pts} CP`)
-//           .attr("id", `cp-userprompt-${optionName}-pts`)
-//           .addClass("cpActionCostValue")
-//       );
-//     }
-//   });
-// }
-
 function greatResetOnClick() {
   if (CLIENT.rank < 3) {
     alert("I will kill you");
     return;
   }
 
-  if (confirm("All points for all users will be set to 0. Are you sure about this?")) {
+  if (
+    confirm(
+      "All points for all users will be set to 0. Are you sure about this?"
+    )
+  ) {
     socket.emit("greatReset", {});
-  };
-}
-
-/**
- * Updates UI with latest values for each action
- * @returns void
- */
-function handleCPOptionChanges() {
-  if (!CHANNEL.opts.cpOpts) return
-
-  CHANNEL.opts.cpOpts.forEach(action => {
-    const { name: actionName } = action;
-    action.options.forEach(option => {
-      const { optionName, optionType, optionValue } = option;
-      if (CLIENT.rank >= 3) {
-        // Update option inputs
-        switch (optionType) {
-          case "time":
-            $(`#cp-${actionName}-${optionName}`).val(formatTime(optionValue));
-            break;
-          case "bool":
-            $(`#cp-${actionName}-${optionName}`).prop("checked", optionValue);
-            setDisableOnRelatedOptions(`cp-${actionName}-${optionName}`, actionName, !optionValue);
-            break;
-          case "int":
-          default:
-            $(`#cp-${actionName}-${optionName}`).val(optionValue);
-            break;
-        }
-      }
-      // Update user prompt/status of actions
-      if (optionType === "bool" && optionName === "enabled") {
-        if (optionValue) {
-          $(`#cp-userprompt-${actionName}`).removeClass("cpActionDisabled");
-        } else {
-          $(`#cp-userprompt-${actionName}`).addClass("cpActionDisabled");
-        }
-      }
-      if (optionType === "int" && optionName === "points") {
-        $(`#cp-userprompt-${actionName}-pts`).text(`${optionValue} CP`);
-      }
-    })
-  })
-}
-
-/**
- * Applies a function after a given delay and restarts if called again before the delay is up
- * @param {*} delay number of milliseconds to wait before calling the function
- * @param {*} fn function to call
- * @returns function
- */
-const debounce = (delay, fn) => {
-  let timer;
-
-  return (...arg) => {
-      if (timer) {
-          clearTimeout(timer);
-      }
-      timer = setTimeout(() => {
-          fn.apply(this, arg);
-      }, delay)
   }
-}
-
-/**
-* Disable all options related to an action not including the id provided
-* @param {String} id id that toggles these elements
-* @param {String} actionName action name of the elements we want disabled
-* @param {Bool} value should be disabled or not
-*/
-const setDisableOnRelatedOptions = (id, actionName, value) => {
-  $(`[data-actionname='${actionName}']`).not(`#${id}`).prop('disabled', value)
-}
-
-/**
- * Sends the updated option to the server and disables related options
- * @param {*} event event object
- * @returns void
- */
-function cpCheckboxChange(event) {
-  const el = $(event.target);
-
-  const actionName = el.attr("data-actionName");
-  const optionName = el.attr("data-optionName");
-  const optionValue = el.prop("checked");
-
-  const data = {
-      actionName,
-      optionName,
-      optionValue,
-  }
-
-  if (optionName === "enabled") {
-      setDisableOnRelatedOptions(el.attr("id"), actionName, !optionValue);
-  }
-
-  socket.emit("setCpOptions", data);
-}
-
-/**
- * Sends the updated option to the server and validates time input
- * @param {*} event event object
- * @returns void
- */
-function cpTimeInputChange(event) {
-  const el = $(event.target);
-
-  const key = el.attr("id");
-  const actionName = el.attr("data-actionName");
-  const optionName = el.attr("data-optionName");
-  let optionValue = el.val();
-
-  $("#cs-textbox-timeinput-validation-error-" + key).remove();
-  el.parent().removeClass("has-error");
-
-  try {
-      optionValue = parseTimeout(el.val());
-  } catch (error) {
-      const msg = `Invalid timespan value '${optionValue}'. Please use the format HH:MM:SS or enter a single number for the number of seconds.`;
-      const validationError = $("<p/>")
-          .addClass("text-danger")
-          .text(msg)
-          .attr("id", "cs-textbox-timeinput-validation-error-" + key);
-      validationError.insertAfter(event.target);
-      el.parent().addClass("has-error");
-      return;
-  }
-
-  const data = {
-      actionName,
-      optionName,
-      optionValue,
-  };
-  socket.emit("setCpOptions", data);
-}
-
-/**
- * Sends the updated option to the server
- * @param {*} event event object
- * @returns void
- */
-function cpNumericInputChange(event) {
-  const el = $(event.target);
-
-  const actionName = el.attr("data-actionName");
-  const optionName = el.attr("data-optionName");
-  const optionValue = el.val();
-
-  const data = {
-      actionName,
-      optionName,
-      optionValue,
-  }
-  socket.emit("setCpOptions", data);
-}
-
-// Bind event listeners
-$(".cp-option-form-group input").each(function () {
-  const classNames = $(this).attr("class").split(" ");
-  if (classNames.includes("cs-checkbox")) {
-      $(this).change(cpCheckboxChange);
-  } else if (classNames.includes("cp-option-input")) {
-      $(this).on("keyup keypress", debounce(1000, cpNumericInputChange));
-  } else if (classNames.includes("cp-option-timeinput")) {
-      $(this).on("keyup keypress", debounce(1000, cpTimeInputChange));
-  }
-})
-
-function showCoolPointsUserPrompt() {
-  //updateCoolPointActionsUserPrompt();
-  $("#coolPointsPrompt").modal();
 }

@@ -165,7 +165,8 @@ Channel.prototype.initModules = function () {
         "./anonymouscheck": "anoncheck",
         "./coolholecommon": "coolholecommon",
         "./coolholegolds" : "coolholegolds",
-        "./coolholepoints-actions-options" : "coolholeactionspoints"
+        "./coolholepoints-actions-options" : "coolholeactionspoints",
+        "./coolholepoints" : "coolholepoints",
     };
 
     var self = this;

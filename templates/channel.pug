@@ -62,7 +62,7 @@ html(lang="en")
             #leftcontrols.col-lg-5.col-md-5
               button#newpollbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-poll")
               button#emotelistbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-emote-dead")
-              button#coolpointsbtn.btn.btn-sm.btn-default(onclick="javascript:showCoolPointsUserPrompt()") CoolPoints
+              button#coolpointsbtn.btn.btn-sm.btn-default(onclick="javascript:showCoolPointsUserPrompt()"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-coin-stencil") CoolPoints
             #rightcontrols.col-lg-7.col-md-7
               #plcontrol.btn-group
                 button#showmediaurl.btn.btn-sm.btn-default(title="Add video from URL", data-toggle="collapse", data-target="#addfromurl")
@@ -92,6 +92,10 @@ html(lang="en")
           #playlistrow.row
             #leftpane.col-lg-5.col-md-5
               #leftpane-inner.row
+                #coinWrapper.row.col-lg-12.mx-1.pt-2(style="opacity: 0;")
+                  svg.ch-icon.ch-button-icon.ch-cp: use(xlink:href="#ch-icon-ui-coin")
+                  span#coinAmt
+                  span#coinMsg.pl-1
                 #pollwrap.col-lg-12.col-md-12
                 #playlistmanagerwrap.col-lg-12.col-md-12
             #rightpane.col-lg-7.col-md-7
