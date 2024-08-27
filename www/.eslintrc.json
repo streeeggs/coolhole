@@ -45,7 +45,8 @@
         "Rank": "writable",
         "getOpt": "writable",
         "setOpt": "writable",
-        "socket": "writable"
+        "socket": "writable",
+        "USERCOOLPOINTSLIST": "writable"
     },
     "plugins": [
         "no-jquery"

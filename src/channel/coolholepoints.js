@@ -3,13 +3,43 @@ var FilterList = require("cytubefilters");
 var LOGGER = require("@calzoneman/jsli")("coolpoints");
 import { ActionType } from "./coolholepoints-actions-options";
 
+/**
+ * @class PointData
+ * @classdesc PointData class
+ * @param {String} user user
+ * @param {Number} points points
+ * @returns {Object} PointData object
+ */
 class PointData {
   constructor(user, points) {
     this.user = user;
     this.points = points;
   }
 }
+/**
+ * @class ReturnPointData
+ * @classdesc ReturnPointData class
+ * @param {String} user user
+ * @param {Number} points difference in points
+ * @param {Number} currentPoints currentPoints
+ * @returns {Object} ReturnPointData object
+ */
+class ReturnPointData {
+  constructor(user, points, currentPoints) {
+    this.user = user;
+    this.points = points;
+    this.currentPoints = currentPoints;
+  }
+}
 
+/**
+ * @class ReturnMsg
+ * @classdesc ReturnMsg class
+ * @param {String} msg message
+ * @param {String} userMessage user message
+ * @param {Object} data data
+ * @returns {Object} ReturnMsg object
+ **/
 class ReturnMsg {
   constructor(msg, userMessage, data) {
     this.msg = msg;
@@ -97,6 +127,11 @@ class Coolpoints extends ChannelModule {
    * @param {*} user user object
    */
   onUserPostJoin(user) {
+    user.socket.on(
+      "applyPointsToUser",
+      this.handleApplyPointsToUser.bind(this, user)
+    );
+
     this.init(user);
   }
 
@@ -188,10 +223,13 @@ class Coolpoints extends ChannelModule {
    * @emits coolpointsInitResponse
    */
   init(user) {
-    if (!this.exists(user.getName())) {
+    if (
+      user.getName() && // User has a name
+      user.account.globalRank !== 0 && // Is not a guest
+      !this.exists(user.getName())
+    ) {
       this.set(user.getName(), 0);
     }
-
     user.socket.emit(
       "coolpointsInitResponse",
       new ReturnMsg("success", "Here's everyones' points", this.coolpoints)
@@ -204,7 +242,8 @@ class Coolpoints extends ChannelModule {
    * @param {Number} points User's coolpoints
    */
   add(name, points) {
-    this.set(name, this.get(name)?.points ?? 0 + points);
+    const curPoints = this.get(name)?.points ?? 0;
+    this.set(name, curPoints + points);
     this.dirty = true;
   }
 
@@ -244,18 +283,20 @@ class Coolpoints extends ChannelModule {
   /**
    * @summary Applies a coolpoint change to a user
    * @param {Object} user user object
-   * @param {String} targetName target user
-   * @param {Number} points points to add or subtract (if negative)
+   * @param {Object} data data object
+   * @param {String} data.targetName target username
+   * @param {Number} data.points points to add or subtract (if negative)
    */
-  applyPointsToOther(user, targetName, points) {
+  handleApplyPointsToUser(user, data) {
     try {
-      if (!this.canUpdateOthersPoints(user, "applyPointsToOther")) return;
+      const { targetName, points } = data;
+      if (!this.canUpdateOthersPoints(user, "applyPointsToUser")) return;
 
       const target = this.get(targetName);
       if (!target) {
         this.logError({
           user,
-          callingFunction: "applyPointsChange",
+          callingFunction: "applyPointsToUser",
           returnSocket: "coolpointsFailure",
           err: `User ${targetName} not found to apply points to`,
           data: targetName,
@@ -266,27 +307,14 @@ class Coolpoints extends ChannelModule {
 
       this.add(targetName, points);
 
-      // Fire off mod point update event
-      this.channel
-        .moderators()
-        .forEach((mod) =>
-          mod.socket.emit(
-            "applyPointsToOtherModReponse",
-            new ReturnMsg(
-              `${user.getName()} applied ${points} to user ${targetName}`,
-              `${user.getName()} applied ${points} to user ${targetName}`,
-              { user: targetName, points }
-            )
-          )
-        );
+      const currTargetPoints = this.get(targetName).points;
 
-      // Fire off user point update event
-      this.channel.boradcastAll(
-        "applyPointsToOtherResponse",
+      this.channel.broadcastAll(
+        "updateCoolPointsResponse",
         new ReturnMsg(
           `${user.getName()} applied ${points} to user ${targetName}`,
           `Powers that be applied ${points} to user ${targetName}`,
-          { user: targetName, points }
+          new ReturnPointData(targetName, points, currTargetPoints)
         )
       );
 
@@ -294,11 +322,11 @@ class Coolpoints extends ChannelModule {
     } catch (err) {
       this.logError({
         user,
-        callingFunction: "applyPointsToOther",
+        callingFunction: "applyPointsToUser",
         returnSocket: "coolpointsFailure",
         err,
-        data: { user: targetName, points },
-        userMessage: `Error: Unable to apply points to user ${targetName}. Let the head monkey in charge know`,
+        data: { user: data.targetName, points: data.points },
+        userMessage: `Error: Unable to apply points to user ${data.targetName}. Let the head monkey in charge know`,
       });
     }
   }
@@ -398,14 +426,30 @@ class Coolpoints extends ChannelModule {
       if (!this.isValidAction(user, action, ActionType.Expenditures, "spend"))
         return;
 
-      this.subtract(
-        user.getName(),
-        actionData.options.find((opt) => opt.optionName === "points")
-          .optionValue
-      );
+      const pointsToSpend = actionData.options.find(
+        (opt) => opt.optionName === "points"
+      ).optionValue;
+
+      this.subtract(user.getName(), pointsToSpend);
 
       LOGGER.info(
-        `User ${user.getName()} spent ${actionData.options.find((opt) => opt.optionName === "points")?.optionValue} points on ${action}`
+        `User ${user.getName()} spent ${
+          actionData.options.find((opt) => opt.optionName === "points")
+            ?.optionValue
+        } points on ${action}`
+      );
+
+      this.channel.broadcastAll(
+        "updateCoolPointsResponse",
+        new ReturnMsg(
+          `User ${user.getName()} spent ${pointsToSpend} points on ${action}`,
+          `Wise spender ${user.getName()} spent ${pointsToSpend} points on ${action}`,
+          new ReturnPointData(
+            user.getName(),
+            pointsToSpend,
+            this.get(user.getName()).points
+          )
+        )
       );
     } catch (err) {
       this.logError({
@@ -429,14 +473,27 @@ class Coolpoints extends ChannelModule {
       if (!this.isValidAction(user, action, ActionType.Earnings, "earn"))
         return;
 
-      this.add(
-        user.getName(),
-        actionData.options.find((opt) => opt.optionName === "points")
-          .optionValue
-      );
+      const pointsToEarn = actionData.options.find(
+        (opt) => opt.optionName === "points"
+      ).optionValue;
+
+      this.add(user.getName(), pointsToEarn);
 
       LOGGER.info(
-        `User ${user.getName()} was awarded ${actionData.options.find((opt) => opt.optionName === "points")?.optionValue} points for ${action}`
+        `User ${user.getName()} was awarded ${pointsToEarn} points for ${action}`
+      );
+
+      this.channel.broadcastAll(
+        "updateCoolPointsResponse",
+        new ReturnMsg(
+          `User ${user.getName()} was awarded ${pointsToEarn} points for ${action}`,
+          `${user.getName()} was awarded ${pointsToEarn} points for ${action}`,
+          new ReturnPointData(
+            user.getName(),
+            pointsToEarn,
+            this.get(user.getName()).points
+          )
+        )
       );
     } catch (err) {
       this.logError({
@@ -459,14 +516,27 @@ class Coolpoints extends ChannelModule {
     try {
       if (!this.isValidAction(user, action, ActionType.Losses, "lose")) return;
 
-      this.subtract(
-        user.getName(),
-        actionData.options.find((opt) => opt.optionName === "points")
-          .optionValue
-      );
+      const pointsToLose = actionData.options.find(
+        (opt) => opt.optionName === "points"
+      ).optionValue;
+
+      this.subtract(user.getName(), pointsToLose);
 
       LOGGER.info(
-        `User ${user.getName()} lost ${actionData.options.find((opt) => opt.optionName === "points")?.optionValue} points for ${action}`
+        `User ${user.getName()} lost ${pointsToLose} points for ${action}`
+      );
+
+      this.channel.broadcastAll(
+        "updateCoolPointsResponse",
+        new ReturnMsg(
+          `User ${user.getName()} lost ${pointsToLose} points for ${action}`,
+          `${user.getName()} lost ${pointsToLose} points for ${action}`,
+          new ReturnPointData(
+            user.getName(),
+            pointsToLose,
+            this.get(user.getName()).points
+          )
+        )
       );
     } catch (err) {
       this.logError({

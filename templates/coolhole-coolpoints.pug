@@ -35,8 +35,22 @@ mixin coolpointoptions
 
 mixin coolpointsusertable
   #cs-chancoolpoint-user-table.tab-pane.fade.col-12(role="tabpanel", aria-labelledby="csCoolpointsUserTableTab")
-    .form-group.table.mb-3.mb-sm-2.px-4
-
+    h4 Coolpoints Users Table
+      form.form-inline
+        .form-group
+          input.users-coolpoints-search.form-control(type="text", placeholder="Search")
+      .users-coolpoints-paginator-container
+      table.users-coolpoints-table.table.table-striped.table-condensed
+        colgroup
+          col(style="width: 37%")
+          col(style="width: 37%")
+          col(style="width: 25%")
+        thead
+          tr
+            th Name
+            th CoolPoints
+            th Fate
+        tbody
 
 mixin coolpointsuserprompt
     #coolPointsPrompt.modal.fade(role="dialog", aria-hidden="true", tabindex="-1")
