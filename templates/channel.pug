@@ -62,6 +62,7 @@ html(lang="en")
             #leftcontrols.col-lg-5.col-md-5
               button#newpollbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-poll")
               button#emotelistbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-emote-dead")
+              button#chatoptsbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-preferences")
               button#coolpointsbtn.btn.btn-sm.btn-default(onclick="javascript:showCoolPointsUserPrompt()"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-coin-stencil") CoolPoints
             #rightcontrols.col-lg-7.col-md-7
               #plcontrol.btn-group
@@ -255,6 +256,17 @@ html(lang="en")
           .modal-footer
             button.btn.btn-default(type="button", data-dismiss="modal") Close
     +coolpointsuserprompt()
+    #ch-chatoptions.modal.fade(tabindex="-1", role="dialog", aria-hidden="true")
+      .modal-dialog.modal-dialog-nonfluid
+        .modal-content 
+          .modal-header
+            button.close(data-dismiss="modal", aria-hidden="true") &times;
+            h4 Chat Options
+          .modal-body
+            include chatoptions
+            +chat-general()
+          .modal-footer
+            button.btn.btn-primary(type="button", data-dismiss="modal") Close
     #pmbar
     include footer
     +footer()
