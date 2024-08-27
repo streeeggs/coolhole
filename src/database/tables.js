@@ -3,6 +3,7 @@ const LOGGER = require('@calzoneman/jsli')('database/tables');
 
 export async function initTables() {
     const knex = require('../database').getDB().knex;
+    
     async function ensureTable(name, structure) {
         if (!await knex.schema.hasTable(name)) {
             LOGGER.info('Creating table %s', name);

@@ -357,6 +357,16 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
   }
 
   /**
+   * Post join hook
+   * @param {*} user user object
+   */
+  onUserPostJoin(user) {
+    user.socket.on("setCpOptions", this.handleSetCpOptions.bind(this, user));
+
+    this.sendCpOpts([user]);
+  }
+
+  /**
    * Generic Log Error wrapper
    * @param {Object} errorObject Error information
    * @param {Object} errorObject.user User information
@@ -386,6 +396,15 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
    */
   load(data) {
     if ("coolpointsActions" in data) {
+      // Compare actionDefaults and data.coolpointsActions and push any new default actions to data.coolpointsActions
+      const defaultActions = this.actionsDefault;
+      const newActions = defaultActions.filter((defaultAction) => {
+        return !data.coolpointsActions.some(
+          (action) => action.name === defaultAction.name
+        );
+      });
+      data.coolpointsActions.push(...newActions);
+
       this.coolpointsActions = data.coolpointsActions;
       this.dirty = false;
     } else {
@@ -411,7 +430,7 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
    * @returns
    */
   get(name) {
-    if (this.coolpointsActions.some((action) => action.name === name)) {
+    if (!this.coolpointsActions.some((action) => action.name === name)) {
       LOGGER.error(`CP Action Not found: ${name}`);
       throw new Error(`CP Action Not found: ${name}`);
     }
@@ -442,16 +461,6 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
       );
       LOGGER.error(e);
     }
-  }
-
-  /**
-   * Post join hook
-   * @param {*} user user object
-   */
-  onUserPostJoin(user) {
-    user.socket.on("setCpOptions", this.handleSetCpOptions.bind(this, user));
-
-    this.sendCpOpts([user]);
   }
 
   /**
