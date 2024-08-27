@@ -1165,7 +1165,7 @@ const Callbacks = {
         if (CHANNEL.opts.allow_voteskip && hasPermission("voteskip")) {
             $("#voteskip").attr("disabled", false);
         }
-    },
+    }
 };
 
 // Stuff Coolhole callbacks into Callbacks
