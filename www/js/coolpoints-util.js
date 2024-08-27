@@ -17,6 +17,17 @@
  */
 
 /**
+ * Initializes the points for the current user and applies fade-in animation
+ * @param {Number} pts Points to initialize
+ */
+function initPointsForSelf(pts) {
+  const pointsEl = $("#coinAmt");
+  pointsEl.text(`${pts}`);
+
+  $("#coinWrapper").addClass("cpFadeIn");
+}
+
+/**
  * Handles overlapping animations by removing the previous animation
  * @param {String} id Id of the element to animate
  * @param {String} animationName Name of the animation to apply
@@ -495,7 +506,7 @@ function handleCPOptionChanges() {
  */
 
 // Bindings
-// $("#cp-greatreset").on("click", greatResetOnClick);
+$("#cp-greatreset").on("click", greatResetOnClick);
 
 function greatResetOnClick() {
   if (CLIENT.rank < 3) {
