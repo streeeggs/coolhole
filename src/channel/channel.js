@@ -164,7 +164,9 @@ Channel.prototype.initModules = function () {
         "./accesscontrol" : "password",
         "./anonymouscheck": "anoncheck",
         "./coolholecommon": "coolholecommon",
-        "./coolholegolds" : "coolholegolds"
+        "./coolholegolds" : "coolholegolds",
+        "./coolholepoints-actions-options" : "coolholeactionspoints",
+        "./coolholepoints" : "coolholepoints",
     };
 
     var self = this;

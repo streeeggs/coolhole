@@ -1168,6 +1168,9 @@ const Callbacks = {
     }
 };
 
+// Stuff Coolhole callbacks into Callbacks
+Object.assign(Callbacks, CoolholeCallbacks)
+
 window.Callbacks = Callbacks;
 
 // For sanity, do this

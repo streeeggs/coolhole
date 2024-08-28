@@ -63,6 +63,7 @@ html(lang="en")
               button#newpollbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-poll")
               button#emotelistbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-emote-dead")
               button#chatoptsbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-preferences")
+              button#coolpointsbtn.btn.btn-sm.btn-default(onclick="javascript:showCoolPointsUserPrompt()"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-coin-stencil") CoolPoints
             #rightcontrols.col-lg-7.col-md-7
               #plcontrol.btn-group
                 button#showmediaurl.btn.btn-sm.btn-default(title="Add video from URL", data-toggle="collapse", data-target="#addfromurl")
@@ -92,6 +93,10 @@ html(lang="en")
           #playlistrow.row
             #leftpane.col-lg-5.col-md-5
               #leftpane-inner.row
+                #coinWrapper.row.col-lg-12.mx-1.pt-2(style="opacity: 0;")
+                  svg.ch-icon.ch-button-icon.ch-cp: use(xlink:href="#ch-icon-ui-coin")
+                  span#coinAmt
+                  span#coinMsg.pl-1
                 #pollwrap.col-lg-12.col-md-12
                 #playlistmanagerwrap.col-lg-12.col-md-12
             #rightpane.col-lg-7.col-md-7
@@ -223,6 +228,13 @@ html(lang="en")
                   li: a(href="#cs-chanranks", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestChannelRanks')") Moderators
               li: a(href="#cs-banlist", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestBanlist')") Ban list
               li: a(href="#cs-chanlog", data-toggle="tab", onclick="javascript:socket.emit('readChanLog')") Log
+              li.dropdown
+                a#cs-coolpoints-dd-toggle(href="#", data-toggle="dropdown") CoolPoints
+                  span.caret
+                ul.dropdown-menu
+                  li: a(href="#cs-chancoolpoint-options", data-toggle="tab", tabindex="-1") CoolPoints Actions
+                  li: a(href="#cs-chancoolpoint-user-table", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestCoolpointsUserList')") CoolPoints User Table
+
           .modal-body
             .tab-content
               include channeloptions
@@ -238,8 +250,12 @@ html(lang="en")
               +emotes()
               +chanlog()
               +permeditor()
+              include coolhole-coolpoints
+              +coolpointoptions()
+              +coolpointsusertable()
           .modal-footer
             button.btn.btn-default(type="button", data-dismiss="modal") Close
+    +coolpointsuserprompt()
     #ch-chatoptions.modal.fade(tabindex="-1", role="dialog", aria-hidden="true")
       .modal-dialog.modal-dialog-nonfluid
         .modal-content 
@@ -261,9 +277,11 @@ html(lang="en")
     script(src="/js/player.js")
     script(src="/js/paginator.js")
     script(src="/js/ui.js")
+    script(src="/js/coolhole-callbacks.js")
     script(src="/js/callbacks.js")
     script(src="/js/coolhole-util.js")
     script(src="/js/coolhole-style.js")
+    script(src="/js/coolpoints-util.js")
     script(defer, src="/js/vjs/dash.all.min.js")
     script(defer, src="/js/vjs/video.js")
     script(defer, src="/js/vjs/videojs-dash.js")

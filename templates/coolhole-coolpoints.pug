@@ -1,0 +1,222 @@
+mixin coolpointoptions
+  #cs-chancoolpoint-options.tab-pane.fade.col-12(role="tabpanel", aria-labelledby="csCoolpointsOptionsTab")
+    .form-group.table.mb-3.mb-sm-2.px-4
+        each type in cpOptsTypes
+            h4= `CoolPoint ${type}`
+            each action in cpOptsDefaults.filter(opt => opt.actionType === type)
+                .cp-option-form
+                    label.cp-option-action-label= action.modTitle
+                    .cp-option-form-wrapper
+                        form(action="javascript:void(0)")
+                            each option in action.options
+                                .form-group.pl-2.cp-option-form-group
+                                    - var inputId = `cp-${action.name}-${option.optionName}`;
+                                    case option.optionType
+                                        when "bool"
+                                            .checkbox
+                                                label(for=inputId)
+                                                    input(id=inputId, type="checkbox", checked=`${option.optionValue}`, data-actionName=action.name, data-optionName=option.optionName).cs-checkbox
+                                                    = option.optionDescription
+                                        when "time"
+                                            div.col-sm-12
+                                                input(id=inputId, type="text", placeholder="HH:MM:SS", value=`${option.optionValue}`, data-actionName=action.name, data-optionName=option.optionName).form-control.px-3.cp-option-timeinput
+                                                span.text-info
+                                                    =option.optionDescription
+                                        when "int"
+                                            div.col-sm-12
+                                                input(id=inputId, type="text", placeholder=`${option.optionValue}`, value=`${option.optionValue}`, data-actionName=action.name, data-optionName=option.optionName).form-control.px-3.cp-option-input
+                                                span.text-info
+                                                    =option.optionDescription
+                                        when "string"
+                                            // Likely a command which isn't relevant
+                                            break 
+                                        default 
+                                            break
+
+mixin coolpointsusertable
+  #cs-chancoolpoint-user-table.tab-pane.fade.col-12(role="tabpanel", aria-labelledby="csCoolpointsUserTableTab")
+    h4 Coolpoints Users Table
+      form.form-inline
+        .form-group
+          input.users-coolpoints-search.form-control(type="text", placeholder="Search")
+      .users-coolpoints-paginator-container
+      table.users-coolpoints-table.table.table-striped.table-condensed
+        colgroup
+          col(style="width: 37%")
+          col(style="width: 37%")
+          col(style="width: 25%")
+        thead
+          tr
+            th Name
+            th CoolPoints
+            th Fate
+        tbody
+
+mixin coolpointsuserprompt
+    #coolPointsPrompt.modal.fade(role="dialog", aria-hidden="true", tabindex="-1")
+      .modal-dialog.modal-lg(role="document")
+        .modal-content
+          .modal-header.pb-0.mb-0
+            .row.modal-header-row
+              .header-icon-container.display-inline.mt-1.ml-3.pl-2
+                svg.ch-icon.header-icon.mt-n2: use(xlink:href="#ch-icon-ui-coin-stencil")
+              .col
+                h4.modal-title.mt-n1.mb-2 CoolPoints
+            button.close(data-dismiss="modal", aria-label="Close"): span(aria-hidden="true") &times;
+          .modal-body.mt-0.pt-0.px-0.pb-2
+            ul#cpTab.nav.nav-tabs.nav-justified(role="tablist")
+              li.nav-item: a#cpPromptTab.nav-link.active(data-toggle="tab", href="#cp-prompt", role="tab", aria-controls="cp-prompt", aria-selected="true") Our mission
+              li.nav-item: a#cpStatusOfActionsTab.nav-link(data-toggle="tab", href="#cp-status-of-actions", role="tab", aria-controls="cp-status-of-actions", aria-selected="false") Status of Actions
+              li.nav-item: a#cpCasinoTab.nav-link(data-toggle="tab", href="#cp-casino", role="tab", aria-controls="cp-casino", aria-selected="false") Casino
+            .container-fluid.mt-2.px-3
+              #cpTabContent.tab-content.row.pt-2
+                +coolpoints-prompt
+                +status-of-actions
+                +casino
+
+mixin coolpoints-prompt
+  #cp-prompt.tab-pane.fade.col-12.active.in(role="tabpanel", aria-labelledby="cpPromptTab")
+    .row(style="justify-content: space-evenly; align-items: center;")
+      .col
+        img(src="/img/gold-bar.gif", width="175")
+      .col(style="flex-grow: 3; align-self: center;")
+        h1 A CoolHole for you and for <code>us</code>.
+    .row
+      .col: hr.mt-1.mb-2
+    .row
+      .col.px-5(style="font-size: 14px")
+        p
+          span Welcome.
+        p 
+          span You have been automatically enrolled in our Socialized Purview Evidence Review Manifest. As a result, your digital fingerprint has been collected and distributed to interested investors.
+        p
+          span According to NWO regulations, you must be compensated in a currency of our choosing, CoolPoints. This secure biofeedback digital asset utilizes the latest in CUM (Cryptographic Ultra-Modulation) technologies and coalesces your frontal cortex with proof-of-stake and Byzantine fault tolerance algorithms. This allows for a seamless integration of your efforts while providing us with immediate feedback.
+        p
+          span To ensure the most optimal experience, please read our simple guidelines below: 
+          ul
+            li Your CoolPoints can be gained, lost, and spent on a variety of tasks and activities respectively. Please click the <a href="javascript:;">Status of Actions</a> tab to learn more
+            li Our highly qualified team of socioeconomic engineers are in complete control of costs and dividends
+            li The stability and quantity of this asset is parallel to your <b>cognitive functions</b>. It is imperative you maintain your assets
+            li We believe in transparancy so please, feel free to hover over users names in the list to see how well they're doing
+        p
+          span With the use of these technologies, you can benefit from your usual activites but we'll compensate you. It's a win win!
+        p
+          span Thank you and enjoy your time in CoolHole: The Coolest Hole on the internet
+        p
+          +legal-nonsense
+
+
+mixin status-of-actions
+  #cp-status-of-actions.tab-pane.fade.col-12(role="tabpanel", aria-labelledby="cpStatusOfActionsTab")
+    #cp-status-of-actions-accordion.accordion
+        each type in cpOptsTypes
+            .card(id=`cpActionsCard-${type}`)
+                .h3.btn-primary.header(id=`cpActionsCardHeader-${type}`)
+                div(id=`cpActionsCardContent-${type}`)
+                    .card-body
+                        each action in cpOptsDefaults.filter(opt => opt.actionType === type)
+                            .cpActionRow(id=`cp-userprompt-${action.name}`)
+                                .cpActionDescription
+                                    =action.userTitle
+                                    .text-info= action.userDescription
+                                .cpActionCost(class=`cp-${action.actionType}`, id=`cpActionCostWrap-${action.actionType}-${action.name}`)
+                                    // TODO: Coin SVG
+                                    svg
+                                    span(id=`cp-userprompt-${action.name}-pts`)= action.options.find(option => option.optionName === "points").optionValue
+
+
+mixin casino
+  #cp-casino.tab-pane.fade.col-12(role="tabpanel", aria-labelledby="cpCasinoTab")
+    +under-construction
+
+mixin under-construction
+  #cp-under-construction
+    .row(style="justify-content: space-evenly; align-items: center")
+      .col
+        svg(style="fill:#dcdedd; width: 175px"): use(xlink:href="#ch-icon-emote-dead")
+      .col(style="flex-grow: 3")
+        h2 You've seen something you shouldn't have.  
+        h2 Your actions will be remembered.
+
+mixin legal-nonsense
+  span(style="color: gray; font-size: 12px") Terms of Service:
+  div(style="overflow-y: scroll; height: 75px; font-size: 12px; color: gray")
+    span By accessing and using CoolHole or CoolPoints, you agree to waive any and all rights you may have to pursue legal action against us in the event that your cognitive function is decreased or impaired in any way as a result of your use of CoolHole or CoolPoints. You acknowledge and accept that any and all risks associated with the use of CoolHole or CoolPoints are your sole responsibility, and that we will not be held liable for any negative outcomes that may result. By continuing to use our CoolHole or CoolPoints, you indicate your understanding and acceptance of these terms.
+    br
+    b Definitions
+    ul
+      li "CoolHole": Our online platform, offering various features, functionalities, and services.
+      li "CoolPoints": The virtual currency used within CoolHole for purchases, rewards, and other interactions.
+      li "User": Any individual or entity accessing or using CoolHole or acquiring CoolPoints.
+
+    b Acceptance of Terms
+    ol
+      li By accessing or using CoolHole, you agree to abide by these Terms of Service and Waiver of Rights.
+      li If you do not agree with any part of these terms, you must refrain from using CoolHole and discontinue your access.
+
+    b Eligibility
+    ol
+      li Users must be at least 18 years old and possess the legal capacity to enter into contracts.
+      li Users must provide accurate and up-to-date information during the registration process.
+
+    b Account Creation and Security
+    ol
+      li Users are responsible for maintaining the confidentiality of their account credentials.
+      li Users must promptly notify us of any unauthorized use of their account or any other security breaches.
+      li We reserve the right to suspend or terminate accounts if we suspect unauthorized or fraudulent activity.
+
+    b CoolPoints
+    ol
+      li CoolPoints have no monetary value and cannot be redeemed for cash.
+      li We reserve the right to modify or discontinue CoolPoints at any time, without prior notice.
+      li Users may earn CoolPoints through various activities within CoolHole, as specified on our platform.
+      li We are not liable for any unauthorized use, loss, or theft of CoolPoints.
+
+    b User Conduct
+    ol
+      li Users agree not to engage in any unlawful, fraudulent, or malicious activities while using CoolHole.
+      li Users must respect the intellectual property rights of others and refrain from unauthorized use or distribution of content.
+      li Users must not attempt to gain unauthorized access to our systems or interfere with the proper functioning of CoolHole.
+      li We reserve the right to terminate accounts and take legal action against users who violate these terms.
+
+    b Intellectual Property Rights
+    ol
+      li CoolHole and all its associated content, trademarks, logos, and intellectual property are owned by us or our licensors.
+      li Users are prohibited from reproducing, modifying, distributing, or exploiting any CoolHole content without prior written consent.
+
+    b Disclaimer of Warranties
+    ol
+      li CoolHole and CoolPoints are provided on an "as is" and "as available" basis.
+      li We make no warranties or representations regarding the accuracy, reliability, or suitability of CoolHole or CoolPoints.
+      li We disclaim all warranties, express or implied, including but not limited to warranties of merchantability and fitness for a particular purpose.
+
+    b Limitation of Liability
+    ol
+      li In no event shall we be liable for any direct, indirect, incidental, consequential, or exemplary damages arising from your use of CoolHole or CoolPoints.
+      li Our total liability, regardless of the cause of action, shall not exceed the amount paid by you, if any, to access CoolHole or purchase CoolPoints.
+
+    b Indemnification
+    ol
+      li Users agree to indemnify and hold us harmless from any claims, damages, losses, liabilities, and expenses (including legal fees) arising out of or related to:
+      ul
+        li Your use of CoolHole or CoolPoints.
+        li Your violation of these Terms of Service and Waiver of Rights.
+        li Your infringement of any intellectual property rights or other rights of any third party.
+        li Any unauthorized or fraudulent activities conducted through your account.
+
+    b Governing Law and Dispute Resolution
+    ol
+      li These Terms of Service and Waiver of Rights shall be governed by and construed in accordance with the laws of SomeWhere.
+      li Any disputes or claims arising out of or relating to these terms shall be resolved through binding arbitration in accordance with the rules of Canadian Arbitration Association.
+      li The arbitration shall take place in Oshawa, Fuckin Cananda IDFK, and the language of the arbitration shall be French-Canadian.
+      li The prevailing party in any arbitration or legal action shall be entitled to recover its reasonable attorneys' fees and costs.
+
+    b Severability
+    p If any provision of these Terms of Service and Waiver of Rights is found to be unenforceable or invalid under any applicable law, such unenforceability or invalidity shall not render these terms unenforceable or invalid as a whole. Instead, the unenforceable or invalid provision shall be modified to the extent necessary to make it enforceable and valid while preserving its intent.
+
+    b Entire Agreement
+    p These Terms of Service and Waiver of Rights constitute the entire agreement between you and us regarding your use of CoolHole and CoolPoints and supersede any prior agreements or understandings, whether written or oral.
+
+    b Contact Information
+    p If you have any questions or concerns about these terms, please contact us at forgotmycockli@protonmail.com.
+
