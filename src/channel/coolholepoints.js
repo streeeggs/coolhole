@@ -426,6 +426,7 @@ class Coolpoints extends ChannelModule {
       if (!this.isValidAction(user, action, ActionType.Expenditures, "spend"))
         return;
 
+      const actionData = this.channel.modules.coolholeactionspoints.get(action);
       const pointsToSpend = actionData.options.find(
         (opt) => opt.optionName === "points"
       ).optionValue;
@@ -473,6 +474,7 @@ class Coolpoints extends ChannelModule {
       if (!this.isValidAction(user, action, ActionType.Earnings, "earn"))
         return;
 
+      const actionData = this.channel.modules.coolholeactionspoints.get(action);
       const pointsToEarn = actionData.options.find(
         (opt) => opt.optionName === "points"
       ).optionValue;
@@ -516,6 +518,7 @@ class Coolpoints extends ChannelModule {
     try {
       if (!this.isValidAction(user, action, ActionType.Losses, "lose")) return;
 
+      const actionData = this.channel.modules.coolholeactionspoints.get(action);
       const pointsToLose = actionData.options.find(
         (opt) => opt.optionName === "points"
       ).optionValue;
