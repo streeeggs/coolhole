@@ -659,8 +659,8 @@ class Coolpoints extends ChannelModule {
   }
 
   /**
-   *
-   * @param {*} user
+   * @summary Handles the active earning action for logged in users. Runs on an interval and writes the interval userActiveIntervalIds keyed by the user's name + channel
+   * @param {*} user user object
    */
   handleActive(user) {
     if (!user.is(Flags.U_REGISTERED)) {
@@ -674,40 +674,43 @@ class Coolpoints extends ChannelModule {
     const activeInterval =
       activeActionData.options.find((opt) => opt.optionName === "interval")
         .optionValue * 1000;
-    this.userActiveIntervalIds[user.getName()] = setInterval(() => {
-      // Has the interval changed? If so, clear and restart
-      const curInterval =
-        this.channel.modules.coolholeactionspoints
-          .get("active")
-          .options.find((opt) => opt.optionName === "interval").optionValue *
-        1000;
-      if (curInterval !== activeInterval) {
-        LOGGER.info(
-          `Interval has changed. Clearing and restarting for ${user.getName()}`
-        );
+    this.userActiveIntervalIds[user.getName() + "-" + user.channel.name] =
+      setInterval(() => {
+        // Has the interval changed? If so, clear and restart
+        const curInterval =
+          this.channel.modules.coolholeactionspoints
+            .get("active")
+            .options.find((opt) => opt.optionName === "interval").optionValue *
+          1000;
+        if (curInterval !== activeInterval) {
+          LOGGER.info(
+            `Interval has changed. Clearing and restarting for ${user.getName()}`
+          );
 
-        clearInterval(this.userActiveIntervalIds[user.getName()]);
-        this.handleActive(user);
-        return;
-      }
+          clearInterval(this.userActiveIntervalIds[user.getName()]);
+          this.handleActive(user);
+          return;
+        }
 
-      // Check if the action is still valid/active. If not, just return since I don't wanna build a hook to start this up again when it's turned on
-      if (!this.isValidAction(user, "active", ActionType.Earnings, "active")) {
-        LOGGER.info(
-          `'Acitve' is no longer active. Oh well. From: ${user.getName()}`
-        );
-        return;
-      }
+        // Check if the action is still valid/active. If not, just return since I don't wanna build a hook to start this up again when it's turned on
+        if (
+          !this.isValidAction(user, "active", ActionType.Earnings, "active")
+        ) {
+          LOGGER.info(
+            `'Acitve' is no longer active. Oh well. From: ${user.getName()}`
+          );
+          return;
+        }
 
-      if (user.is(Flags.U_AFK)) {
-        LOGGER.info(
-          `${user.getName()} is AFK. No points for you! AI gave me an epic Sienfeld reference`
-        );
-        return;
-      }
+        if (user.is(Flags.U_AFK)) {
+          LOGGER.info(
+            `${user.getName()} is AFK. No points for you! AI gave me an epic Sienfeld reference`
+          );
+          return;
+        }
 
-      this.earn(user, "active");
-    }, activeInterval);
+        this.earn(user, "active");
+      }, activeInterval);
   }
 }
 
