@@ -139,9 +139,7 @@ class Coolpoints extends ChannelModule {
   }
 
   onUserPart(user) {
-    LOGGER.info(`Clearing active interval for ${user.getName()}`);
-    clearInterval(this.userActiveIntervalIds[user.getName()]);
-    delete this.userActiveIntervalIds[user.getName()];
+    this.cleanUpActive(user);
   }
 
   /**
@@ -663,9 +661,19 @@ class Coolpoints extends ChannelModule {
    * @param {*} user user object
    */
   handleActive(user) {
-    if (!user.is(Flags.U_REGISTERED)) {
+    if (!user.is(Flags.U_REGISTERED) || !user.is(Flags.U_LOGGED_IN)) {
       LOGGER.info(`Guest is not eligible for points. Skipping active check`);
       return;
+    }
+    // If the channel is dead or malformed, consider the user that joined in a bad state and hopefully this will be called again later
+    if (
+      !this.channel?.modules?.coolholeactionspoints ||
+      (this.channel?.dead ?? false)
+    ) {
+      LOGGER.error(
+        `Channel or channel modules are missing on init. Stopping for ${user.getName()}`
+      );
+      this.cleanUpActive(user);
     }
 
     const activeActionData =
@@ -674,43 +682,49 @@ class Coolpoints extends ChannelModule {
     const activeInterval =
       activeActionData.options.find((opt) => opt.optionName === "interval")
         .optionValue * 1000;
-    this.userActiveIntervalIds[user.getName() + "-" + user.channel.name] =
-      setInterval(() => {
-        // Has the interval changed? If so, clear and restart
-        const curInterval =
-          this.channel.modules.coolholeactionspoints
-            .get("active")
-            .options.find((opt) => opt.optionName === "interval").optionValue *
-          1000;
-        if (curInterval !== activeInterval) {
-          LOGGER.info(
-            `Interval has changed. Clearing and restarting for ${user.getName()}`
-          );
+    this.userActiveIntervalIds[user.getName()] = setInterval(() => {
+      // If the channel is dead or malformed, consider this interval dead
+      if (
+        !this.channel?.modules?.coolholeactionspoints ||
+        (this.channel?.dead ?? false)
+      ) {
+        LOGGER.error(
+          `Channel or channel modules are missing. Clearing interval for ${user.getName()}`
+        );
+        this.cleanUpActive(user);
+        return;
+      }
 
-          clearInterval(this.userActiveIntervalIds[user.getName()]);
-          this.handleActive(user);
-          return;
-        }
+      // Has the interval changed? If so, clear and restart
+      const curInterval =
+        this.channel.modules.coolholeactionspoints
+          .get("active")
+          .options.find((opt) => opt.optionName === "interval").optionValue *
+        1000;
+      if (curInterval !== activeInterval) {
+        LOGGER.info(
+          `Interval has changed. Clearing interval and restarting for ${user.getName()}`
+        );
 
-        // Check if the action is still valid/active. If not, just return since I don't wanna build a hook to start this up again when it's turned on
-        if (
-          !this.isValidAction(user, "active", ActionType.Earnings, "active")
-        ) {
-          LOGGER.info(
-            `'Acitve' is no longer active. Oh well. From: ${user.getName()}`
-          );
-          return;
-        }
+        clearInterval(this.userActiveIntervalIds[user.getName()]);
+        this.handleActive(user);
+        return;
+      }
 
-        if (user.is(Flags.U_AFK)) {
-          LOGGER.info(
-            `${user.getName()} is AFK. No points for you! AI gave me an epic Sienfeld reference`
-          );
-          return;
-        }
+      // Check if the action is still valid/active. If not, just return since I don't wanna build a hook to start this up again when it's turned on
+      if (!this.isValidAction(user, "active", ActionType.Earnings, "active"))
+        return;
 
-        this.earn(user, "active");
-      }, activeInterval);
+      if (user.is(Flags.U_AFK)) return;
+
+      this.earn(user, "active");
+    }, activeInterval);
+  }
+
+  cleanUpActive(user) {
+    LOGGER.info(`Clearing active interval for ${user.getName()}`);
+    clearInterval(this.userActiveIntervalIds[user.getName()]);
+    delete this.userActiveIntervalIds[user.getName()];
   }
 }
 
