@@ -1,6 +1,7 @@
 var ChannelModule = require("./module");
 var FilterList = require("cytubefilters");
 var LOGGER = require("@calzoneman/jsli")("coolpoints");
+var Flags = require("../flags");
 import { ActionType } from "./coolholepoints-actions-options";
 
 /**
@@ -119,6 +120,7 @@ class Coolpoints extends ChannelModule {
     ChannelModule.apply(this, arguments);
 
     this.supportsDirtyCheck = true;
+    this.userActiveIntervalIds = {};
     this.coolpoints = [];
   }
 
@@ -133,6 +135,13 @@ class Coolpoints extends ChannelModule {
     );
 
     this.init(user);
+    this.handleActive(user);
+  }
+
+  onUserPart(user) {
+    LOGGER.info(`Clearing active interval for ${user.getName()}`);
+    clearInterval(this.userActiveIntervalIds[user.getName()]);
+    delete this.userActiveIntervalIds[user.getName()];
   }
 
   /**
@@ -146,12 +155,10 @@ class Coolpoints extends ChannelModule {
    * @param {String} errorObject.userMessage Message to display to the user
    */
   logError({ user, callingFunction, returnSocket, err, data, userMessage }) {
-    LOGGER.error(`Exception caught in ${callingFunction}. Error:  ${err}`);
-
     LOGGER.error(
-      `Unkown error in ${callingFunction} for CoolPoints. Here's hopefully relevant data: ${JSON.stringify(
+      `Exception caught in ${callingFunction} for CoolPoints. Here's hopefully relevant data: ${JSON.stringify(
         data ? data : {}
-      )}`
+      )} Error:  ${err}`
     );
 
     if (returnSocket)
@@ -347,7 +354,7 @@ class Coolpoints extends ChannelModule {
         callingFunction,
         returnSocket: "coolpointsFailure",
         err: `User ${user.getName()} not found for point ${action}`,
-        data: user.getName(),
+        data: { user: user.getName(), action },
         userMessage: `Error: You were not found... Good luck with that`,
       });
       return false;
@@ -360,7 +367,7 @@ class Coolpoints extends ChannelModule {
         callingFunction,
         returnSocket: "coolpointsFailure",
         err: `Action ${action} is not an ${expectedActionType}`,
-        data: user.getName(),
+        data: { user: user.getName(), action },
         userMessage: `Error: Action ${action} is not an ${expectedActionType}`,
       });
       return false;
@@ -370,14 +377,16 @@ class Coolpoints extends ChannelModule {
       actionData.options.find((opt) => opt.optionName === "enabled")
         .optionValue === false
     ) {
-      this.logError({
-        user,
-        callingFunction,
-        returnSocket: "coolpointsFailure",
-        err: `Action ${action} is not enabled`,
-        data: user.getName(),
-        userMessage: `Error: Action ${action} is not enabled`,
-      });
+      if (action !== "active")
+        // "Active" still runs even if it's inactive; no need to log
+        this.logError({
+          user,
+          callingFunction,
+          returnSocket: "coolpointsFailure",
+          err: `Action ${action} is not enabled`,
+          data: { user: user.getName(), action },
+          userMessage: `Error: Action ${action} is not enabled`,
+        });
       return false;
     }
 
@@ -393,7 +402,7 @@ class Coolpoints extends ChannelModule {
             callingFunction,
             returnSocket: "coolpointsFailure",
             err: `User ${user.getName()} does not have enough points to spend on ${action}`,
-            data: user.getName(),
+            data: { user: user.getName(), action },
             userMessage: `Error: You do not have enough points to spend on ${action}`,
           });
           return false;
@@ -647,6 +656,58 @@ class Coolpoints extends ChannelModule {
     }
 
     return resMsg;
+  }
+
+  /**
+   *
+   * @param {*} user
+   */
+  handleActive(user) {
+    if (!user.is(Flags.U_REGISTERED)) {
+      LOGGER.info(`Guest is not eligible for points. Skipping active check`);
+      return;
+    }
+
+    const activeActionData =
+      this.channel.modules.coolholeactionspoints.get("active");
+    // Multiply by 1000 to convert to milliseconds
+    const activeInterval =
+      activeActionData.options.find((opt) => opt.optionName === "interval")
+        .optionValue * 1000;
+    this.userActiveIntervalIds[user.getName()] = setInterval(() => {
+      // Has the interval changed? If so, clear and restart
+      const curInterval =
+        this.channel.modules.coolholeactionspoints
+          .get("active")
+          .options.find((opt) => opt.optionName === "interval").optionValue *
+        1000;
+      if (curInterval !== activeInterval) {
+        LOGGER.info(
+          `Interval has changed. Clearing and restarting for ${user.getName()}`
+        );
+
+        clearInterval(this.userActiveIntervalIds[user.getName()]);
+        this.handleActive(user);
+        return;
+      }
+
+      // Check if the action is still valid/active. If not, just return since I don't wanna build a hook to start this up again when it's turned on
+      if (!this.isValidAction(user, "active", ActionType.Earnings, "active")) {
+        LOGGER.info(
+          `'Acitve' is no longer active. Oh well. From: ${user.getName()}`
+        );
+        return;
+      }
+
+      if (user.is(Flags.U_AFK)) {
+        LOGGER.info(
+          `${user.getName()} is AFK. No points for you! AI gave me an epic Sienfeld reference`
+        );
+        return;
+      }
+
+      this.earn(user, "active");
+    }, activeInterval);
   }
 }
 
