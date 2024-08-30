@@ -129,6 +129,8 @@ class Coolpoints extends ChannelModule {
    * @param {*} user user object
    */
   onUserPostJoin(user) {
+    if (!user.channel.is(Flags.C_REGISTERED)) return;
+
     user.socket.on(
       "applyPointsToUser",
       this.handleApplyPointsToUser.bind(this, user)
