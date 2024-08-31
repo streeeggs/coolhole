@@ -232,8 +232,8 @@ html(lang="en")
                 a#cs-coolpoints-dd-toggle(href="#", data-toggle="dropdown") CoolPoints
                   span.caret
                 ul.dropdown-menu
-                  li: a(href="#cs-chancoolpoint-options", data-toggle="tab", tabindex="-1") CoolPoints Actions
-                  li: a(href="#cs-chancoolpoint-user-table", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestCoolpointsUserList')") CoolPoints User Table
+                  li: a(href="#cs-chancoolpoint-options", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('getCpOptions')") CoolPoints Actions
+                  li: a(href="#cs-chancoolpoint-user-table", data-toggle="tab", tabindex="-1") CoolPoints User Table
 
           .modal-body
             .tab-content

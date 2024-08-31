@@ -37,9 +37,10 @@ function updateAnimation(id, animationName) {
   el.classList.add(animationName);
   Promise.all(
     el.getAnimations({ subtree: true }).map((animation) => animation.finished)
-  )
-    .then(() => el.classList.remove(animationName))
-    .catch((err) => console.error(err));
+  ).then(() => el.classList.remove(animationName));
+  // TODO: This is a catch all error handler which picked up when an animation was cancelled.
+  // That's just noise and should be more targeted if needed
+  //.catch((err) => console.error(err));
 }
 
 /**
@@ -357,10 +358,6 @@ function applyPointsToTable(pointData) {
  * Coolpoints Admin Options
  * ============================
  */
-function showCoolPointsUserPrompt() {
-  //updateCoolPointActionsUserPrompt();
-  $("#coolPointsPrompt").modal();
-}
 
 /**
  * Sends the updated option to the server
@@ -461,6 +458,9 @@ function cpTimeInputChange(event) {
 function handleCPOptionChanges() {
   if (!CHANNEL.opts.cpOpts) return;
 
+  $("#channeloptions").find(".text-danger").remove();
+  $("#channeloptions").find(".has-error").removeClass("has-error");
+
   CHANNEL.opts.cpOpts.forEach((action) => {
     const { name: actionName } = action;
     action.options.forEach((option) => {
@@ -498,6 +498,16 @@ function handleCPOptionChanges() {
       }
     });
   });
+}
+
+/**
+ * ============================
+ * Coolpoints User Prompt
+ * ============================
+ */
+function showCoolPointsUserPrompt() {
+  //updateCoolPointActionsUserPrompt();
+  $("#coolPointsPrompt").modal();
 }
 
 /**

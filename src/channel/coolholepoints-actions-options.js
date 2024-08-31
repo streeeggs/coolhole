@@ -1,5 +1,6 @@
 var ChannelModule = require("./module");
 const LOGGER = require("@calzoneman/jsli")("coolpoints-actions");
+var Flags = require("../flags");
 
 const ActionType = {
   Earnings: "Earnings",
@@ -361,7 +362,10 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
    * @param {*} user user object
    */
   onUserPostJoin(user) {
+    if (!user.channel.is(Flags.C_REGISTERED)) return;
+
     user.socket.on("setCpOptions", this.handleSetCpOptions.bind(this, user));
+    user.socket.on("getCpOptions", this.sendCpOpts.bind(this, [user]));
 
     this.sendCpOpts([user]);
   }
@@ -430,6 +434,12 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
    * @returns
    */
   get(name) {
+    if (this.coolpointsActions.length === 0) {
+      LOGGER.error(
+        "No coolpointsActions found for this channel.. Forcing load?"
+      );
+      this.load({});
+    }
     if (!this.coolpointsActions.some((action) => action.name === name)) {
       LOGGER.error(`CP Action Not found: ${name}`);
       throw new Error(`CP Action Not found: ${name}`);
@@ -515,7 +525,7 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
 
     let sendUpdate = false;
 
-    const isValidPoints = (pts) => !Number.isNaN(pts);
+    const isValidPoints = (pts) => !!pts && !Number.isNaN(pts);
     const targetBuilder = (action, option) => `#cp-${action}-${option}`;
     const isValidInput = (actionName, optionName, optionValue) => {
       switch (optionName) {
@@ -559,7 +569,7 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
       switch (optionType) {
         case "points":
         case "interval":
-          return parseInt(val);
+          return parseInt(val) || 0;
 
         case "enabled":
           return !!val;
