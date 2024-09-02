@@ -23,9 +23,20 @@
 function initPointsForSelf(pts) {
   const pointsEl = $("#coinAmt");
   pointsEl.text(`${pts}`);
-
-  $("#coinWrapper").addClass("cpFadeIn");
 }
+
+/**
+ * Kamal - moved the button loading out of "initPointsForSelf()"" since it is called on page load.
+ * If we wanted to put any other animations on the button for points gained or earned we'd need the previous
+ * animation class removed i.e., "cpFadeIn".
+ */
+(function spawnPointsBtn(){
+  const buttonEl = document.getElementById("coolpointsbtn");
+  buttonEl.classList.add("cpFadeIn");
+  Promise.all(
+    buttonEl.getAnimations({ subtree: true }).map((animation) => animation.finished)
+  ).then(() => buttonEl.classList.remove("cpFadeIn")).catch((error) => console.log(error));
+})();
 
 /**
  * Handles overlapping animations by removing the previous animation
@@ -72,11 +83,14 @@ function animatePointUpdate(ptEl, msgEl, diff) {
   const isPositive = diff > 0;
   const bounceAnimationName = isPositive ? "cpBounce" : "cpShake";
   const fadeAnimationName = isPositive ? "cpFadeGreen" : "cpFadeRed";
+  const glowAnimationName = isPositive ? "glowGreen" : "glowRed";
   const msgText = isPositive ? `+${diff}` : `${diff}`;
-
+  const btnEl = $("#coolpointsbtn");
+  
   msgEl.text(msgText);
-  updateAnimation(ptEl.attr("id"), bounceAnimationName);
-  updateAnimation(msgEl.attr("id"), fadeAnimationName);
+  updateAnimation(btnEl.attr("id"), [glowAnimationName]);
+  updateAnimation(ptEl.attr("id"), [bounceAnimationName]);
+  updateAnimation(msgEl.attr("id"), [fadeAnimationName]);
 }
 
 /**

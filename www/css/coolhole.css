@@ -398,16 +398,106 @@
 }
 
 /* CoolPoints User Styling */
-#coinWrapper {
+#cpModal {
+  padding: 0;
+}
+#cpModalContent {
+  padding-top: 5px;
+}
+#cpModalBody {
+  padding: 0;
+}
+#cpModalBody > .container-fluid {
+  padding-left: 18px;
+  padding-right: 18px;
+}
+#cpModalHeader {
   display: flex;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 18px;
+  padding-right: 18px;
+  align-items: center;
+}
+#cpModalHeader > button.close {
+    color: rgb(246, 246, 246);
+    font-size: 24px;
+    opacity: 100%;
+}
+#cpModalHeader > .modal-title {
+  margin-right: auto;
+}
+#cpModalIcon {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+#coolpointsbtn {
   grid-gap: 3px;
   gap: 3px;
+  height: 36px;
+}
+#coinAmt {
+  font-size: 14px;
+  margin-left: 5px;
 }
 #coinAmt::after {
   content: " CP";
 }
 #coinMsg {
   opacity: 0%;
+}
+.glowGreen {
+  -webkit-animation:
+    green-glow 0.8s ease-in-out 0s 1 normal none,
+    bounce 0.8s ease-in-out 0s 1 normal none;
+  animation: 
+    green-glow 0.8s ease-in-out 0s 1 normal none,
+    bounce 0.8s ease-in-out 0s 1 normal none;
+}
+@-webkit-keyframes green-glow{
+  0%,
+  100%{
+    background-color: #161a20;
+  }
+  50%{
+    background-color: #00ff00;
+  }
+}
+@keyframes green-glow{
+  0%,
+  100%{
+    background-color: #161a20;
+  }
+  50%{
+    background-color: #158415;
+  }
+}
+.glowRed {
+  -webkit-animation:
+    red-glow 0.8s ease-in-out 0s 1 normal none,
+    shake 0.8s ease-in-out 0s 1 normal none;
+  animation: 
+    red-glow 0.8s ease-in-out 0s 1 normal none,
+    shake 0.8s ease-in-out 0s 1 normal none;
+}
+@-webkit-keyframes red-glow {
+  0%,
+  100%{
+    background-color: #161a20;
+  }
+  50%{
+    background-color: #dd1b1b;
+  }
+}
+@keyframes red-glow {
+  0%,
+  100%{
+    background-color: #161a20;
+  }
+  50%{
+    background-color: #dd1b1b;
+  }
 }
 .cpBounce {
   -webkit-animation: bounce 0.8s ease-in-out 0s 1 normal none;
@@ -422,13 +512,13 @@
     -webkit-transform: translateY(0);
   }
   20% {
-    -webkit-transform: translateY(-8px);
+    -webkit-transform: translateY(-5px);
   }
   40% {
-    -webkit-transform: translateY(-4px);
+    -webkit-transform: translateY(-3px);
   }
   60% {
-    -webkit-transform: translateY(-2px);
+    -webkit-transform: translateY(-1px);
   }
 }
 @keyframes bounce {
@@ -440,13 +530,13 @@
     -webkit-transform: translateY(0);
   }
   20% {
-    -webkit-transform: translateY(-8px);
-  }
-  40% {
     -webkit-transform: translateY(-4px);
   }
+  40% {
+    -webkit-transform: translateY(-3px);
+  }
   60% {
-    -webkit-transform: translateY(-2px);
+    -webkit-transform: translateY(-1px);
   }
 }
 .cpShake {
@@ -510,8 +600,8 @@
   }
 }
 .cpFadeIn {
-  -webkit-animation: fadeIn 1.3s ease-in-out 0s 1;
-  animation: fadeIn 1.3s ease-in-out 0s 1;
+  -webkit-animation: fadeIn 0.8s ease-in-out 0s 1;
+  animation: fadeIn 0.8s ease-in-out 0s 1;
   -webkit-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
 }
