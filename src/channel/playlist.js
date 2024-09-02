@@ -1042,6 +1042,9 @@ PlaylistModule.prototype._addItem = function (media, data, user, cb) {
             self.startPlayback();
         }
 
+        /* Update coolpoints */
+        self.channel.modules.coolholepoints.earn(user, "addingVid");
+
         self._listDirty = true;
 
         if (cb) {

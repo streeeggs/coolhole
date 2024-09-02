@@ -432,6 +432,8 @@ class Coolpoints extends ChannelModule {
    */
   spend(user, action) {
     try {
+      if(!user.channel.is(Flags.C_REGISTERED) || !user.is(Flags.U_REGISTERED) || !user.is(Flags.U_LOGGED_IN)) return;
+
       if (!this.isValidAction(user, action, ActionType.Expenditures, "spend"))
         return;
 
@@ -480,6 +482,8 @@ class Coolpoints extends ChannelModule {
    */
   earn(user, action) {
     try {
+      if(!user.channel.is(Flags.C_REGISTERED) || !user.is(Flags.U_REGISTERED) || !user.is(Flags.U_LOGGED_IN)) return;
+
       if (!this.isValidAction(user, action, ActionType.Earnings, "earn"))
         return;
 
@@ -525,6 +529,8 @@ class Coolpoints extends ChannelModule {
    */
   lose(user, action) {
     try {
+      if(!user.channel.is(Flags.C_REGISTERED) || !user.is(Flags.U_REGISTERED) || !user.is(Flags.U_LOGGED_IN)) return;
+      
       if (!this.isValidAction(user, action, ActionType.Losses, "lose")) return;
 
       const actionData = this.channel.modules.coolholeactionspoints.get(action);
@@ -589,6 +595,8 @@ class Coolpoints extends ChannelModule {
    * @returns {Object} chat message object with statuses applied
    */
   handleChatStatuses(user, chatObj) {
+    if(!user.channel.is(Flags.C_REGISTERED) || !user.is(Flags.U_REGISTERED) || !user.is(Flags.U_LOGGED_IN)) return;
+    
     const statuses = this.checkStatuses(user);
     let res = { ...chatObj };
     let filters = [];
