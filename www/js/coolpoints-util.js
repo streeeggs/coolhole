@@ -23,21 +23,20 @@
 function initPointsForSelf(pts) {
   const pointsEl = $("#coinAmt");
   pointsEl.text(`${pts}`);
-}
 
+}
 /**
  * Kamal - moved the button loading out of "initPointsForSelf()"" since it is called on page load.
  * If we wanted to put any other animations on the button for points gained or earned we'd need the previous
  * animation class removed i.e., "cpFadeIn".
  */
-(function spawnPointsBtn(){
-  const buttonEl = document.getElementById("coolpointsbtn");
+function initCounterForSelf(){
+  const buttonEl = document.getElementById("cpPromptBtn");
   buttonEl.classList.add("cpFadeIn");
   Promise.all(
     buttonEl.getAnimations({ subtree: true }).map((animation) => animation.finished)
   ).then(() => buttonEl.classList.remove("cpFadeIn")).catch((error) => console.log(error));
-})();
-
+}
 /**
  * Handles overlapping animations by removing the previous animation
  * @param {String} id Id of the element to animate
@@ -48,7 +47,7 @@ function updateAnimation(id, animationName) {
   el.classList.add(animationName);
   Promise.all(
     el.getAnimations({ subtree: true }).map((animation) => animation.finished)
-  ).then(() => el.classList.remove(animationName));
+  ).then(() => el.classList.remove(animationName)).catch((error) => console.log(error));
   // TODO: This is a catch all error handler which picked up when an animation was cancelled.
   // That's just noise and should be more targeted if needed
   //.catch((err) => console.error(err));
@@ -83,14 +82,14 @@ function animatePointUpdate(ptEl, msgEl, diff) {
   const isPositive = diff > 0;
   const bounceAnimationName = isPositive ? "cpBounce" : "cpShake";
   const fadeAnimationName = isPositive ? "cpFadeGreen" : "cpFadeRed";
-  const glowAnimationName = isPositive ? "glowGreen" : "glowRed";
+  const glowAnimationName = isPositive ? "cpGlowGreen" : "cpGlowRed";
   const msgText = isPositive ? `+${diff}` : `${diff}`;
-  const btnEl = $("#coolpointsbtn");
-  
+  const btnEl = $("#cpPromptBtn");
   msgEl.text(msgText);
-  updateAnimation(btnEl.attr("id"), [glowAnimationName]);
-  updateAnimation(ptEl.attr("id"), [bounceAnimationName]);
-  updateAnimation(msgEl.attr("id"), [fadeAnimationName]);
+  updateCoinColor();
+  updateAnimation(btnEl.attr("id"), glowAnimationName);
+  updateAnimation(ptEl.attr("id"), bounceAnimationName);
+  updateAnimation(msgEl.attr("id"), fadeAnimationName);
 }
 
 /**

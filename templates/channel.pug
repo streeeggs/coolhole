@@ -7,7 +7,6 @@ html(lang="en")
     link(rel="stylesheet", href="/css/video-js.css")
     link(rel="stylesheet", href="/css/videojs-resolution-switcher.css")
   body
-    include ../www/svg/coolhole-icons.svg
     #wrap
       nav.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
         include nav
@@ -63,8 +62,7 @@ html(lang="en")
               button#newpollbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-poll")
               button#emotelistbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-emote-dead")
               button#chatoptsbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-preferences")
-              button#coolpointsbtn.btn.btn-sm.btn-default(onclick="javascript:showCoolPointsUserPrompt()"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-coin-stencil")
-                svg.ch-icon.ch-button-icon.ch-cp: use(xlink:href="#ch-icon-ui-coin")
+              button#cpPromptBtn.btn.btn-sm.btn-default(onclick="javascript:showCoolPointsUserPrompt()"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-coin")
                 span#coinAmt
               span#coinMsg
             #rightcontrols.col-lg-7.col-md-7

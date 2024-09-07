@@ -398,6 +398,11 @@
 }
 
 /* CoolPoints User Styling */
+#cpPromptBtn {
+  grid-gap: 3px;
+  gap: 3px;
+  height: 36px;
+}
 #cpModal {
   padding: 0;
 }
@@ -432,11 +437,6 @@
   height: 50px;
   margin-right: 10px;
 }
-#coolpointsbtn {
-  grid-gap: 3px;
-  gap: 3px;
-  height: 36px;
-}
 #coinAmt {
   font-size: 14px;
   margin-left: 5px;
@@ -447,7 +447,7 @@
 #coinMsg {
   opacity: 0%;
 }
-.glowGreen {
+.cpGlowGreen {
   -webkit-animation:
     green-glow 0.8s ease-in-out 0s 1 normal none,
     bounce 0.8s ease-in-out 0s 1 normal none;
@@ -455,7 +455,7 @@
     green-glow 0.8s ease-in-out 0s 1 normal none,
     bounce 0.8s ease-in-out 0s 1 normal none;
 }
-@-webkit-keyframes green-glow{
+@-webkit-keyframes green-glow {
   0%,
   100%{
     background-color: #161a20;
@@ -464,7 +464,7 @@
     background-color: #00ff00;
   }
 }
-@keyframes green-glow{
+@keyframes green-glow {
   0%,
   100%{
     background-color: #161a20;
@@ -473,7 +473,7 @@
     background-color: #158415;
   }
 }
-.glowRed {
+.cpGlowRed {
   -webkit-animation:
     red-glow 0.8s ease-in-out 0s 1 normal none,
     shake 0.8s ease-in-out 0s 1 normal none;
