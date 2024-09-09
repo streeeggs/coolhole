@@ -1,4 +1,4 @@
-mixin coolpointoptions
+mixin ch-coolpointoptions
   #cs-chancoolpoint-options.tab-pane.fade.col-12(role="tabpanel", aria-labelledby="csCoolpointsOptionsTab")
     .form-group.table.mb-3.mb-sm-2.px-4
         each type in cpOptsTypes
@@ -33,7 +33,7 @@ mixin coolpointoptions
                                         default 
                                             break
 
-mixin coolpointsusertable
+mixin ch-coolpointsusertable
   #cs-chancoolpoint-user-table.tab-pane.fade.col-12(role="tabpanel", aria-labelledby="csCoolpointsUserTableTab")
     h4 Coolpoints Users Table
       form.form-inline
@@ -52,7 +52,7 @@ mixin coolpointsusertable
             th Fate
         tbody
 
-mixin coolpointsuserprompt
+mixin ch-coolpointsuserprompt
     #coolPointsPrompt.modal.fade(role="dialog", aria-hidden="true", tabindex="-1")
       .modal-dialog.modal-lg(role="document")
         .modal-content
@@ -220,3 +220,40 @@ mixin legal-nonsense
     b Contact Information
     p If you have any questions or concerns about these terms, please contact us at forgotmycockli@protonmail.com.
 
+// TODO: Create a general coolhole pug file
+
+mixin ch-command-modal(title)
+  - var modalId = `ch-${title.toLowerCase().replace(/\s/g, "-")}-modal`;
+  .modal.fade(id=modalId, tabindex="-1", role="dialog", aria-hidden="true")
+      .modal-dialog.modal-dialog-nonfluid
+        .modal-content 
+          .modal-header
+            button.close(data-dismiss="modal", aria-hidden="true") &times;
+            h4= title
+          .modal-body(id=`${modalId}-body`)
+            case title
+              when "Secretary"
+                +ch-secretary-modal-body
+              default
+                p No content. Ask a monkey incharge
+          .modal-footer(id=`${modalId}-footer`)
+            case title
+              when "Secretary"
+                +ch-secretary-modal-footer
+              default
+                p No content. Ask a monkey incharge
+
+mixin ch-secretary-modal-body
+  h4 Provide the script and she will let the world know
+  form.form-horizontal(action="javascript:void(0)")
+    +textbox-auto("secretaryOption-rate", "Rate", "1.2")
+    +textbox-auto("secretaryOption-pitch", "Pitch", "1")
+    label.control-label.col-sm-4(for="#secretaryOption-voice") Voice
+    .col-sm-8
+      select#secretaryOption-voice.form-control
+      p.text-danger Voices are specific to your browser. If a voice is not available for a user, the default voice will be used.
+    +textbox-auto("secretaryOption-message", "Message")
+
+mixin ch-secretary-modal-footer 
+  button.btn.btn-primary(type="button", data-dismiss="modal") Abort
+  button#secretaryOption-send-btn.btn.btn-primary(type="button", data-dismiss="modal") Send

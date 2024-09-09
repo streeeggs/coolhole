@@ -1580,6 +1580,12 @@ function addChatMessage(data) {
     } else {
         LASTCHAT.time = data.time;
     }
+    
+    // Coolhole addition to render special message out of typical chat buffer
+    if (coolholeShouldShowMessageOutOfBuffer(data)) {
+        coolholeHandleMessageOutOfBuffer(data);
+        return;
+    }
 
     var msgBuf = $("#messagebuffer");
     var div = formatChatMessage(data, LASTCHAT);
