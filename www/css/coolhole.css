@@ -82,7 +82,9 @@
 }
 
 /* Rainbow effect on 'european' anywhere in the chat message */
-#messagebuffer [data-text*="european"] {
+#messagebuffer [data-text*="european"],
+.danmu [data-text*="european"],
+.secretary [data-text*="european"] {
   -webkit-animation: rainbow 5;
   -moz-animation: rainbow 5s;
   -ms-animation: rainbow 5s;
