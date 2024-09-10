@@ -9,12 +9,24 @@
  * Globals
  * ============================================================
  */
+const SEC_MSG_INPUT = $("#secretaryOption-message");
+const SEC_PITCH_INPUT = $("#secretaryOption-pitch");
+const SEC_RATE_INPUT = $("#secretaryOption-rate");
+const SEC_VOICE_INPUT = $("#secretaryOption-voice");
+
 const synth = window.speechSynthesis;
 let voices = [];
 function populateVoiceList() {
-  voices = synth.getVoices();
-  // If we ever wanna give users a UI for what voices are available, they can select it here
-  // Probably won't translate between different browsers but w/e
+ voices = synth.getVoices();
+ // If we ever wanna give users a UI for what voices are available, they can select it here
+ // Probably won't translate between different browsers but w/e
+ 
+ // Clear out the secretary voices select
+ SEC_VOICE_INPUT.empty();
+ // Add the voices to the secretary voices select
+ voices.forEach((voice) => {
+   $("<option/>").val(voice.name).text(voice.name).appendTo(SEC_VOICE_INPUT);
+ });
 }
 
 if (speechSynthesis.onvoiceschanged !== undefined) {
