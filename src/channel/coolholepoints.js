@@ -298,7 +298,7 @@ class Coolpoints extends ChannelModule {
    * @param {Number} points User's coolpoints
    */
   subtract(name, points) {
-    this.set(name, this.get(name)?.points ?? 0 - points);
+    this.set(name, (this.get(name)?.points ?? 0) - points);
     this.dirty = true;
   }
 
@@ -519,7 +519,7 @@ class Coolpoints extends ChannelModule {
           `Wise spender ${user.getName()} spent ${pointsToSpend} points on ${action}`,
           new ReturnPointData(
             user.getName(),
-            pointsToSpend,
+            -pointsToSpend,
             this.get(user.getName()).points
           )
         )
@@ -639,7 +639,7 @@ class Coolpoints extends ChannelModule {
           `${user.getName()} lost ${pointsToLose} points for ${action}`,
           new ReturnPointData(
             user.getName(),
-            pointsToLose,
+            -pointsToLose,
             this.get(user.getName()).points
           )
         )
