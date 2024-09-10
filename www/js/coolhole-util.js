@@ -191,17 +191,6 @@ function parseSpecialChatMessage(msg) {
 // ============================================================
 // Secretary
 // ============================================================
-const SEC_MSG_INPUT = $("#secretaryOption-message");
-const SEC_PITCH_INPUT = $("#secretaryOption-pitch");
-const SEC_RATE_INPUT = $("#secretaryOption-rate");
-const SEC_VOICE_INPUT = $("#secretaryOption-voice");
-// Populate the voice options
-voices.forEach((voice) => {
-  $("<option/>")
-    .val(voice.name)
-    .text(voice.name)
-    .appendTo(SEC_VOICE_INPUT);
-});
 
 
 /**
