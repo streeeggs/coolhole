@@ -315,11 +315,12 @@ function secretaryMessageCallback(data) {
     // Create the utterance object for the message with modified rate/pitch/voice/message
     const utterThis = new SpeechSynthesisUtterance(speechObj.message);
 
-    if (speechObj.voiceObj) {
+    if (speechObj.voiceObj) 
       utterThis.voice = speechObj.voiceObj;
+    if (speechObj.rate)
       utterThis.rate = speechObj.rate;
+    if (speechObj.pitch)
       utterThis.pitch = speechObj.pitch;
-    }
 
     // If there any sounds in the array...
     if (sounds && sounds.length > 0) {
