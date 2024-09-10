@@ -386,9 +386,7 @@ function processSpeechMessage(chatMessage) {
   const defaultSpeechObj = {
     rate: 1.2,
     pitch: 1,
-    voiceObj: voices.find(
-      (voice) => voice.name === "Microsoft Zira - English (United States)"
-    ),
+    voiceObj: voiceObj: voices.find((voice) => voice.default) ?? voices[0],
     message: chatMessage,
   };
 
