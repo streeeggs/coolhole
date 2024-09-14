@@ -29,13 +29,11 @@ function initPointsForSelf(pts) {
  * Kamal - moved the button loading out of "initPointsForSelf()"" since it is called on page load.
  * If we wanted to put any other animations on the button for points gained or earned we'd need the previous
  * animation class removed i.e., "cpFadeIn".
+ * 9-13-24: Calls updateAnimation now as the previous code was redundant.
  */
 function initCounterForSelf(){
   const buttonEl = document.getElementById("cpPromptBtn");
-  buttonEl.classList.add("cpFadeIn");
-  Promise.all(
-    buttonEl.getAnimations({ subtree: true }).map((animation) => animation.finished)
-  ).then(() => buttonEl.classList.remove("cpFadeIn")).catch((error) => console.log(error));
+  updateAnimation(buttonEl.id, "cpFadeIn");
 }
 /**
  * Handles overlapping animations by removing the previous animation
@@ -86,7 +84,6 @@ function animatePointUpdate(ptEl, msgEl, diff) {
   const msgText = isPositive ? `+${diff}` : `${diff}`;
   const btnEl = $("#cpPromptBtn");
   msgEl.text(msgText);
-  updateCoinColor();
   updateAnimation(btnEl.attr("id"), glowAnimationName);
   updateAnimation(ptEl.attr("id"), bounceAnimationName);
   updateAnimation(msgEl.attr("id"), fadeAnimationName);
