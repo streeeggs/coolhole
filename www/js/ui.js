@@ -148,6 +148,18 @@ function chatTabComplete(chatline) {
         options.push(emote.name);
     });
 
+    // Coolhole addition to add commands to tab completion
+    CHANNEL.opts.cpOpts
+      .map(
+        (opt) =>
+          opt.options.find((option) => option.optionName === "command")
+            ?.optionValue
+      )
+      .filter(Boolean)
+      .forEach(function (command) {
+        options.push(command);
+      });
+
     var method = USEROPTS.chat_tab_method;
     if (!CyTube.tabCompleteMethods[method]) {
         console.error("Unknown chat tab completion method '" + method + "', using default");
@@ -184,6 +196,11 @@ $("#chatline").on('keydown', function(ev) {
             if (CLIENT.rank >= 2 && msg.indexOf("/m ") === 0) {
                 meta.modflair = CLIENT.rank;
                 msg = msg.substring(3);
+            }
+
+            if (coolholeShouldOverrideMessageSend(msg)) {
+                coolholeMessageOverride(msg, meta);
+                return;
             }
 
             socket.emit("chatMsg", {

@@ -5,6 +5,38 @@
  */
 
 /**
+ * ============================================================
+ * Globals
+ * ============================================================
+ */
+const SEC_MSG_INPUT = $("#secretaryOption-message");
+const SEC_PITCH_INPUT = $("#secretaryOption-pitch");
+const SEC_RATE_INPUT = $("#secretaryOption-rate");
+const SEC_VOICE_INPUT = $("#secretaryOption-voice");
+
+const synth = window.speechSynthesis;
+let voices = [];
+function populateVoiceList() {
+ voices = synth.getVoices();
+ // If we ever wanna give users a UI for what voices are available, they can select it here
+ // Probably won't translate between different browsers but w/e
+ 
+ // Clear out the secretary voices select
+ SEC_VOICE_INPUT.empty();
+ // Add the voices to the secretary voices select
+ voices.forEach((voice) => {
+   $("<option/>").val(voice.name).text(voice.name).appendTo(SEC_VOICE_INPUT);
+ });
+}
+
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = populateVoiceList;
+}
+
+//populate voices array initially.
+populateVoiceList();
+
+/**
  * Additional logic after the chat message div is created, but before its appended to the #messagebuffer, such as additional css classes.
  * @param {Object} data chat message object
  * @param {Object} last LASTCHAT object
@@ -72,6 +104,322 @@ function isMessageTooOld(msgTime) {
     messageTime.setSeconds(messageTime.getSeconds() + 5);
     return new Date() >= messageTime;
 }
+
+/**
+ * Determines if the chat message should be displayed out of the usual buffer.
+ * Avoids formatting to place message in buffer
+ * @param {Object} data message data
+ * @returns {Boolean} if the message should be displayed out of the buffer
+ */
+function coolholeShouldShowMessageOutOfBuffer(data) {
+  if (data.meta.addClass === "secretary" || data.meta.addClass === "danmu") {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Handle message outside of buffer
+ * @param {Object} data message data
+ */
+function coolholeHandleMessageOutOfBuffer(data) {
+  if (data.meta.addClass === "secretary") {
+    secretaryMessageCallback(data);
+  } else if (data.meta.addClass === "danmu") {
+    danmuMessageCallback(data);
+  }
+}
+
+//-----------------------------------------------------------
+// [START] Special Chat Messages
+//-----------------------------------------------------------
+
+/**
+ * Certain commands require overriding the default message send behavior (ie: showing a modal first to accept parameters for a command)
+ * @param {String} msg
+ * @returns {Boolean} true = override message send. false = do not override message send.
+ */
+function coolholeShouldOverrideMessageSend(msg) {
+  const msgLower = msg.toLowerCase();
+  const commands = ["/secretary"];
+  if (commands.some((command) => msgLower.startsWith(command))) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Expects a "secretary" command with options in the message and returns the message and its options.
+ * EG: /secretary {-r 1.2 -p 3.4 -v "Microsoft Zira - English (United States)"} this is my message.
+ * @param {String} msg message to parse
+ * @returns {Object} obj  Return object eg: { msg: "this is my message", options: { rate: 1.2, pitch: 3.4, voice: "Microsoft Zira - English (United States)" } } 
+ * @returns {String} obj.msg the message to say
+ * @returns {Object} obj.options the options for the message
+ */
+function parseSecretaryMessage(msg) {
+  const commandRegex = /(\/\w+)?\s*(\{.*\})?\s+(.*$)?/i;
+  const match = msg.match(commandRegex);
+  if (!match) return { msg: "", options: {} };
+
+  const [_fullMatch, _command, flags, messageToSay] = msg.match(commandRegex);
+  if (!flags) return { msg: messageToSay, options: {} };
+
+  const flagRegex = /-(\w)\s+((\".+\")|[^\s]+)/gi;
+  let options = {};
+  [...flags.matchAll(flagRegex)].forEach((match) => {
+    const [_fullMatchFlag, flag, value] = match;
+    options[flag] = value.replaceAll('"', "");
+  });
+  return { msg: messageToSay, options };
+}
+
+/**
+ * Parses a special chat message and returns the message and its options.
+ * @param {String} msg Message to parse
+ * @returns {Object} obj Return object eg: { msg: "this is my message", options: { rate: 1.2, pitch: 3.4, voice: "Microsoft Zira - English (United States)" } } 
+ * @returns {String} obj.msg the message to use
+ * @returns {Object} obj.options the options for the message
+ */
+function parseSpecialChatMessage(msg) {
+  const msgLower = msg.toLowerCase();
+  if (msgLower.startsWith("/secretary")) {
+    return parseSecretaryMessage(msg);
+  }
+  return { msg, options: {} };
+}
+
+// ============================================================
+// Secretary
+// ============================================================
+
+
+/**
+ * Overrides the default message send behavior (ie: showing a modal first to accept parameters for a command)
+ * @param {String} msg Message to send
+ * @param {Object} meta Metadata of the message
+ */
+function coolholeMessageOverride(msg, meta) {
+  const msgLower = msg.toLowerCase();
+  if (msgLower.startsWith("/secretary")) {
+    // Prepopulate the message with the commands if provided in the message; otherwise use defaults
+    const { msg: parsedMessage, options } = parseSecretaryMessage(msg);
+    if (parsedMessage) SEC_MSG_INPUT.val(parsedMessage);
+    if (options["p"]) SEC_PITCH_INPUT.val(options["p"]);
+    if (options["r"]) SEC_RATE_INPUT.val(options["r"]);
+    if (options["v"]) {
+      const voiceFound = voices.some((voice) => voice.name === options["v"]);
+      if (voiceFound)
+        $(`#secretaryOption-voice option[value="${options["v"]}"]`).prop(
+          "selected",
+          true
+        );
+    }
+
+    // Unbind and rebind the click event to prevent multiple event bindings
+    $("#secretaryOption-send-btn")
+      .off("click")
+      .on("click", function () {
+        const msg = SEC_MSG_INPUT.val();
+        const pitch = SEC_PITCH_INPUT.val();
+        const rate = SEC_RATE_INPUT.val();
+        const voice = SEC_VOICE_INPUT.val();
+
+        let msgWithOptions = "/secretary";
+        if (pitch || rate || voice) {
+          msgWithOptions += " {";
+          if (pitch) {
+            msgWithOptions += `-p ${pitch} `;
+          }
+          if (rate) {
+            msgWithOptions += `-r ${rate} `;
+          }
+          if (voice) {
+            msgWithOptions += `-v "${voice}"`;
+          }
+          msgWithOptions += "}";
+        }
+        msgWithOptions += ` ${msg}`;
+        socket.emit("chatMsg", {
+          msg: msgWithOptions,
+          meta: meta,
+        });
+      });
+
+    $("#ch-secretary-modal").modal();
+  }
+  CHATHIST.push($("#chatline").val());
+  CHATHISTIDX = CHATHIST.length;
+  $("#chatline").val("");
+}
+
+/**
+ *
+ * @param {*} data
+ * @returns
+ */
+function secretaryMessageCallback(data) {
+  // TODO: Would be cool if we could stop the user from spending money if a secretary was currently active. oh well
+  if ($(".secretary").length > 0) {
+    $(".secretary").remove();
+  }
+  if (isMessageTooOld(data.time)) return; // Don't show the message if it's too old
+
+  // Elements to put things in
+  let div = $("<div/>");
+  let name = $("<span/>");
+
+  // Create user name
+  $("<strong/>")
+    .addClass("username")
+    .text(data.username + ": ")
+    .appendTo(name);
+  name.appendTo(div);
+
+  // Build message
+  let messageSpan = $("<span/>")
+    .addClass("secretary-message") // To prevent word wrap
+    .attr("data-text", data.msg) // To handle european
+    .appendTo(div);
+  let chatMessage = data.msg;
+
+  // Allows for emotes
+  chatMessage = stripImages(chatMessage);
+  chatMessage = execEmotes(chatMessage);
+  chatMessage = chatMessage.replace(/(\{.*\}\s+)*/, ""); // Remove options from displayed message
+  messageSpan[0].innerHTML = chatMessage;
+
+  /*
+    TODO: Pretty janky...
+    Apply function specific classes to wrapping div
+    Apply text-lottery or anything else to the message itself   
+    */
+  // position/font class + blur in animation
+  div.addClass("secretary focus-in-blur-out-expand");
+  // Any other class
+  messageSpan.addClass(data.meta.coolholeMeta.otherClasses.join(" "));
+
+  // Pulled from formatMessage; this controls just about all of the custom js like golds and soy
+  var safeUsername = data.username.replace(/[^\w-]/g, "\\$");
+  div.addClass("chat-msg-" + safeUsername);
+  div.appendTo("#main");
+
+  // Play special emote sounds and filter out any falsey values (ie: undef)
+  const sounds = emoteSound(div, safeUsername, "secretary").filter(Boolean);
+
+  // If we can do TTS and the text isn't empty...
+  if ("speechSynthesis" in window && data.msg.trim() !== "") {
+    // Create speechObj's rate/pitch/voice/message if there is any option in the message.
+    // TODO: Embed these option in some object on the callback rather than rely on string parsing
+    const speechObj = processSpeechMessage(data.msg);
+
+    // Create the utterance object for the message with modified rate/pitch/voice/message
+    const utterThis = new SpeechSynthesisUtterance(speechObj.message);
+
+    if (speechObj.voiceObj) 
+      utterThis.voice = speechObj.voiceObj;
+    if (speechObj.rate)
+      utterThis.rate = speechObj.rate;
+    if (speechObj.pitch)
+      utterThis.pitch = speechObj.pitch;
+
+    // If there any sounds in the array...
+    if (sounds && sounds.length > 0) {
+      // Wait for all sounds to end; prepare for over-engineering
+      // Since we don't know when they start, we can't rely on the duration
+
+      // Setup a count to prevent a runaway interval
+      let intervalCount = 0;
+      // Interval function that either bails if all sounds have ended or we've called it too many times
+      function checkIfAllSoundHaveEnded(sounds) {
+        // We hit our threshold; stop waiting
+        if (intervalCount > 50) {
+          console.error(
+            "formatSecretaryMessage: sound interval never ended; hit interval count threshold",
+            sounds
+          );
+          window.speechSynthesis.speak(utterThis);
+          clearInterval(interval);
+        }
+        // Some sound is still going; keep waiting
+        if (sounds.some((sound) => !sound.ended)) {
+          intervalCount++;
+          return;
+        }
+        // All sounds have ended
+        console.log("All sounds ended; let's bail");
+        window.speechSynthesis.speak(utterThis);
+        clearInterval(interval);
+      }
+
+      // Begin interval with a check every 100ms
+      const interval = setInterval(function () {
+        checkIfAllSoundHaveEnded(sounds);
+      }, 100);
+    }
+    // If there are no sounds, ignore all the complicated shit above
+    else {
+      window.speechSynthesis.speak(utterThis);
+    }
+  }
+  // Delete when animation is finished
+  setTimeout(() => div.remove(), 7000);
+}
+
+/* 
+This function reads the chatMessage and modifies the speechObj based on flags in the chatMessage.
+It expects the flags to be between curly brackets {}.
+-r = rate of the speech. The units expected are decimal/integer. If it can't be parsed, default is 1.2.
+-p = pitch of the speech. The units expected are decimal/integer. If it can't be parsed, decault is 1.
+-v = voice. A string is expected. If it can't be found, Microsoft Zira - English (United States) is the default.
+
+It also strips out the {}'s out of the chatMessage and puts the results in speechObj.message.
+
+Example:
+	chatMessage:
+	/secretary {-r 1.2 -p 3.4 -v "Microsoft Zira - English (United States)"} this is my message.
+
+	speechObj.rate = 1.2
+	speechObj.pitch = 3.4
+	speechObj.voiceObj = (voice object from voices array)
+	speechObj.message = "this is my message."
+*/
+function processSpeechMessage(chatMessage) {
+  const defaultSpeechObj = {
+    rate: 1.2,
+    pitch: 1,
+    voiceObj: voices.find((voice) => voice.default) ?? voices[0],
+    message: chatMessage,
+  };
+
+  if (!/\{.*\}/.test(chatMessage)) return defaultSpeechObj;
+
+  const { msg: speechMessage, options } = parseSecretaryMessage(chatMessage);
+
+  const speechObj = {
+    rate: options["r"] ? Number(options["r"]) : defaultSpeechObj.rate,
+    pitch: options["p"] ? Number(options["p"]) : defaultSpeechObj.pitch,
+    voiceObj: voices.find(
+      (voice) =>
+        voice.name.toLowerCase().includes(options["v"].toLowerCase()) ||
+        voice.name === options["v"]
+    ),
+    message: speechMessage,
+  };
+
+  return speechObj;
+}
+
+// ============================================================
+// Danmu
+// ============================================================
+
+function danmuMessageCallback(data) {
+  // TODO
+}
+
+//-----------------------------------------------------------
+// [END] Special Chat Messages
+//-----------------------------------------------------------
 
 //-----------------------------------------------------------
 // [START] CHAT OPTIONS MODAL

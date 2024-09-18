@@ -5,6 +5,29 @@ var Flags = require("../flags");
 import { ActionType } from "./coolholepoints-actions-options";
 
 /**
+ * @typedef {Object} ActionResult
+ * @property {boolean} success - Indicates if the operation was successful.
+ * @property {string} message - Optional message detailing the result.
+ */
+class ActionResult {
+  constructor(success, message) {
+    this.success = success;
+    this.message = message;
+  }
+}
+
+/**
+ * @typedef {Object} ErrorObject
+ * @property {Object} user User information
+ * @property {String} callingFunction Function the error was caught in
+ * @property {String} returnSocket Event name to emit to
+ * @property {String} err Error string
+ * @property {Object} data Data related to the error
+ * @property {String} userMessage Message to display to the user
+ */
+
+/**
+ * @typedef {Object} PointData
  * @class PointData
  * @classdesc PointData class
  * @param {String} user user
@@ -17,6 +40,7 @@ class PointData {
     this.points = points;
   }
 }
+
 /**
  * @class ReturnPointData
  * @classdesc ReturnPointData class
@@ -125,8 +149,21 @@ class Coolpoints extends ChannelModule {
   }
 
   /**
+   * Checks if a user is eligible to use coolpoints
+   * @param {Object} user user object
+   * @returns {Boolean} if user is eligible for points
+   */
+  isUserEligibleForPoints(user) {
+    return (
+      user.channel.is(Flags.C_REGISTERED) &&
+      user.is(Flags.U_REGISTERED) &&
+      user.is(Flags.U_LOGGED_IN)
+    );
+  }
+
+  /**
    * Post join hook
-   * @param {*} user user object
+   * @param {Object} user user object
    */
   onUserPostJoin(user) {
     if (!user.channel.is(Flags.C_REGISTERED)) return;
@@ -134,6 +171,11 @@ class Coolpoints extends ChannelModule {
     user.socket.on(
       "applyPointsToUser",
       this.handleApplyPointsToUser.bind(this, user)
+    );
+
+    this.channel.modules.chat.registerCommand(
+      "/secretary",
+      this.handleSecretary.bind(this)
     );
 
     this.init(user);
@@ -146,21 +188,16 @@ class Coolpoints extends ChannelModule {
 
   /**
    * Generic Log Error wrapper
-   * @param {Object} errorObject Error information
-   * @param {Object} errorObject.user User information
-   * @param {String} errorObject.callingFunction Function the error was caught in
-   * @param {String} errorObject.returnSocket Event name to emit to
-   * @param {String} errorObject.err Error string
-   * @param {Object} errorObject.data Data related to the error
-   * @param {String} errorObject.userMessage Message to display to the user
+   * @param {ErrorObject} errorObject Error information
    */
-  logError({ user, callingFunction, returnSocket, err, data, userMessage }) {
+  logError(errorObject) {
+    const { user, callingFunction, data, returnSocket, userMessage } =
+      errorObject;
     LOGGER.error(
       `Exception caught in ${callingFunction} for CoolPoints. Here's hopefully relevant data: ${JSON.stringify(
         data ? data : {}
-      )} Error:  ${err}`
+      )} Error:  ${errorObject.err}`
     );
-
     if (returnSocket)
       // Return an empty array of point data... for now probably
       user.socket.emit(returnSocket, new ReturnMsg("error", userMessage, []));
@@ -231,12 +268,13 @@ class Coolpoints extends ChannelModule {
    */
   init(user) {
     if (
-      user.getName() && // User has a name
-      user.account.globalRank !== 0 && // Is not a guest
+      this.isUserEligibleForPoints(user) &&
+      user.getName() &&
       !this.exists(user.getName())
     ) {
       this.set(user.getName(), 0);
     }
+
     user.socket.emit(
       "coolpointsInitResponse",
       new ReturnMsg("success", "Here's everyones' points", this.coolpoints)
@@ -260,7 +298,7 @@ class Coolpoints extends ChannelModule {
    * @param {Number} points User's coolpoints
    */
   subtract(name, points) {
-    this.set(name, this.get(name)?.points ?? 0 - points);
+    this.set(name, (this.get(name)?.points ?? 0) - points);
     this.dirty = true;
   }
 
@@ -296,6 +334,18 @@ class Coolpoints extends ChannelModule {
    */
   handleApplyPointsToUser(user, data) {
     try {
+      if (!this.isUserEligibleForPoints(user)) {
+        this.logError({
+          user,
+          callingFunction: "applyPointsToUser",
+          returnSocket: "coolpointsFailure",
+          err: `User is not registered or logged in`,
+          data: user,
+          userMessage: `Error: You must join cause if you wish to participate.`,
+        });
+        return;
+      }
+
       const { targetName, points } = data;
       if (!this.canUpdateOthersPoints(user, "applyPointsToUser")) return;
 
@@ -344,7 +394,7 @@ class Coolpoints extends ChannelModule {
    * @param {String} action action to validate
    * @param {String} expectedActionType expected action type
    * @param {String} callingFunction calling function
-   * @returns boolean
+   * @returns {Boolean} if the action is valid
    */
   isValidAction(user, action, expectedActionType, callingFunction) {
     const pointData = this.get(user.getName());
@@ -368,7 +418,7 @@ class Coolpoints extends ChannelModule {
         returnSocket: "coolpointsFailure",
         err: `Action ${action} is not an ${expectedActionType}`,
         data: { user: user.getName(), action },
-        userMessage: `Error: Action ${action} is not an ${expectedActionType}`,
+        userMessage: `Error: This distrubance was felt. Your action was recorded.`,
       });
       return false;
     }
@@ -385,7 +435,7 @@ class Coolpoints extends ChannelModule {
           returnSocket: "coolpointsFailure",
           err: `Action ${action} is not enabled`,
           data: { user: user.getName(), action },
-          userMessage: `Error: Action ${action} is not enabled`,
+          userMessage: `Error: Action ${action} has been deemed too powerful. Has been disabled for now.`,
         });
       return false;
     }
@@ -403,7 +453,7 @@ class Coolpoints extends ChannelModule {
             returnSocket: "coolpointsFailure",
             err: `User ${user.getName()} does not have enough points to spend on ${action}`,
             data: { user: user.getName(), action },
-            userMessage: `Error: You do not have enough points to spend on ${action}`,
+            userMessage: `Error: You have not done enough for society to earn ${action}`,
           });
           return false;
         }
@@ -429,13 +479,24 @@ class Coolpoints extends ChannelModule {
    * @summary Spend coolpoints
    * @param {Object} user user object
    * @param {String} action action to spend points on
+   * @return {ActionResult} The result of the operation.
    */
   spend(user, action) {
     try {
-      if(!user.channel.is(Flags.C_REGISTERED) || !user.is(Flags.U_REGISTERED) || !user.is(Flags.U_LOGGED_IN)) return;
+      if (!this.isUserEligibleForPoints(user)) {
+        this.logError({
+          user,
+          callingFunction: "spend",
+          returnSocket: "coolpointsFailure",
+          err: `User ${user.getName()} is not registered or logged in`,
+          data: user.getName(),
+          userMessage: `Error: You must join cause if you wish to participate.`,
+        });
+        return new ActionResult(false, "User is not registered or logged in");
+      }
 
       if (!this.isValidAction(user, action, ActionType.Expenditures, "spend"))
-        return;
+        return new ActionResult(false, "Action is not valid");
 
       const actionData = this.channel.modules.coolholeactionspoints.get(action);
       const pointsToSpend = actionData.options.find(
@@ -458,11 +519,12 @@ class Coolpoints extends ChannelModule {
           `Wise spender ${user.getName()} spent ${pointsToSpend} points on ${action}`,
           new ReturnPointData(
             user.getName(),
-            pointsToSpend,
+            -pointsToSpend,
             this.get(user.getName()).points
           )
         )
       );
+      return new ActionResult(true, "User spent points successfully");
     } catch (err) {
       this.logError({
         user,
@@ -472,6 +534,7 @@ class Coolpoints extends ChannelModule {
         data: user.getName(),
         userMessage: `Error: Unable to spend points. Let the head monkey in charge know`,
       });
+      return new ActionResult(false, "Unable to spend points. Unknown error");
     }
   }
 
@@ -479,13 +542,24 @@ class Coolpoints extends ChannelModule {
    * @summary Earn coolpoints
    * @param {Object} user user object
    * @param {String} action action was rewarded for
+   * @return {ActionResult} The result of the operation
    */
   earn(user, action) {
     try {
-      if(!user.channel.is(Flags.C_REGISTERED) || !user.is(Flags.U_REGISTERED) || !user.is(Flags.U_LOGGED_IN)) return;
+      if (!this.isUserEligibleForPoints(user)) {
+        this.logError({
+          user,
+          callingFunction: "earn",
+          returnSocket: "coolpointsFailure",
+          err: `User ${user.getName()} is not registered or logged in`,
+          data: user.getName(),
+          userMessage: `Error: You must join cause if you wish to participate.`,
+        });
+        return new ActionResult(false, "User is not registered or logged in");
+      }
 
       if (!this.isValidAction(user, action, ActionType.Earnings, "earn"))
-        return;
+        return new ActionResult(false, "Action is not valid");
 
       const actionData = this.channel.modules.coolholeactionspoints.get(action);
       const pointsToEarn = actionData.options.find(
@@ -510,6 +584,7 @@ class Coolpoints extends ChannelModule {
           )
         )
       );
+      return new ActionResult(true, "User earned points successfully");
     } catch (err) {
       this.logError({
         user,
@@ -519,6 +594,7 @@ class Coolpoints extends ChannelModule {
         data: user.getName(),
         userMessage: `Error: Unable to award points. Let the head monkey in charge know`,
       });
+      return new ActionResult(false, "Unable to earn points. Unknown error");
     }
   }
 
@@ -526,12 +602,24 @@ class Coolpoints extends ChannelModule {
    * @summary Lose coolpoints and allows users to go negative
    * @param {Object} user user object
    * @param {String} action action was penalized for
+   * @return {Object} object with success or failure and message
    */
   lose(user, action) {
     try {
-      if(!user.channel.is(Flags.C_REGISTERED) || !user.is(Flags.U_REGISTERED) || !user.is(Flags.U_LOGGED_IN)) return;
-      
-      if (!this.isValidAction(user, action, ActionType.Losses, "lose")) return;
+      if (!this.isUserEligibleForPoints(user)) {
+        this.logError({
+          user,
+          callingFunction: "lose",
+          returnSocket: "coolpointsFailure",
+          err: `User ${user.getName()} is not registered or logged in`,
+          data: user.getName(),
+          userMessage: `Error: You must join cause if you wish to participate.`,
+        });
+        return new ActionResult(false, "User is not registered or logged in");
+      }
+
+      if (!this.isValidAction(user, action, ActionType.Losses, "lose"))
+        return new ActionResult(false, "Action is not valid");
 
       const actionData = this.channel.modules.coolholeactionspoints.get(action);
       const pointsToLose = actionData.options.find(
@@ -551,11 +639,13 @@ class Coolpoints extends ChannelModule {
           `${user.getName()} lost ${pointsToLose} points for ${action}`,
           new ReturnPointData(
             user.getName(),
-            pointsToLose,
+            -pointsToLose,
             this.get(user.getName()).points
           )
         )
       );
+
+      return new ActionResult(true, "User lost points successfully");
     } catch (err) {
       this.logError({
         user,
@@ -565,6 +655,8 @@ class Coolpoints extends ChannelModule {
         data: user.getName(),
         userMessage: `Error: Unable to lose points. Let the head monkey in charge know`,
       });
+
+      return new ActionResult(false, "Unable to lose points. Unknown error");
     }
   }
 
@@ -595,10 +687,20 @@ class Coolpoints extends ChannelModule {
    * @returns {Object} chat message object with statuses applied
    */
   handleChatStatuses(user, chatObj) {
-    if(!user.channel.is(Flags.C_REGISTERED) || !user.is(Flags.U_REGISTERED) || !user.is(Flags.U_LOGGED_IN)) return;
-    
+    if (!this.isUserEligibleForPoints(user)) {
+      this.logError({
+        user,
+        callingFunction: "handleChatStatuses",
+        returnSocket: "coolpointsFailure",
+        err: `User ${user.getName()} is not registered or logged in`,
+        data: user.getName(),
+        userMessage: `Error: You must join cause if you wish to participate.`,
+      });
+      return;
+    }
+
     const statuses = this.checkStatuses(user);
-    let res = { ...chatObj };
+    let res = JSON.parse(JSON.stringify(chatObj));
     let filters = [];
     let attemptToApplyAd = false;
 
@@ -667,8 +769,8 @@ class Coolpoints extends ChannelModule {
   }
 
   /**
-   * @summary Handles the active earning action for logged in users. Runs on an interval and writes the interval userActiveIntervalIds keyed by the user's name + channel
-   * @param {*} user user object
+   * Handles the active earning action for logged in users. Runs on an interval and writes the interval userActiveIntervalIds keyed by the user's name + channel
+   * @param {Object} user user object
    */
   handleActive(user) {
     if (!user.is(Flags.U_REGISTERED) || !user.is(Flags.U_LOGGED_IN)) {
@@ -731,10 +833,47 @@ class Coolpoints extends ChannelModule {
     }, activeInterval);
   }
 
+  /**
+   * Clears interval and removes from userActiveIntervalIds
+   * @param {Object} user user object
+   */
   cleanUpActive(user) {
     LOGGER.info(`Clearing active interval for ${user.getName()}`);
     clearInterval(this.userActiveIntervalIds[user.getName()]);
     delete this.userActiveIntervalIds[user.getName()];
+  }
+
+  /**
+   * Handles the secretary command
+   * @param {Object} user user object
+   * @param {String} msg message
+   * @param {Object} meta meta object about the message
+   * @return {Object} object with success or failure and message
+   */
+  handleSecretary(user, msg, meta) {
+    if (!this.isUserEligibleForPoints(user)) {
+      this.logError({
+        user,
+        callingFunction: "handleSecretary",
+        returnSocket: "coolpointsFailure",
+        err: `User ${user.getName()} is not registered or logged in`,
+        data: user.getName(),
+        userMessage: `Error: You must join cause if you wish to participate.`,
+      });
+      return new ActionResult(false, "User is not registered or logged in");
+    }
+
+    if (!this.spend(user, "secretary").success)
+      return new ActionResult(false, "Unable to spend for secretary");
+
+    meta.addClass = "secretary";
+
+    const msgWithoutCmd = msg.split(" ").slice(1).join(" ");
+    this.channel.modules.chat.processChatMsg(user, {
+      msg: msgWithoutCmd,
+      meta,
+    });
+    return new ActionResult(true, "Secretary command successful");
   }
 }
 
