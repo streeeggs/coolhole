@@ -17,14 +17,41 @@
   color: transparent;
   background-clip: text;
 
-  animation-name: gold;
+  animation-name: chGold;
   animation-duration: 3.5s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
-@keyframes gold {
+
+@keyframes chGold {
   0% {
     background-position: -15em;
+  }
+  100% {
+    background-position: 10em;
+  }
+}
+code.text-lottery {
+  margin-left: 5px;
+  font-weight: bold;
+  background-image: repeating-linear-gradient(
+          to right,
+          #2e220f 0,
+          #9a6a22 25%,
+          #f6e27a 42%,
+          #fff6ee 50%,
+          #ffe864 58%,
+          #9a6a22 70%,
+          #2e220f 100%
+  );
+  color: transparent;
+  background-clip: text;
+  animation-name: chGold2;
+  animation-duration: 30s;
+}
+@keyframes chGold2 {
+  0% {
+    background-position: center -15em;
   }
   100% {
     background-position: 10em;
@@ -264,6 +291,12 @@
   position: absolute;
 }
 
+/* Fixed Position for Modal Backdrop */
+
+.modal-backdrop.in {
+  position: fixed !important;
+}
+
 /* Coolpoints option styling */
 
 .cp-option-action-label {
@@ -412,25 +445,85 @@
 #cpModalBody {
   padding: 0;
 }
-#cpModalBody > .container-fluid {
-  padding-left: 18px;
-  padding-right: 18px;
-}
 #cpModalHeader {
   display: flex;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: 18px;
-  padding-right: 18px;
+  padding: 5px 18px;
   align-items: center;
+  border-bottom: none;
 }
-#cpModalHeader > button.close {
-    color: rgb(246, 246, 246);
-    font-size: 24px;
+#cpHeaderBrand {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  > button {
+    margin-left: auto;
+    color: #ffffff;
     opacity: 100%;
+  }
 }
-#cpModalHeader > .modal-title {
-  margin-right: auto;
+#cpPrompt {
+  padding: 0;
+}
+#cpPromptHead {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  border-bottom: 1px white solid;
+  > h1 {
+    font-size: 48px;
+    font-style: italic;
+    font-weight: 600;
+  }
+}
+#cpPromptBody {
+  padding: 10px;
+  border-bottom: 1px white solid;
+}
+#cpPromptTerms {
+  color: gray;
+  font-size: 12px;
+  padding-left: 5px;
+  box-shadow: #0b0e0f80 0 10px 5px;
+}
+#cpPromptLegal {
+  overflow-y: scroll;
+  padding-left: 5px;
+  height: 75px;
+  font-size: 12px;
+  color: gray;
+  background-color: transparent;
+}
+#cpTab {
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  > .nav-item > .nav-link {
+    border-radius: 0;
+    border-bottom: none;
+    border-top: none;
+  }
+}
+#cp-under-construction {
+  display: flex;
+  justify-content: space-evenly;
+}
+.cpActionHeader:not([id="cpActionsCardHeader-Earnings"]) {
+  border-top: #ffffff50 1px solid;
+}
+.cpActionHeader {
+  padding: 10px 5px;
+  margin-top: 10px !important;
+  border-bottom: #ffffff50 1px solid;
+}
+.cpActionRow {
+  padding: 0 5px;
+  margin: 10px 0;
+}
+.cpActionCost {
+  margin: 5px 0;
+}
+.cpCostIcon {
+  margin-right: 5px;
 }
 #cpModalIcon {
   width: 50px;
@@ -445,7 +538,7 @@
   content: " CP";
 }
 #coinMsg {
-  opacity: 0%;
+  opacity: 0;
 }
 .cpGlowGreen {
   -webkit-animation:
