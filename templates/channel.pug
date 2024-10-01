@@ -247,11 +247,12 @@ html(lang="en")
               +chanlog()
               +permeditor()
               include coolhole-coolpoints
-              +coolpointoptions()
-              +coolpointsusertable()
+              +ch-coolpointoptions()
+              +ch-coolpointsusertable()
           .modal-footer
             button.btn.btn-default(type="button", data-dismiss="modal") Close
-    +coolpointsuserprompt()
+    +ch-coolpointsuserprompt()
+    +ch-command-modal("Secretary")
     #ch-chatoptions.modal.fade(tabindex="-1", role="dialog", aria-hidden="true")
       .modal-dialog.modal-dialog-nonfluid
         .modal-content 
