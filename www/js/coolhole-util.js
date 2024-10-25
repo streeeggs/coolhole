@@ -207,7 +207,7 @@ SFX.mod.sounds = {
 }
 SFX.global.sounds = {
     eugh: {
-        src: "https://ark.augint.net/CH_Emote_SFX-eugh/CH_Emote_SFX-eugh.wav",
+        src: "https://static.coolhole.org/sfx/CH_Emote_SFX-eugh.wav",
         emote: "/eugh"
     },
     chirp: {
@@ -220,23 +220,23 @@ SFX.global.sounds = {
 }
 SFX.secretary.sounds = {
     skelen: {
-        src: "https://ark.augint.net/bonearmor2/bonearmor2.wav",
+        src: "https://static.coolhole.org/sfx/bonearmor2.wav",
         emote: "/skelen"
     },
     "the dark lord": {
-        src: "https://ark.augint.net/laugh1/laugh1.wav",
+        src: "https://static.coolhole.org/sfx/laugh1.wav",
         emote: "the dark lord"
     },
     eugh: {
-        src: "https://ark.augint.net/CH_Emote_SFX-eugh/CH_Emote_SFX-eugh.wav",
+        src: "https://static.coolhole.org/sfx/CH_Emote_SFX-eugh.wav",
         emote: "/eugh"
     },
     "and then the door creaked open on its own": {
-        src: "https://ark.augint.net/ch_sfx-door_creek_spooky_knock_ahh/ch_sfx-door_creek_spooky_knock_ahh.mp3",
+        src: "https://static.coolhole.org/sfx/ch_sfx-door_creek_spooky_knock_ahh.mp3",
         emote: "and then the door creaked open on its own"
     },
     eugh: {
-        src: "https://ark.augint.net/CH_Emote_SFX-eugh/CH_Emote_SFX-eugh.wav",
+        src: "https://static.coolhole.org/sfx/CH_Emote_SFX-eugh.wav",
         emote: "/eugh"
     },
     chirp: {
