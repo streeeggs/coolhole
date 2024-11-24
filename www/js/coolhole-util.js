@@ -435,34 +435,30 @@ function danmuMessageCallback(data) {
   chatMessage = execEmotes(chatMessage);
   message[0].innerHTML = chatMessage;
 
-  // Begin hacky animation application
-  const containsSonic = div
-    .find("img")
-    .toArray()
-    .some((i) => i.getAttribute("title") === "way too fast");
-
   // Need to choose a random Y value so we hopefully don't overlap
-  const randomYPos = Math.random() * (90 - 10) + 10;
+  const randomYPos = Math.random() * (90 - 10) + 10; // 10-90% of the screen
+  div[0].style.top = `${randomYPos}%`;
+
+  // If the message contains the Sonic emote, make the animation faster
+  const containsSonic = div
+  .find("img")
+  .toArray()
+  .some((i) => i.getAttribute("title") === "way too fast");
   const max = containsSonic ? 5000 : 10000;
   const min = containsSonic ? 2000 : 5000;
   const animationDuration = Math.floor(Math.random() * (max - min) + min);
 
-  div[0].style.top = `${randomYPos}%`;
-
-  /*
-    TODO: Pretty janky...
-    Apply function specific classes to wrapping div
-    Apply text-lottery or anything else to the message itself
-  */
-  // position/font class + translate animation
+  // Position/font class + translate
   div.addClass("danmu");
 
   // Pulled from formatMessage; this controls just about all of the custom js like golds and soy
-  var safeUsername = data.username.replace(/[^\w-]/g, "\\$");
+  const safeUsername = data.username.replace(/[^\w-]/g, "\\$");
   div.addClass("chat-msg-" + safeUsername);
 
+  // Append first so we can get the width
   div.appendTo("#videowrap");
 
+  // Callstack hack to allow the div to be appended before we get the width
   setTimeout(() => {
     // Create some objects for easier reading
     const animationOptions = {
@@ -471,14 +467,14 @@ function danmuMessageCallback(data) {
     };
     const keyframes = [
       { transform: "translateX(100%)" }, // Start position
-      { transform: `translateX(-${Math.max(message.width(), 1000)}px)` }, // End position
+      { transform: `translateX(-${Math.max(message.width(), 1000)}px)` }, // End position is the width of the message OR 1000px to make sure the animation isnt stupid slow for small messages
     ];
-    // Hopefully animate and not break shit
     div[0].animate(keyframes, animationOptions);
   }, 0);
 
   emoteSound(div, safeUsername);
 
+  // Delete when animation is finished
   setTimeout(() => div.remove(), animationDuration + 1000);
 }
 
