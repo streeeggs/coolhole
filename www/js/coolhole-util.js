@@ -414,7 +414,72 @@ function processSpeechMessage(chatMessage) {
 // ============================================================
 
 function danmuMessageCallback(data) {
-  // TODO
+  if (isMessageTooOld(data.time)) return; // Don't show the message if it's too old
+
+  // Elements to put things in
+  let div = $("<div/>");
+  let name = $("<span/>");
+
+  // Create user name
+  $("<strong/>")
+    .addClass("username")
+    .text(data.username + ": ")
+    .appendTo(name);
+  name.appendTo(div);
+
+  // Build message
+  let message = $("<span/>").appendTo(div);
+  let chatMessage = data.msg;
+  // Allows for emotes
+  chatMessage = stripImages(chatMessage);
+  chatMessage = execEmotes(chatMessage);
+  message[0].innerHTML = chatMessage;
+
+  // Begin hacky animation application
+  const containsSonic = div
+    .find("img")
+    .toArray()
+    .some((i) => i.getAttribute("title") === "way too fast");
+
+  // Need to choose a random Y value so we hopefully don't overlap
+  const randomYPos = Math.random() * (90 - 10) + 10;
+  const max = containsSonic ? 5000 : 10000;
+  const min = containsSonic ? 2000 : 5000;
+  const animationDuration = Math.floor(Math.random() * (max - min) + min);
+
+  div[0].style.top = `${randomYPos}%`;
+
+  /*
+    TODO: Pretty janky...
+    Apply function specific classes to wrapping div
+    Apply text-lottery or anything else to the message itself
+  */
+  // position/font class + translate animation
+  div.addClass("danmu");
+
+  // Pulled from formatMessage; this controls just about all of the custom js like golds and soy
+  var safeUsername = data.username.replace(/[^\w-]/g, "\\$");
+  div.addClass("chat-msg-" + safeUsername);
+
+  div.appendTo("#videowrap");
+
+  setTimeout(() => {
+    // Create some objects for easier reading
+    const animationOptions = {
+      duration: animationDuration,
+      fill: "forwards",
+    };
+    const keyframes = [
+      { transform: "translateX(100%)" }, // Start position
+      { transform: `translateX(-${Math.max(message.width(), 1000)}px)` }, // End position
+    ];
+    // Hopefully animate and not break shit
+    div[0].animate(keyframes, animationOptions);
+  }, 0);
+
+  emoteSound(div, safeUsername);
+
+  setTimeout(() => div.remove(), animationDuration + 1000);
 }
 
 //-----------------------------------------------------------
@@ -461,8 +526,6 @@ const SFX = {
     secretary: {} // empty object since no ui tied to it
 };
 
-
-//06-29-2024 Miles - temporarily commented this out until we have coolhole options built.
 //Initialize
 [ 'global', 'mod', 'stack' ].forEach( type => {
 
