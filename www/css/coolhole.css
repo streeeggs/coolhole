@@ -421,14 +421,12 @@ code.text-lottery {
 
 .drink {
   background-image: url("../img/beer.avif");
-  padding-left: 5px;
-  margin: 0;
-  height: 60px;
-  border: 1px;
   font-size: 30px;
+  text-shadow: 1px 1px #000000;
+  margin: 0;
   > * {
     font-weight: bolder;
-    color: #351200;
+    color: #800000;
   }
 }
 

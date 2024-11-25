@@ -19,39 +19,31 @@ DrinkModule.prototype.onUserPostJoin = function (user) {
   );
 };
 
-// Coolhole Addition: Needed to allow for other commands that start with /d
-DrinkModule.prototype.handleDrink = function (user, data, cb) {
-  var msg = data.msg;
-  var perms = this.channel.modules.permissions;
+// Coolhole Addition: Needed to allow for other commands that start with /d so made this it's own "command" /drink
+DrinkModule.prototype.handleDrink = function (user, msg) {
+  const perms = this.channel.modules.permissions;
   if (perms.canCallDrink(user)) {
-    msg = msg.substring(2);
-    var m = msg.match(/^(-?[0-9]+)/);
-    var count;
-    if (m) {
-      count = parseInt(m[1]);
-      if (isNaN(count) || count < -10000 || count > 10000) {
-        return;
-      }
+    let [_, command, count, message] = [
+      ...msg.matchAll(/(drink)\s*(\d+)?(.*)/gi),
+    ][0];
+    count = count ? parseInt(count) : 1;
+    if (isNaN(count) || count < -10000 || count > 10000) {
+      return;
+    }
 
-      msg = msg.replace(m[1], "").trim();
-      if (msg || count > 0) {
-        msg += " drink! (x" + count + ")";
-      } else {
-        this.drinks += count;
-        this.channel.broadcastAll("drinkCount", this.drinks);
-        return cb(null, ChannelModule.DENY);
-      }
+    message = message.trim();
+    if (count > 1) {
+      message += " drink! (x" + count + ")";
     } else {
-      msg = msg.trim() + " drink!";
-      count = 1;
+      message = message.trim() + " drink!";
     }
 
     this.drinks += count;
     this.channel.broadcastAll("drinkCount", this.drinks);
-    data.msg = msg;
-    data.meta.addClass = "drink";
-    data.meta.forceShowName = true;
-    this.channel.modules.chat.processChatMsg(user, data);
+    this.channel.modules.chat.processChatMsg(user, {
+      msg: message,
+      meta: { addClass: "drink", forceShowName: true },
+    });
     //cb(null, ChannelModule.PASSTHROUGH);
   }
 };

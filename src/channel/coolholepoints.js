@@ -856,11 +856,13 @@ class Coolpoints extends ChannelModule {
    * Generic chat handler for coolpoints commands
    * @param {String} command command to handle
    * @param {Object} user user object
-   * @param {Object} msg message object
+   * @param {String} msg message
    * @param {Object} meta meta object
    * @returns {void} nothing
    */
   handleChatCommand(command, user, msg, meta) {
+    meta.coolholeMeta = meta.coolholeMeta || {};
+    meta.coolholeMeta.otherClasses = meta.coolholeMeta.otherClasses || [];
     if (!this.isUserEligibleForPoints(user)) {
       this.logError({
         user,
@@ -879,7 +881,7 @@ class Coolpoints extends ChannelModule {
 
     switch (command) {
       case "secretary": {
-        meta.addClass = "secretary";
+        meta.coolholeMeta.otherClasses.push("secretary");
         this.channel.modules.chat.processChatMsg(user, {
           msg: msgWithoutCmd,
           meta,
@@ -887,7 +889,7 @@ class Coolpoints extends ChannelModule {
         break;
       }
       case "highlight": {
-        meta.addClass = "highlight";
+        meta.coolholeMeta.otherClasses.push("highlight");
         this.channel.modules.chat.processChatMsg(user, {
           msg: msgWithoutCmd,
           meta,
@@ -895,7 +897,7 @@ class Coolpoints extends ChannelModule {
         break;
       }
       case "danmu": {
-        meta.addClass = "danmu";
+        meta.coolholeMeta.otherClasses.push("danmu");
         this.channel.modules.chat.processChatMsg(user, {
           msg: msgWithoutCmd,
           meta,
