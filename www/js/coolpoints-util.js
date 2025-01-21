@@ -23,18 +23,8 @@
 function initPointsForSelf(pts) {
   const pointsEl = $("#coinAmt");
   pointsEl.text(`${pts}`);
+}
 
-}
-/**
- * Kamal - moved the button loading out of "initPointsForSelf()"" since it is called on page load.
- * If we wanted to put any other animations on the button for points gained or earned we'd need the previous
- * animation class removed i.e., "cpFadeIn".
- * 9-13-24: Calls updateAnimation now as the previous code was redundant.
- */
-function initCounterForSelf(){
-  const buttonEl = document.getElementById("cpPromptBtn");
-  updateAnimation(buttonEl.id, "cpFadeIn");
-}
 /**
  * Handles overlapping animations by removing the previous animation
  * @param {String} id Id of the element to animate
@@ -44,8 +34,10 @@ function updateAnimation(id, animationName) {
   const el = document.getElementById(id);
   el.classList.add(animationName);
   Promise.all(
-    el.getAnimations({ subtree: true }).map((animation) => animation.finished)
-  ).then(() => el.classList.remove(animationName)).catch((error) => console.log(error));
+    el.getAnimations({ subtree: true }).map((animation) => animation.finished),
+  )
+    .then(() => el.classList.remove(animationName))
+    .catch((error) => console.log(error));
   // TODO: This is a catch all error handler which picked up when an animation was cancelled.
   // That's just noise and should be more targeted if needed
   //.catch((err) => console.error(err));
@@ -76,13 +68,12 @@ const debounce = (delay, fn) => {
  * @param {Element} msgEl message element
  * @param {Number} diff difference in new and old points
  */
-function animatePointUpdate(ptEl, msgEl, diff) {
+function animatePointUpdate(ptEl, btnEl, msgEl, diff) {
   const isPositive = diff > 0;
   const bounceAnimationName = isPositive ? "cpBounce" : "cpShake";
   const fadeAnimationName = isPositive ? "cpFadeGreen" : "cpFadeRed";
   const glowAnimationName = isPositive ? "cpGlowGreen" : "cpGlowRed";
   const msgText = isPositive ? `+${diff}` : `${diff}`;
-  const btnEl = $("#cpPromptBtn");
   msgEl.text(msgText);
   updateAnimation(btnEl.attr("id"), glowAnimationName);
   updateAnimation(ptEl.attr("id"), bounceAnimationName);
@@ -96,11 +87,11 @@ function animatePointUpdate(ptEl, msgEl, diff) {
 function applyPointsToSelf(incCoolPoints) {
   const pointsEl = $("#coinAmt");
   const messageEl = $("#coinMsg");
-
+  const buttonEl = $("#cpPromptBtn");
   // TODO: Counter animation UI
   pointsEl.text(CLIENT.coolpoints);
 
-  animatePointUpdate(pointsEl, messageEl, incCoolPoints);
+  animatePointUpdate(pointsEl, buttonEl, messageEl, incCoolPoints);
 }
 
 /**
@@ -136,7 +127,7 @@ class CoolpointsUserList {
     //this.initSortOption();
     this.table = this.elem.find(".users-coolpoints-table")[0];
     this.paginatorContainer = this.elem.find(
-      ".users-coolpoints-paginator-container"
+      ".users-coolpoints-paginator-container",
     );
     this.users = [];
     this.page = 0;
@@ -221,7 +212,7 @@ CoolpointsUserList.prototype.handleChange = function () {
   this.paginator = new NewPaginator(
     this.usersCoolPoints.length,
     this.itemsPerPage,
-    this.loadPage.bind(this)
+    this.loadPage.bind(this),
   );
   this.paginatorContainer.html("");
   this.paginatorContainer.append(this.paginator.elem);
@@ -340,16 +331,16 @@ CoolpointsUserList.prototype.loadPage = function (page) {
 
 // Initialize Coolpoints User List
 window.USERCOOLPOINTSLIST = new CoolpointsUserList(
-  "#cs-chancoolpoint-user-table"
+  "#cs-chancoolpoint-user-table",
 );
 //window.USERCOOLPOINTSLIST.sortAlphabetical = USEROPTS.emotelist_sort;
 
 function applyPointsToTable(pointData) {
   const userCoolPointListItem = window.USERCOOLPOINTSLIST.usersCoolPoints.find(
-    (d) => d.user === pointData.user
+    (d) => d.user === pointData.user,
   );
   userCoolPointListItem.points = CHANNEL.usersCoolPoints.find(
-    (d) => d.user === pointData.user
+    (d) => d.user === pointData.user,
   ).points;
 
   // Run animation
@@ -486,7 +477,7 @@ function handleCPOptionChanges() {
             setDisableOnRelatedOptions(
               `cp-${actionName}-${optionName}`,
               actionName,
-              !optionValue
+              !optionValue,
             );
             break;
           case "int":
@@ -536,7 +527,7 @@ function greatResetOnClick() {
 
   if (
     confirm(
-      "All points for all users will be set to 0. Are you sure about this?"
+      "All points for all users will be set to 0. Are you sure about this?",
     )
   ) {
     socket.emit("greatReset", {});
