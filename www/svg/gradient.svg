@@ -2,8 +2,8 @@
     <defs>
         <rect width="1000" height="1000" id="shape"/>
         <filter id="noise">
-            <feTurbulence 
-                type="fractalNoise" 
+            <feTurbulence
+                type="fractalNoise"
                 baseFrequency="16"
                 numOctaves="13"
                 result="turbulence"

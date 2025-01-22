@@ -6704,6 +6704,7 @@ input[type="checkbox"] {
   background-color: #181E22;
 }
 #chatline {
+  resize: none;
   transition: box-shadow;
   transition-duration: 150ms;
   border: 0;
