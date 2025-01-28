@@ -201,6 +201,10 @@ module.exports = {
             chanPath,
             async name => bannedChannelsController.getBannedChannel(name)
         );
+        // 1/15/2021 - commented out so the "coolhole.org" routs to "coolhole/r/coolesthole" by default.
+        app.get(`/`, require('./middleware/ipsessioncookie').ipSessionCookieMiddleware);
+        require('./routes/default_channel')(app, ioConfig);
+        // End Coolhole addition
         require('./routes/index')(app, channelIndex, webConfig.getMaxIndexEntries());
         require('./routes/socketconfig')(app, clusterClient);
         require('./routes/contact')(app, webConfig);
