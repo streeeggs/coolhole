@@ -31,19 +31,14 @@ DrinkModule.prototype.handleDrink = function (user, msg) {
       return;
     }
 
-    if (count <= 0) {
-      this.drinks += count;
-      this.channel.broadcastAll("drinkCount", this.drinks);
-      return;
-    }
-
     this.drinks += count;
     this.channel.broadcastAll("drinkCount", this.drinks);
-    this.channel.modules.chat.processChatMsg(user, {
-      msg: message.trim() + " drink! (x" + count + ")",
-      meta: { addClass: "drink", forceShowName: true },
-    });
-    //cb(null, ChannelModule.PASSTHROUGH);
+    if (count > 0) {
+      this.channel.modules.chat.processChatMsg(user, {
+        msg: message.trim() + " drink! (x" + count + ")",
+        meta: { addClass: "drink", forceShowName: true },
+      });
+    }
   }
 };
 
