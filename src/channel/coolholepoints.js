@@ -94,7 +94,6 @@ const ADS = [
   "I have a buisness that specalizes in customize satchel making. Give me a way to sell it to you. I would like to do that.",
   "COOL FRIEND | GNCDE '''Satirical''' Alt-Right Indie-Rock https://youtu.be/hc801HuELUc",
   "ummm, uhhh, guys I can't hold it in anymore i- GRRRRRRRRRRR WOOF WOOF BARK BARK ARF BARK GRRRR WOOF SNARL HSSSS GRRRR WOOF WOOF BARK ARF GRRRR HSSSS WOOF WOOF BARK ARF GRRRRR HSSSSS BARK ARF GRRRR https://furrycons.com/calendar/",
-  "as a proud christian my priorties are guns, Trump, beer, god, Nascar®, barbieq, and freedom in that order and we will continue to show support because he understands this we will keep sending half of our insulin money to support him",
   "GrubHub perks give you deals on the food you love. The kind of deals that make you boogie. Get the food you love, with perks from GrubHub! Grub what you love!",
 ];
 
@@ -175,7 +174,17 @@ class Coolpoints extends ChannelModule {
 
     this.channel.modules.chat.registerCommand(
       "/secretary",
-      this.handleSecretary.bind(this)
+      this.handleChatCommand.bind(this, "secretary")
+    );
+
+    this.channel.modules.chat.registerCommand(
+      "/highlight",
+      this.handleChatCommand.bind(this, "highlight")
+    );
+
+    this.channel.modules.chat.registerCommand(
+      "/danmu",
+      this.handleChatCommand.bind(this, "danmu")
     );
 
     this.init(user);
@@ -435,7 +444,7 @@ class Coolpoints extends ChannelModule {
           returnSocket: "coolpointsFailure",
           err: `Action ${action} is not enabled`,
           data: { user: user.getName(), action },
-          userMessage: `Error: Action ${action} has been deemed too powerful. Has been disabled for now.`,
+          userMessage: `Error: Action ${action} has been deemed too powerful. It's been disabled for now.`,
         });
       return false;
     }
@@ -716,14 +725,14 @@ class Coolpoints extends ChannelModule {
           attemptToApplyAd = true;
           break;
         case "debtlvl3":
-          resMsg.coolholeMeta.otherClasses.push("shrink");
+          res.coolholeMeta.otherClasses.push("shrink");
           break;
         case "debtlvl4":
           MISSING_LETTERS_FILTER.source = randomLettersRegex();
           filters.push(MISSING_LETTERS_FILTER);
           break;
         case "debtlvl5":
-          resMsg.coolholeMeta.otherClasses.push("criticality-accident");
+          res.coolholeMeta.otherClasses.push("criticality-accident");
           break;
         default:
           break;
@@ -844,17 +853,20 @@ class Coolpoints extends ChannelModule {
   }
 
   /**
-   * Handles the secretary command
+   * Generic chat handler for coolpoints commands
+   * @param {String} command command to handle
    * @param {Object} user user object
    * @param {String} msg message
-   * @param {Object} meta meta object about the message
-   * @return {Object} object with success or failure and message
+   * @param {Object} meta meta object
+   * @returns {void} nothing
    */
-  handleSecretary(user, msg, meta) {
+  handleChatCommand(command, user, msg, meta) {
+    meta.coolholeMeta = meta.coolholeMeta || {};
+    meta.coolholeMeta.otherClasses = meta.coolholeMeta.otherClasses || [];
     if (!this.isUserEligibleForPoints(user)) {
       this.logError({
         user,
-        callingFunction: "handleSecretary",
+        callingFunction: "handleChatCommand",
         returnSocket: "coolpointsFailure",
         err: `User ${user.getName()} is not registered or logged in`,
         data: user.getName(),
@@ -862,18 +874,48 @@ class Coolpoints extends ChannelModule {
       });
       return new ActionResult(false, "User is not registered or logged in");
     }
-
-    if (!this.spend(user, "secretary").success)
-      return new ActionResult(false, "Unable to spend for secretary");
-
-    meta.addClass = "secretary";
-
     const msgWithoutCmd = msg.split(" ").slice(1).join(" ");
-    this.channel.modules.chat.processChatMsg(user, {
-      msg: msgWithoutCmd,
-      meta,
-    });
-    return new ActionResult(true, "Secretary command successful");
+
+    if (!this.spend(user, command).success)
+      return new ActionResult(false, `Unable to spend for ${command}`);
+
+    switch (command) {
+      case "secretary": {
+        meta.coolholeMeta.otherClasses.push("secretary");
+        this.channel.modules.chat.processChatMsg(user, {
+          msg: msgWithoutCmd,
+          meta,
+        });
+        break;
+      }
+      case "highlight": {
+        meta.coolholeMeta.otherClasses.push("highlight");
+        this.channel.modules.chat.processChatMsg(user, {
+          msg: msgWithoutCmd,
+          meta,
+        });
+        break;
+      }
+      case "danmu": {
+        meta.coolholeMeta.otherClasses.push("danmu");
+        this.channel.modules.chat.processChatMsg(user, {
+          msg: msgWithoutCmd,
+          meta,
+        });
+        break;
+      }
+      default: {
+        this.logError({
+          user,
+          callingFunction: "handleChatCommand",
+          returnSocket: "coolpointsFailure",
+          err: `Command ${command} not found`,
+          data: command,
+          userMessage: `Error: Command ${command} not found`,
+        });
+        return new ActionResult(false, "Command not found");
+      }
+    }
   }
 }
 

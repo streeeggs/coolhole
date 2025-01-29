@@ -1509,11 +1509,18 @@ function formatChatMessage(data, last) {
 
     last.name = data.username;
     var div = $("<div/>");
-    /* drink is a special case because the entire container gets the class, not
+    /* drink and highlight are a special case because the entire container gets the class, not
        just the message */
     if (data.meta.addClass === "drink") {
-        div.addClass("drink");
-        data.meta.addClass = "";
+      div.addClass(data.meta.addClass);
+      data.meta.addClass = "";
+      if (
+        data.meta?.coolholeMeta?.otherClasses?.some((c) => c === "highlight")
+      ) {
+        div.addClass("highlight");
+        data.meta.coolholeMeta.otherClasses =
+          data.meta.coolholeMeta.otherClasses.filter((c) => c !== "highlight");
+      }
     }
 
     // Add timestamps (unless disabled)
