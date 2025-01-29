@@ -24,24 +24,23 @@ DrinkModule.prototype.handleDrink = function (user, msg) {
   const perms = this.channel.modules.permissions;
   if (perms.canCallDrink(user)) {
     let [_, command, count, message] = [
-      ...msg.matchAll(/(drink)\s*(\d+)?(.*)/gi),
+      ...msg.matchAll(/(drink)\s*(-?\d+)?(.*)/gi),
     ][0];
     count = count ? parseInt(count) : 1;
     if (isNaN(count) || count < -10000 || count > 10000) {
       return;
     }
 
-    message = message.trim();
-    if (count > 1) {
-      message += " drink! (x" + count + ")";
-    } else {
-      message = message.trim() + " drink!";
+    if (count <= 0) {
+      this.drinks += count;
+      this.channel.broadcastAll("drinkCount", this.drinks);
+      return;
     }
 
     this.drinks += count;
     this.channel.broadcastAll("drinkCount", this.drinks);
     this.channel.modules.chat.processChatMsg(user, {
-      msg: message,
+      msg: message.trim() + " drink! (x" + count + ")",
       meta: { addClass: "drink", forceShowName: true },
     });
     //cb(null, ChannelModule.PASSTHROUGH);
