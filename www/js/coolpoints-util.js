@@ -171,6 +171,11 @@ CoolpointsUserList.prototype.initSearch = function () {
     self.handleChange();
     self.loadPage(0);
   });
+
+  this.searchbar.keydown(function (e) {
+    if (e.key == "Enter")
+      e.preventDefault();
+  });
 };
 
 // TODO: Sort options?
