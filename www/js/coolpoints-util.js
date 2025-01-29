@@ -162,7 +162,6 @@ CoolpointsUserList.prototype.initSearch = function () {
     var value = this.value.toLowerCase();
     if (value) {
       self.filter = function (user) {
-        console.log(user);
         return user.user.toLowerCase().indexOf(value) >= 0;
       };
     } else {
