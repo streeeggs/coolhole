@@ -33,6 +33,9 @@ const CoolholeCallbacks = {
     // Update the UI
     // Check the users rank and fade in the counter/button
     initPointsForSelf(CLIENT.coolpoints);
+    if (CLIENT.rank >= 1) {
+      initCounterForSelf();
+    }
 
     // Init CoolPoints User List
     if (CLIENT.rank >= 2) {
@@ -63,5 +66,5 @@ const CoolholeCallbacks = {
   },
   coolpointsVoteskipFail: function (response) {
     $("#voteskip").attr("disabled", false);
-  },
+  }
 };
