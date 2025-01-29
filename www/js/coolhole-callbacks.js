@@ -64,4 +64,7 @@ const CoolholeCallbacks = {
     // TODO: Handle failures
     console.error(response);
   },
+  coolpointsVoteskipFail: function (response) {
+    $("#voteskip").attr("disabled", false);
+  }
 };

@@ -396,6 +396,65 @@ class Coolpoints extends ChannelModule {
       });
     }
   }
+  /**
+   * @summary Handles when a user clicks the skip button.
+   * @param {Object} user user object
+   * @returns {Boolean} true = skip is allowed to go through. false = skip is not allowed to go through.
+   * NOTE: If the cp option for skipping is disabled or an error occurs, the skip should still be allowed to occur.
+   */
+  handleSkipping(user) {
+    try {
+      // If the cp option is disabled, just exit early (allow the skip to proceed)
+      if(!this.channel.modules.coolholeactionspoints.get("skip").options.find((opt) => opt.optionName === "enabled").optionValue)
+        return true;
+
+      if(this.spend(user, "skip").success) {
+        return true
+      } else {
+        user.socket.emit("coolpointsVoteskipFail"); // this re-enables the skip button
+        return false;
+      }
+    } catch (err) {
+      this.logError({
+        user,
+        callingFunction: "handleSkipping",
+        returnSocket: "coolpointsFailure",
+        err,
+        data: {user: user.getName() || "(anonymous)"},
+        userMessage: `Error: Unable to spend points. Let the head monkey in charge know`,
+      });
+      return true;
+    }
+  }
+  
+  /**
+   * @summary Handles when a user's video is skipped.
+   * @param {Object} queueby username for submitted video.
+   */
+  handleSkipped(queueby) {
+    try {
+      //BUG: This works unless the user leaves while his video is skipped.
+      const user = this.channel.users.find(x => x.getName() === queueby);
+      
+      // testing
+      // var g = this.get(queueby);
+      // console.log("get:");
+      // console.log(g);
+
+      this.lose(user, "skipped");
+      
+    } catch (err) {
+      this.logError({
+        user,
+        callingFunction: "handleSkipped",
+        returnSocket: "coolpointsFailure",
+        err,
+        data: {user: user.getName() || "(anonymous)"},
+        userMessage: `Error: Unable to lose points. Let the head monkey in charge know`,
+      });
+    }
+  }
+
 
   /**
    * @summary Validates an action for a user

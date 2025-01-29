@@ -36,6 +36,10 @@ VoteskipModule.prototype.handleVoteskip = function (user) {
         return;
     }
 
+    if (!this.channel.modules.coolholepoints.handleSkipping(user)){
+        return;
+    }
+
     if (!this.poll) {
         this.poll = Poll.create("[server]", "voteskip", ["skip"]);
     }
@@ -102,6 +106,9 @@ VoteskipModule.prototype.update = function () {
                 time: Date.now()
             }
         );
+
+        this.channel.modules.coolholepoints.handleSkipped(this.channel.modules.playlist.current.queueby);
+
         this.reset();
         this.channel.modules.playlist._playNext();
     } else {
