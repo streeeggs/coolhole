@@ -162,7 +162,8 @@ CoolpointsUserList.prototype.initSearch = function () {
     var value = this.value.toLowerCase();
     if (value) {
       self.filter = function (user) {
-        return user.name.toLowerCase().indexOf(value) >= 0;
+        console.log(user);
+        return user.user.toLowerCase().indexOf(value) >= 0;
       };
     } else {
       self.filter = null;
@@ -338,10 +339,11 @@ window.USERCOOLPOINTSLIST = new CoolpointsUserList(
 
 function applyPointsToTable(pointData) {
   const userCoolPointListItem = window.USERCOOLPOINTSLIST.usersCoolPoints.find(
-    (d) => d.user === pointData.user,
+    (d) => d.user === pointData.user
   );
+  if (!userCoolPointListItem) return;
   userCoolPointListItem.points = CHANNEL.usersCoolPoints.find(
-    (d) => d.user === pointData.user,
+    (d) => d.user === pointData.user
   ).points;
 
   // Run animation
