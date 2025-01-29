@@ -54,21 +54,19 @@ mixin ch-coolpointsusertable
 
 mixin ch-coolpointsuserprompt
     #coolPointsPrompt.modal.fade(role="dialog", aria-hidden="true", tabindex="-1")
-      .modal-dialog.modal-lg(role="document")
-        .modal-content
-          .modal-header.pb-0.mb-0
-            .row.modal-header-row
-              .header-icon-container.display-inline.mt-1.ml-3.pl-2
-                svg.ch-icon.header-icon.mt-n2: use(xlink:href="#ch-icon-ui-coin-stencil")
-              .col
-                h4.modal-title.mt-n1.mb-2 CoolPoints
-            button.close(data-dismiss="modal", aria-label="Close"): span(aria-hidden="true") &times;
-          .modal-body.mt-0.pt-0.px-0.pb-2
+      .modal-dialog.modal-lg#cpModal(role="document")
+        .modal-content#cpModalContent
+          .modal-header#cpModalHeader
+              strong#cpHeaderBrand
+                svg#cpModalIcon: use(xlink:href="#ch-icon-ui-coin-stencil")
+                h2.modal-title: i(style="font-size: 48px; font-weight: 800") CoolPoints
+                button.close(data-dismiss="modal", aria-label="Close"): span(aria-hidden="true") &times;
+          .modal-body#cpModalBody
             ul#cpTab.nav.nav-tabs.nav-justified(role="tablist")
               li.nav-item: a#cpPromptTab.nav-link.active(data-toggle="tab", href="#cp-prompt", role="tab", aria-controls="cp-prompt", aria-selected="true") Our mission
               li.nav-item: a#cpStatusOfActionsTab.nav-link(data-toggle="tab", href="#cp-status-of-actions", role="tab", aria-controls="cp-status-of-actions", aria-selected="false") Status of Actions
               li.nav-item: a#cpCasinoTab.nav-link(data-toggle="tab", href="#cp-casino", role="tab", aria-controls="cp-casino", aria-selected="false") Casino
-            .container-fluid.mt-2.px-3
+            .container
               #cpTabContent.tab-content.row.pt-2
                 +coolpoints-prompt
                 +status-of-actions
@@ -76,15 +74,12 @@ mixin ch-coolpointsuserprompt
 
 mixin coolpoints-prompt
   #cp-prompt.tab-pane.fade.col-12.active.in(role="tabpanel", aria-labelledby="cpPromptTab")
-    .row(style="justify-content: space-evenly; align-items: center;")
-      .col
-        img(src="/img/gold-bar.gif", width="175")
-      .col(style="flex-grow: 3; align-self: center;")
-        h1 A CoolHole for you and for <code>us</code>.
-    .row
-      .col: hr.mt-1.mb-2
-    .row
-      .col.px-5(style="font-size: 14px")
+    .col#cpPrompt
+      .col#cpPromptHead
+        img(src="/img/goldbar.avif", width="175")
+        h1 A CoolHole for you and for
+          code.text-lottery us
+      .col#cpPromptBody
         p
           span Welcome.
         p 
@@ -102,8 +97,7 @@ mixin coolpoints-prompt
           span With the use of these technologies, you can benefit from your usual activites but we'll compensate you. It's a win win!
         p
           span Thank you and enjoy your time in CoolHole: The Coolest Hole on the internet
-        p
-          +legal-nonsense
+      +legal-nonsense
 
 
 mixin status-of-actions
@@ -111,7 +105,7 @@ mixin status-of-actions
     #cp-status-of-actions-accordion.accordion
         each type in cpOptsTypes
             .card(id=`cpActionsCard-${type}`)
-                .h3.btn-primary.header(id=`cpActionsCardHeader-${type}`)
+                .cpActionHeader.h3(id=`cpActionsCardHeader-${type}`) #{type}
                 div(id=`cpActionsCardContent-${type}`)
                     .card-body
                         each action in cpOptsDefaults.filter(opt => opt.actionType === type)
@@ -120,8 +114,7 @@ mixin status-of-actions
                                     =action.userTitle
                                     .text-info= action.userDescription
                                 .cpActionCost(class=`cp-${action.actionType}`, id=`cpActionCostWrap-${action.actionType}-${action.name}`)
-                                    // TODO: Coin SVG
-                                    svg
+                                    svg.cpCostIcon(viewbox="0 0 24 24" width="24px" height="24px"): use(href="#ch-icon-ui-coin-stencil")
                                     span(id=`cp-userprompt-${action.name}-pts`)= action.options.find(option => option.optionName === "points").optionValue
 
 
@@ -131,7 +124,7 @@ mixin casino
 
 mixin under-construction
   #cp-under-construction
-    .row(style="justify-content: space-evenly; align-items: center")
+    .row
       .col
         svg(style="fill:#dcdedd; width: 175px"): use(xlink:href="#ch-icon-emote-dead")
       .col(style="flex-grow: 3")
@@ -139,8 +132,9 @@ mixin under-construction
         h2 Your actions will be remembered.
 
 mixin legal-nonsense
-  span(style="color: gray; font-size: 12px") Terms of Service:
-  div(style="overflow-y: scroll; height: 75px; font-size: 12px; color: gray")
+  div#cpPromptTerms
+    span Terms of Service:
+  div#cpPromptLegal
     span By accessing and using CoolHole or CoolPoints, you agree to waive any and all rights you may have to pursue legal action against us in the event that your cognitive function is decreased or impaired in any way as a result of your use of CoolHole or CoolPoints. You acknowledge and accept that any and all risks associated with the use of CoolHole or CoolPoints are your sole responsibility, and that we will not be held liable for any negative outcomes that may result. By continuing to use our CoolHole or CoolPoints, you indicate your understanding and acceptance of these terms.
     br
     b Definitions
