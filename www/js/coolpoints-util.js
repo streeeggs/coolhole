@@ -68,14 +68,15 @@ const debounce = (delay, fn) => {
  * @param {Element} msgEl message element
  * @param {Number} diff difference in new and old points
  */
-function animatePointUpdate(ptEl, btnEl, msgEl, diff) {
+function animatePointUpdate(ptEl, msgEl, diff, btnEl = null) {
   const isPositive = diff > 0;
   const bounceAnimationName = isPositive ? "cpBounce" : "cpShake";
   const fadeAnimationName = isPositive ? "cpFadeGreen" : "cpFadeRed";
   const glowAnimationName = isPositive ? "cpGlowGreen" : "cpGlowRed";
   const msgText = isPositive ? `+${diff}` : `${diff}`;
   msgEl.text(msgText);
-  updateAnimation(btnEl.attr("id"), glowAnimationName);
+  if (btnEl) 
+    updateAnimation(btnEl.attr("id"), glowAnimationName);
   updateAnimation(ptEl.attr("id"), bounceAnimationName);
   updateAnimation(msgEl.attr("id"), fadeAnimationName);
 }
@@ -91,7 +92,7 @@ function applyPointsToSelf(incCoolPoints) {
   // TODO: Counter animation UI
   pointsEl.text(CLIENT.coolpoints);
 
-  animatePointUpdate(pointsEl, buttonEl, messageEl, incCoolPoints);
+  animatePointUpdate(pointsEl, messageEl, incCoolPoints, buttonEl);
 }
 
 /**
@@ -161,13 +162,18 @@ CoolpointsUserList.prototype.initSearch = function () {
     var value = this.value.toLowerCase();
     if (value) {
       self.filter = function (user) {
-        return user.name.toLowerCase().indexOf(value) >= 0;
+        return user.user.toLowerCase().indexOf(value) >= 0;
       };
     } else {
       self.filter = null;
     }
     self.handleChange();
     self.loadPage(0);
+  });
+
+  this.searchbar.keydown(function (e) {
+    if (e.key == "Enter")
+      e.preventDefault();
   });
 };
 
@@ -337,10 +343,11 @@ window.USERCOOLPOINTSLIST = new CoolpointsUserList(
 
 function applyPointsToTable(pointData) {
   const userCoolPointListItem = window.USERCOOLPOINTSLIST.usersCoolPoints.find(
-    (d) => d.user === pointData.user,
+    (d) => d.user === pointData.user
   );
+  if (!userCoolPointListItem) return;
   userCoolPointListItem.points = CHANNEL.usersCoolPoints.find(
-    (d) => d.user === pointData.user,
+    (d) => d.user === pointData.user
   ).points;
 
   // Run animation
