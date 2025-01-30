@@ -439,7 +439,8 @@ ChatModule.prototype.sendModMessage = function (msg, minrank) {
         time: Date.now()
     };
 
-    this.channel.users.forEach(function (u) {
+    this.channel.users.forEach((u) => {
+        msgobj = this.channel.modules.coolholecommon.coolholePostProcessChatMessage(this.channel, u, null, msgobj);
         if (u.account.effectiveRank >= minrank) {
             u.socket.emit("chatMsg", msgobj);
         }
