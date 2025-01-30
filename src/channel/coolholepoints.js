@@ -207,7 +207,7 @@ class Coolpoints extends ChannelModule {
         data ? data : {}
       )} Error:  ${errorObject.err}`
     );
-    if (returnSocket)
+    if (user && returnSocket)
       // Return an empty array of point data... for now probably
       user.socket.emit(returnSocket, new ReturnMsg("error", userMessage, []));
   }
@@ -431,17 +431,89 @@ class Coolpoints extends ChannelModule {
    * @summary Handles when a user's video is skipped.
    * @param {Object} queueby username for submitted video.
    */
-  handleSkipped(queueby) {
-    try {
-      //BUG: This works unless the user leaves while his video is skipped.
-      const user = this.channel.users.find(x => x.getName() === queueby);
-      
-      // testing
-      // var g = this.get(queueby);
-      // console.log("get:");
-      // console.log(g);
 
-      this.lose(user, "skipped");
+  /* 2025-01-29 Miles - HACK: Alot of this is duplicate code from `lose` and `isValidAction`.
+    * This function uses the "Losses" in point options. Losses are a bit different than the Earnings, 
+    * Expenditures, and Statuses in that the user MAY NOT be present when the losses occur. In this particular
+    * context, the user MAY NOT be present when his video is skipped. Most of the existing architecture at this time
+    * is built around assuming the user IS present when the Earning, Expenditure, and Status occurs. 
+    * Streeeggs was saying we might rearchitect the Earnings, Expenditures, and Statuses to also handle when the 
+    * user is currently not present. So, currently this function just gets it done; it and others may be rewritten in the future.
+    */
+  handleSkipped(queueby) {
+    let user = this.channel.users.find(x => x.account.name === queueby);
+    const action = "skipped";
+    const callingFunction = "handleSkipped";
+
+    try {
+      // 1) check if channel is registered
+      this.channel.is(Flags.C_REGISTERED)
+
+      // 2) is action valid
+      const pointData = this.get(queueby);
+      if (!pointData) {
+        this.logError({
+          user,
+          callingFunction,
+          returnSocket: "coolpointsFailure",
+          err: `User ${queueby} not found for point ${action}`,
+          data: { user: queueby, action },
+          userMessage: `Error: Your video was skipped, but you're not a registered user. No point loss for now...`,
+        });
+        return;
+      }
+
+      const actionData = this.channel.modules.coolholeactionspoints.get(action);
+      if (!actionData) {
+        this.logError({
+          user,
+          callingFunction,
+          returnSocket: "coolpointsFailure",
+          err: `Action ${action} does not exist.`,
+          data: { user: queueby, action },
+          userMessage: `Error: This disturbance was felt. Your action was recorded.`,
+        });
+        return;
+      }
+
+      if (
+        actionData.options.find((opt) => opt.optionName === "enabled")
+          .optionValue === false
+      ) {
+        this.logError({
+          user,
+          callingFunction,
+          returnSocket: "coolpointsFailure",
+          err: `Action ${action} is not enabled`,
+          data: { user: queueby, action },
+          userMessage: `Error: Action ${action} has been deemed too powerful. It's been disabled for now.`,
+        });
+        return;
+      }
+
+      // 3) subtract
+      const pointsToLose = actionData.options.find(
+        (opt) => opt.optionName === "points"
+      ).optionValue ?? 0;
+
+      this.subtract(queueby, pointsToLose);
+
+      LOGGER.info(
+        `User ${queueby} lost ${pointsToLose} points for ${action}`
+      );
+
+      this.channel.broadcastAll(
+        "updateCoolPointsResponse",
+        new ReturnMsg(
+          `User ${queueby} lost ${pointsToLose} points for ${action}`,
+          `${queueby} lost ${pointsToLose} points for ${action}`,
+          new ReturnPointData(
+            queueby,
+            -pointsToLose,
+            this.get(queueby).points
+          )
+        )
+      );
       
     } catch (err) {
       this.logError({
@@ -449,8 +521,8 @@ class Coolpoints extends ChannelModule {
         callingFunction: "handleSkipped",
         returnSocket: "coolpointsFailure",
         err,
-        data: {user: user.getName() || "(anonymous)"},
-        userMessage: `Error: Unable to lose points. Let the head monkey in charge know`,
+        data: {user: queueby || "(anonymous)"},
+        userMessage: `Error: Unable to lose points from video being skipped. Let the head monkey in charge know`,
       });
     }
   }
@@ -486,7 +558,7 @@ class Coolpoints extends ChannelModule {
         returnSocket: "coolpointsFailure",
         err: `Action ${action} is not an ${expectedActionType}`,
         data: { user: user.getName(), action },
-        userMessage: `Error: This distrubance was felt. Your action was recorded.`,
+        userMessage: `Error: This disturbance was felt. Your action was recorded.`,
       });
       return false;
     }
