@@ -4,15 +4,31 @@ var LOGGER = require("@calzoneman/jsli")("coolpoints");
 var Flags = require("../flags");
 import { ActionType } from "./coolholepoints-actions-options";
 
+const ActionStatus = {
+  Success: "success",
+  InsufficentPoints: "insufficentPoints",
+  InvalidUser: "invalidUser",
+  InvalidAction: "invalidAction",
+  ActionDisabled: "actionDisabled",
+  DoesNotApply: "doesNotApply",
+  UnknownError: "unknownError",
+};
+
 /**
  * @typedef {Object} ActionResult
  * @property {boolean} success - Indicates if the operation was successful.
  * @property {string} message - Optional message detailing the result.
+ * @property {string} status - Status of the action
  */
 class ActionResult {
-  constructor(success, message) {
+  constructor(success, message, status = null) {
     this.success = success;
     this.message = message;
+    this.status = status
+      ? status
+      : success
+      ? ActionStatus.Success
+      : ActionStatus.UnknownError;
   }
 }
 
@@ -403,7 +419,7 @@ class Coolpoints extends ChannelModule {
    * @param {String} action action to validate
    * @param {String} expectedActionType expected action type
    * @param {String} callingFunction calling function
-   * @returns {Boolean} if the action is valid
+   * @returns {ActionResult} if the action is valid
    */
   isValidAction(user, action, expectedActionType, callingFunction) {
     const pointData = this.get(user.getName());
@@ -416,7 +432,11 @@ class Coolpoints extends ChannelModule {
         data: { user: user.getName(), action },
         userMessage: `Error: You were not found... Good luck with that`,
       });
-      return false;
+      return new ActionResult(
+        false,
+        "User not found",
+        ActionStatus.InvalidUser
+      );
     }
 
     const actionData = this.channel.modules.coolholeactionspoints.get(action);
@@ -429,7 +449,11 @@ class Coolpoints extends ChannelModule {
         data: { user: user.getName(), action },
         userMessage: `Error: This distrubance was felt. Your action was recorded.`,
       });
-      return false;
+      return new ActionResult(
+        false,
+        "Action is not valid",
+        ActionStatus.InvalidAction
+      );
     }
 
     if (
@@ -446,7 +470,11 @@ class Coolpoints extends ChannelModule {
           data: { user: user.getName(), action },
           userMessage: `Error: Action ${action} has been deemed too powerful. It's been disabled for now.`,
         });
-      return false;
+      return new ActionResult(
+        false,
+        "Action is not enabled",
+        ActionStatus.ActionDisabled
+      );
     }
 
     switch (expectedActionType) {
@@ -464,7 +492,11 @@ class Coolpoints extends ChannelModule {
             data: { user: user.getName(), action },
             userMessage: `Error: You have not done enough for society to earn ${action}`,
           });
-          return false;
+          return new ActionResult(
+            false,
+            "Insufficent points",
+            ActionStatus.InsufficentPoints
+          );
         }
         break;
       case ActionType.Statuses:
@@ -473,9 +505,13 @@ class Coolpoints extends ChannelModule {
           actionData.options.find((opt) => opt.optionName === "points")
             .optionValue
         ) {
-          return true;
+          return ActionResult(true);
         }
-        return false;
+        return ActionResult(
+          false,
+          "Action doesn't apply to user",
+          ActionStatus.DoesNotApply
+        );
       case ActionType.Losses:
       case ActionType.Earnings:
         break;
@@ -501,11 +537,20 @@ class Coolpoints extends ChannelModule {
           data: user.getName(),
           userMessage: `Error: You must join cause if you wish to participate.`,
         });
-        return new ActionResult(false, "User is not registered or logged in");
+        return new ActionResult(
+          false,
+          "User is not registered or logged in",
+          ActionStatus.InvalidUser
+        );
       }
 
-      if (!this.isValidAction(user, action, ActionType.Expenditures, "spend"))
-        return new ActionResult(false, "Action is not valid");
+      const validActionResult = this.isValidAction(
+        user,
+        action,
+        ActionType.Expenditures,
+        "spend"
+      );
+      if (!validActionResult.success) return validActionResult;
 
       const actionData = this.channel.modules.coolholeactionspoints.get(action);
       const pointsToSpend = actionData.options.find(
@@ -543,7 +588,11 @@ class Coolpoints extends ChannelModule {
         data: user.getName(),
         userMessage: `Error: Unable to spend points. Let the head monkey in charge know`,
       });
-      return new ActionResult(false, "Unable to spend points. Unknown error");
+      return new ActionResult(
+        false,
+        "Unable to spend points. Unknown error",
+        ActionStatus.UnknownError
+      );
     }
   }
 
@@ -564,11 +613,19 @@ class Coolpoints extends ChannelModule {
           data: user.getName(),
           userMessage: `Error: You must join cause if you wish to participate.`,
         });
-        return new ActionResult(false, "User is not registered or logged in");
+        return new ActionResult(
+          false,
+          "User is not registered or logged in",
+          ActionStatus.InvalidUser
+        );
       }
-
-      if (!this.isValidAction(user, action, ActionType.Earnings, "earn"))
-        return new ActionResult(false, "Action is not valid");
+      const validActionResult = this.isValidAction(
+        user,
+        action,
+        ActionType.Earnings,
+        "earn"
+      );
+      if (!validActionResult.success) return validActionResult;
 
       const actionData = this.channel.modules.coolholeactionspoints.get(action);
       const pointsToEarn = actionData.options.find(
@@ -593,7 +650,11 @@ class Coolpoints extends ChannelModule {
           )
         )
       );
-      return new ActionResult(true, "User earned points successfully");
+      return new ActionResult(
+        true,
+        "User earned points successfully",
+        ActionStatus.Success
+      );
     } catch (err) {
       this.logError({
         user,
@@ -603,7 +664,11 @@ class Coolpoints extends ChannelModule {
         data: user.getName(),
         userMessage: `Error: Unable to award points. Let the head monkey in charge know`,
       });
-      return new ActionResult(false, "Unable to earn points. Unknown error");
+      return new ActionResult(
+        false,
+        "Unable to earn points. Unknown error",
+        ActionStatus.UnknownError
+      );
     }
   }
 
@@ -624,11 +689,20 @@ class Coolpoints extends ChannelModule {
           data: user.getName(),
           userMessage: `Error: You must join cause if you wish to participate.`,
         });
-        return new ActionResult(false, "User is not registered or logged in");
+        return new ActionResult(
+          false,
+          "User is not registered or logged in",
+          ActionStatus.InvalidUser
+        );
       }
 
-      if (!this.isValidAction(user, action, ActionType.Losses, "lose"))
-        return new ActionResult(false, "Action is not valid");
+      const validActionResult = this.isValidAction(
+        user,
+        action,
+        ActionType.Losses,
+        "lose"
+      );
+      if (!validActionResult.success) return validActionResult;
 
       const actionData = this.channel.modules.coolholeactionspoints.get(action);
       const pointsToLose = actionData.options.find(
@@ -665,7 +739,11 @@ class Coolpoints extends ChannelModule {
         userMessage: `Error: Unable to lose points. Let the head monkey in charge know`,
       });
 
-      return new ActionResult(false, "Unable to lose points. Unknown error");
+      return new ActionResult(
+        false,
+        "Unable to lose points. Unknown error",
+        ActionStatus.UnknownError
+      );
     }
   }
 
@@ -872,12 +950,16 @@ class Coolpoints extends ChannelModule {
         data: user.getName(),
         userMessage: `Error: You must join cause if you wish to participate.`,
       });
-      return new ActionResult(false, "User is not registered or logged in");
+      return new ActionResult(
+        false,
+        "User is not registered or logged in",
+        ActionStatus.InvalidUser
+      );
     }
     const msgWithoutCmd = msg.split(" ").slice(1).join(" ");
 
-    if (!this.spend(user, command).success)
-      return new ActionResult(false, `Unable to spend for ${command}`);
+    const spendResult = this.spend(user, command);
+    if (!spendResult.success) return spendResult;
 
     switch (command) {
       case "secretary": {
@@ -913,7 +995,11 @@ class Coolpoints extends ChannelModule {
           data: command,
           userMessage: `Error: Command ${command} not found`,
         });
-        return new ActionResult(false, "Command not found");
+        return new ActionResult(
+          false,
+          "Command not found",
+          ActionStatus.UnknownError
+        );
       }
     }
   }
