@@ -8,10 +8,11 @@ const navbar = document.querySelector(".navbar");
 
 // When we scroll, shift to a solid color once over a Y of 50.
 document.onscroll = () => {
-    navbar.style.setProperty("transition", "background-color 150ms");
-    if (scrollY < 25) {
-        navbar.style.backgroundColor = "transparent";
-    } else {
-        navbar.style.backgroundColor = "#070A12";
-    }
+  if (scrollY < 25) {
+    navbar.classList.remove("navbar-solid");
+    navbar.classList.add("navbar-transparent");
+  } else {
+    navbar.classList.remove("navbar-transparent");
+    navbar.classList.add("navbar-solid");
+  }
 };
