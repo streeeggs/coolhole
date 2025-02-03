@@ -173,26 +173,67 @@ svg {
 #pollwrap {
   padding-left: 0;
   padding-right: 10px;
-}
+  display: flex;
+  flex-direction: column-reverse;
 
+  .well {
+    .wrapInner {
+      display: flex;
+      flex-direction: column;
+      background: #12151B;
+      padding-bottom: 10px;
+
+      .pollHeader {
+        display: flex;
+        gap: 1.5em;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+      }
+
+      .options {
+        display: flex;
+        flex-direction: column;
+        width: 95%;
+        align-self: center;
+
+        .option {
+          background: #212A2E;
+
+          button {
+            display: flex;
+            justify-content: space-between;
+            background: transparent;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
 #pollwrap>.well.active {
-  padding: 35px;
-  -moz-background-color: #181E22;
+  width: 100%;
+  padding: 10px;
   background-color: #181E22;
 
   .btn-default {
-    -moz-background-color: #475151;
     background-color: #475151;
+  }
+
+  .options .option:hover {
+    background-color: #f5f5f5;
+
+    button:hover {
+      color: #212a2e;
+    }
   }
 }
 
 #pollwrap>.well.muted {
-  padding: 35px;
-  -moz-background-color: #1C2124;
+  padding: 10px;
   background-color: #1C2124;
 
   .btn-default {
-    -moz-background-color: #0F1213;
     background-color: #0F1213;
   }
 }
@@ -564,4 +605,4 @@ input[type="checkbox"] {
 #plonotification > div > .btn {
   border: none;
   background-color: #742c00;
-
+}
