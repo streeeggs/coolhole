@@ -199,4 +199,7 @@ const CoolholeCallbacks = {
       });
     }
   },
+  coolpointsVoteskipFail: function (response) {
+    $("#voteskip").attr("disabled", false);
+  }
 };
