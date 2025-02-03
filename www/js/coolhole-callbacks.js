@@ -102,10 +102,15 @@ const CoolholeCallbacks = {
     });
     const timestampSpan = $("<span>", {
       title: "Poll opened by " + data.initiator,
-      text: new Date(data.timestamp).toTimeString().split(" ")[0],
+      text: `Poll opened by ${data.initiator} - ${
+        new Date(data.timestamp).toTimeString().split(" ")[0]
+      }`,
       data: {
         timestamp: data.timestamp,
         initiator: data.initiator,
+      },
+      css: {
+        fontSize: "12px",
       },
     });
 

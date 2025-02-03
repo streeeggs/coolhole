@@ -6565,6 +6565,10 @@ svg {
   background: transparent;
   width: 100%;
 }
+#pollwrap .well .wrapInner .options .option button.active {
+  border: 1px solid #3E97A2;
+  font-weight: bold;
+}
 #pollwrap > .well.active {
   width: 100%;
   padding: 10px;
