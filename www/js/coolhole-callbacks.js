@@ -156,7 +156,7 @@ const CoolholeCallbacks = {
         $(this).addClass("active");
       });
       const optionText = $("<span>", {
-        text: option,
+        html: option, // html because we apparently return tags and encoded characters
       });
       const optionPercentage = $("<span>", {
         text: `${data.counts[i]} (${toPercent(data.counts[i], totalVotes)})`,
