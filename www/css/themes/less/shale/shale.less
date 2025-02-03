@@ -85,7 +85,32 @@ svg {
     padding-left: 10px;
     align-content: center;
   }
+}
 
+/* Navbar is transparent by default */
+.navbar.navbar-inverse.navbar-transparent {
+  transition: background-color 150ms;
+  background-color: transparent;
+}
+
+/*... but is solid when scrolled */
+.navbar.navbar-inverse.navbar-solid {
+  transition: background-color 150ms;
+  background-color: #070A12;
+}
+
+/* Nabbar becomes a dropdown at a specific breakpoint; make it no longer transparent */
+#nav-collapsible.collapse.in,
+#nav-collapsible.collapsing {
+  background-color: #070A12;
+  max-height: 100%;
+}
+
+/* Overriding bootstrap shitty defaults */
+.navbar-inverse .navbar-nav .open .dropdown-menu>li>a:hover,
+.navbar-inverse .navbar-nav .open .dropdown-menu>li>a:focus {
+  background-color: #f5f5f5;
+  color: #212A2E;
 }
 
 .nav.nav-tabs {
@@ -564,4 +589,4 @@ input[type="checkbox"] {
 #plonotification > div > .btn {
   border: none;
   background-color: #742c00;
-
+}
