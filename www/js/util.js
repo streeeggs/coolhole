@@ -1107,7 +1107,7 @@ function handlePermissionChange() {
     if (!hasPermission("chat")) {
         $("#chatline").attr("placeholder", "Chat permissions are restricted on this channel");
     } else {
-        $("#chatline").attr("placeholder", "");
+        $("#chatline").attr("placeholder", "Send a message...");
     }
     rebuildPlaylist();
 }

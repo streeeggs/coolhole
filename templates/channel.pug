@@ -8,20 +8,22 @@ html(lang="en")
     link(rel="stylesheet", href="/css/videojs-resolution-switcher.css")
   body
     #wrap
-      nav.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+      nav.navbar.navbar-inverse(role="navigation")
         include nav
         +navheader()
         #nav-collapsible.collapse.navbar-collapse
           ul.nav.navbar-nav
-            +navdefaultlinks()
-            li: a(href="javascript:void(0)", onclick="javascript:showUserOptions()") Options
-            li: a#showchansettings(href="javascript:void(0)", onclick="javascript:showChannelSettings()") Channel Settings
+            li: a(href="javascript:void(0)", onclick="javascript:showUserOptions()") Preferences
             li.dropdown
               a.dropdown-toggle(href="#", data-toggle="dropdown") Layout
                 b.caret
               ul.dropdown-menu
                 li: a(href="#" onclick="javascript:chatOnly()") Chat Only
                 li: a(href="#" onclick="javascript:removeVideo(event)") Remove Video
+            include socials
+            +sociallinks() 
+            +navdefaultlinks()
+            li: a#showchansettings(href="javascript:void(0)", onclick="javascript:showChannelSettings()") Channel Settings
             +navsuperadmin(true)
           +navloginlogout()
       section#mainpage
@@ -38,7 +40,7 @@ html(lang="en")
             #drinkbar.col-lg-12.col-md-12
               h1#drinkcount
           #main.row
-            #chatwrap.col-lg-5.col-md-5
+            #chatwrap.col-lg-4.col-md-4
               #chatheader
                 i#userlisttoggle.glyphicon.glyphicon-chevron-down.pull-left.pointer(title="Show/Hide Userlist")
                 span#usercount.pointer Not Connected
@@ -50,7 +52,7 @@ html(lang="en")
                 #guestlogin.input-group
                   span.input-group-addon Guest login
                   input#guestname.form-control(type="text", placeholder="Name")
-            #videowrap.col-lg-7.col-md-7
+            #videowrap.col-lg-8.col-md-8
               p#videowrap-header
                 span#resize-video-smaller.glyphicon.glyphicon-minus.pointer(title="Make the video smaller")
                 span#resize-video-larger.glyphicon.glyphicon-plus.pointer(title="Make the video larger")
@@ -58,14 +60,14 @@ html(lang="en")
               .embed-responsive.embed-responsive-16by9
                 #ytapiplayer.embed-responsive-item
           #controlsrow.row
-            #leftcontrols.col-lg-5.col-md-5
+            #leftcontrols.col-lg-4.col-md-4
               button#newpollbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-poll")
               button#emotelistbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-emote-dead")
               button#chatoptsbtn.btn.btn-sm.btn-default: span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-preferences")
               button#cpPromptBtn.btn.btn-sm.btn-default(onclick="javascript:showCoolPointsUserPrompt()"): span: svg.ch-icon(viewbox="0 0 24 24"): use(href="#ch-icon-ui-coin")
                 span#coinAmt
               span#coinMsg
-            #rightcontrols.col-lg-7.col-md-7
+            #rightcontrols.col-lg-8.col-md-8
               #plcontrol.btn-group
                 button#showmediaurl.btn.btn-sm.btn-default(title="Add video from URL", data-toggle="collapse", data-target="#addfromurl")
                   span.glyphicon.glyphicon-plus
@@ -92,10 +94,10 @@ html(lang="en")
                   span.glyphicon.glyphicon-step-forward
 
           #playlistrow.row
-            #leftpane.col-lg-5.col-md-5
+            #leftpane.col-lg-4.col-md-4
                 #pollwrap.col-lg-12.col-md-12
                 #playlistmanagerwrap.col-lg-12.col-md-12
-            #rightpane.col-lg-7.col-md-7
+            #rightpane.col-lg-8.col-md-8
               #rightpane-inner.row
                 #searchcontrol.collapse.plcontrol-collapse.col-lg-12.col-md-12
                   .vertical-spacer

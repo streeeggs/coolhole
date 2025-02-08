@@ -8,14 +8,14 @@ mixin navheader()
 
 mixin navdefaultlinks()
   li
-    a(href="/") Home
+   // a(href="/") Home -- Disabled. Use the logo instead.
   li.dropdown
     a.dropdown-toggle(href="#", data-toggle="dropdown") Account
       b.caret
     ul.dropdown-menu
       if loggedIn
-        li: a#logoutbtn(href="javascript:$('#logoutform').submit();") Log out
-        li.divider
+        // li: a#logoutbtn(href="javascript:$('#logoutform').submit();") Log out
+        // li.divider
         li: a(href="/account/channels") Channels
         li: a(href="/account/profile") Profile
         li: a(href="/account/edit") Change Password/Email
@@ -23,8 +23,6 @@ mixin navdefaultlinks()
       else
         li: a(href="/login") Login
         li: a(href="/register") Register
-  include socials
-  +sociallinks() 
 mixin navsuperadmin(newTab)
   if superadmin
     if newTab

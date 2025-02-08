@@ -946,3 +946,49 @@ code.text-lottery {
   white-space: pre-wrap;
   overflow-y: auto;
 }
+
+#chatline.form-control:focus {
+    background-image: linear-gradient(0deg, #0f2036, #1a1a1a);
+}
+
+/* Style improvements start here */
+#motdrow #motdwrap {
+    background-color: #181e21;
+    padding: 24px;
+}
+
+#motd {
+    font-size: 2em;
+}
+
+#togglemotd .glyphicon {
+  font-size: 1em;
+}
+
+#mainpage .container-fluid {
+    margin: 0 1em;
+}
+
+#chatheader {
+    border: 0;
+    border-top-left-radius: 10px;
+}
+
+#userlisttoggle {
+    border: 0;
+    border-top-left-radius: 10px;
+}
+
+/* Fix queue padding */
+
+#queue > li:last-child {
+    padding-bottom: 10px;
+}
+
+.queue_entry > .btn-group {
+    margin-bottom: -10px;
+}
+
+#mediaurl.form-control:focus {
+    background-image: linear-gradient(0deg, #0f2036, #1a1a1a);
+}

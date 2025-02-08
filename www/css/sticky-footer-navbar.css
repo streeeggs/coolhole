@@ -26,5 +26,5 @@ body {
 }
 
 #mainpage {
-    padding-top: 60px;
+    padding-top: 0px; /* Causes a large space between the navbar and chat/player */
 }
