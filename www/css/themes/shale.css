@@ -4460,7 +4460,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   line-height: 1.42857143;
   text-decoration: none;
   color: #5ca2b9;
-  background-color: #161c1f;
+  background-color: #29353a;
   border: 1px solid #ddd;
   margin-left: -1px;
 }
@@ -5503,18 +5503,19 @@ a.list-group-item-danger.active:focus {
   font-size: 21px;
   font-weight: bold;
   line-height: 1;
-  color: #000;
-  text-shadow: 0 1px 0 #fff;
-  opacity: 0.2;
+  color: #ffffff;
+  opacity: 1;
   filter: alpha(opacity=20);
 }
-.close:hover,
-.close:focus {
-  color: #000;
+.close:hover{
+  color: white;
   text-decoration: none;
   cursor: pointer;
-  opacity: 0.5;
   filter: alpha(opacity=50);
+}
+.close:focus {
+  color: white;
+  cursor: pointer;
 }
 button.close {
   padding: 0;
@@ -6434,7 +6435,6 @@ svg {
   vertical-align: middle;
 }
 .navbar.navbar-inverse {
-  background-color: transparent;
   border: 0;
   font-size: 16px;
 }
@@ -6834,7 +6834,7 @@ input[type="checkbox"] {
 #usercount {
   width: 1px;
   flex-grow: 0;
-  margin-left: auto;
+  margin-left: 0.5em;
   margin-right: auto;
 }
 #leftcontrols,
@@ -6906,6 +6906,9 @@ input[type="checkbox"] {
   color: #8be2ff;
   text-shadow: #0081ab50 0 0 5px;
   outline: none;
+}
+.queue_active:not(.queue_temp) > .qe_title {
+  color: white;
 }
 .qe_time {
   margin-right: 5px;
