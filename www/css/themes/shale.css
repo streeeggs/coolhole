@@ -6654,7 +6654,7 @@ div[class^="chat-msg-"] {
   padding-top: 3px;
   padding-bottom: 3px;
   border-bottom: 1px solid;
-  border-color: #05080C;
+  border-color: #334243;
   text-wrap: nowrap;
 }
 .userlist_item > span {
@@ -6803,6 +6803,9 @@ input[type="checkbox"] {
 #videowrap-header {
   background-color: #12151B;
   height: 30px;
+  border-radius: 0.25em;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 #chatheader #userlisttoggle,
 #videowrap-header #userlisttoggle {

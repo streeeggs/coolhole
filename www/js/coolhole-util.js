@@ -1129,6 +1129,40 @@ applyAutoResizing();
 setupAutoHideUserlist();
 applyAutoHideUserlist();
 
+/**
+ * Constant for setting MOTD visibility in local storage.
+ */
+const HIDE_MOTD_STORAGE_NAME = "hide_motd";
+const motd = document.getElementById("motdwrap");
+
+function toggleHideMotd() {
+    const motdDisplay = window.getComputedStyle(motd).display;
+
+    if (motdDisplay !== "none" && window.localStorage.getItem(HIDE_MOTD_STORAGE_NAME) === "false") {
+      $("#motdwrap").hide();
+      $("#motd").hide();
+      window.localStorage.setItem(HIDE_MOTD_STORAGE_NAME, "true");
+    } else {
+      $("#motd").show();
+      $("#motdwrap").show();
+      window.localStorage.setItem(HIDE_MOTD_STORAGE_NAME, "false");
+    }
+
+}
+
+
+function applyHideMotd() {
+  if (window.localStorage.getItem(HIDE_MOTD_STORAGE_NAME) === "true"){
+    $("#motdwrap").hide();
+    $("#motd").hide();
+  } else if (window.localStorage.getItem(HIDE_MOTD_STORAGE_NAME) === "false") {
+    $("#motdwrap").show();
+    $("#motd").show();
+  }
+}
+
+applyHideMotd();
+
 //-----------------------------------------------------------
 // [END] CLIENT PREFERENCES
 //-----------------------------------------------------------
