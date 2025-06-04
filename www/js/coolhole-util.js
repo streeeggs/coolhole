@@ -1144,13 +1144,9 @@ function toggleHideMotd() {
 
 
 function applyHideMotd() {
-  if (window.localStorage.getItem(HIDE_MOTD_STORAGE_NAME) === "true"){
-    $("#motdwrap").hide();
-    $("#motd").hide();
-  } else if (window.localStorage.getItem(HIDE_MOTD_STORAGE_NAME) === "false") {
-    $("#motdwrap").show();
-    $("#motd").show();
-  }
+  const isHidden = localStorage.getItem(HIDE_MOTD_STORAGE_NAME) === "true";
+  $("#motd").toggle(!isHidden);
+  $("#motdwrap").toggle(!isHidden);
 }
 
 applyHideMotd();
