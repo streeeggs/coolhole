@@ -1137,16 +1137,9 @@ const HIDE_MOTD_STORAGE_NAME = "hide_motd";
 function toggleHideMotd() {
     const motdDisplay = $("#motdwrap").css("display");
 
-    if (motdDisplay !== "none" && window.localStorage.getItem(HIDE_MOTD_STORAGE_NAME) === "false") {
-      $("#motdwrap").hide();
-      $("#motd").hide();
-      window.localStorage.setItem(HIDE_MOTD_STORAGE_NAME, "true");
-    } else {
-      $("#motd").show();
-      $("#motdwrap").show();
-      window.localStorage.setItem(HIDE_MOTD_STORAGE_NAME, "false");
-    }
-
+  const isHidden = localStorage.getItem(HIDE_MOTD_STORAGE_NAME) === "true";
+  localStorage.setItem(HIDE_MOTD_STORAGE_NAME, !isHidden);
+  applyHideMotd();
 }
 
 
