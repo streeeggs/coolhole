@@ -1133,10 +1133,9 @@ applyAutoHideUserlist();
  * Constant for setting MOTD visibility in local storage.
  */
 const HIDE_MOTD_STORAGE_NAME = "hide_motd";
-const motd = document.getElementById("motdwrap");
 
 function toggleHideMotd() {
-    const motdDisplay = window.getComputedStyle(motd).display;
+    const motdDisplay = $("#motdwrap").css("display");
 
     if (motdDisplay !== "none" && window.localStorage.getItem(HIDE_MOTD_STORAGE_NAME) === "false") {
       $("#motdwrap").hide();
