@@ -12,6 +12,8 @@ const SEC_MSG_INPUT = $("#secretaryOption-message");
 const SEC_PITCH_INPUT = $("#secretaryOption-pitch");
 const SEC_RATE_INPUT = $("#secretaryOption-rate");
 const SEC_VOICE_INPUT = $("#secretaryOption-voice");
+const EMOTE_VOLUME_DEFAULT = 50; // Default volume for emotes
+const SEC_VOLUME_DEFAULT = 50; // Default volume for secretary messages
 
 const synth = window.speechSynthesis;
 let voices = [];
@@ -359,6 +361,9 @@ function secretaryMessageCallback(data) {
     if (speechObj.voiceObj) utterThis.voice = speechObj.voiceObj;
     if (speechObj.rate) utterThis.rate = speechObj.rate;
     if (speechObj.pitch) utterThis.pitch = speechObj.pitch;
+    const preferedVolume =
+      (localStorage.getItem("secVolume") ?? SEC_VOLUME_DEFAULT) / 100;
+    utterThis.volume = preferedVolume;
 
     // If there any sounds in the array...
     if (sounds && sounds.length > 0) {
@@ -611,47 +616,43 @@ const SFX = {
  */
 SFX.mod.sounds = {
   eugh: {
-    src: "https://static.dontcodethis.com/sounds/CH_Emote_SFX-eugh.wav",
+    src: "https://static.coolhole.org/sfx/CH_Emote_SFX-eugh.wav",
     emote: "/eugh",
   },
   gunshot: {
-    src: "https://dontcodethis.com/images/Shotgun_Blast.wav",
+    src: "https://static.coolhole.org/sfx/Shotgun_Blast.wav",
     emote: "/maths",
   },
   boogie: {
-    src: "https://dontcodethis.com/images/Boogie%20warning%20shot.wav",
+    src: "https://static.coolhole.org/sfx/Boogie%20warning%20shot.wav",
     emote: "bigiron",
   },
   fbi: {
-    src: "https://www.myinstants.com/media/sounds/fbi-open-up-sfx.mp3",
+    src: "https://static.coolhole.org/sfx/fbi-open-up-sfx.mp3",
     emote: "/agent",
   },
   polis: {
-    src: "https://www.myinstants.com/media/sounds/11900601.mp3",
+    src: "https://static.coolhole.org/sfx/polis.mp3",
     emote: "/polis",
   },
   caw: {
-    src: "https://static.dontcodethis.com/sounds/caw.wav",
+    src: "https://static.coolhole.org/sfx/caw.wav",
     emote: "/Kaiattack",
   },
   horn: {
-    src: "https://static.dontcodethis.com/sounds/short-airhorn.mp3",
+    src: "https://static.coolhole.org/sfx/short-airhorn.mp3",
     emote: "/airhorn",
   },
   oh: {
-    src: "https://freesound.org/data/previews/179/179334_2888453-lq.mp3",
+    src: "https://static.coolhole.org/sfx/ayytone.mp3",
     emote: "/ayytone",
   },
-  allah: {
-    src: "https://media1.vocaroo.com/mp3/1nD49ViBCBfj",
-    emote: "JinnWick",
-  },
   reload: {
-    src: "https://static.dontcodethis.com/sounds/RELOAD.mp3",
+    src: "https://static.coolhole.org/sfx/RELOAD.mp3",
     emote: "/reload",
   },
   chirp: {
-    src: "https://static.dontcodethis.com/sounds/smoke-alarm-chirp.mp3",
+    src: "https://static.coolhole.org/sfx/smoke-alarm-chirp.mp3",
     emote: "/beep",
     condition: () =>
       $(
@@ -661,11 +662,11 @@ SFX.mod.sounds = {
 };
 SFX.global.sounds = {
   eugh: {
-    src: "https://ark.augint.net/CH_Emote_SFX-eugh/CH_Emote_SFX-eugh.wav",
+    src: "https://static.coolhole.org/sfx/CH_Emote_SFX-eugh.wav",
     emote: "/eugh",
   },
   chirp: {
-    src: "https://static.dontcodethis.com/sounds/smoke-alarm-chirp.mp3",
+    src: "https://static.coolhole.org/sfx/smoke-alarm-chirp.mp3",
     emote: "/beep",
     condition: () =>
       $(
@@ -675,27 +676,23 @@ SFX.global.sounds = {
 };
 SFX.secretary.sounds = {
   skelen: {
-    src: "https://ark.augint.net/bonearmor2/bonearmor2.wav",
+    src: "https://static.coolhole.org/sfx/bonearmor2.wav",
     emote: "/skelen",
   },
   "the dark lord": {
-    src: "https://ark.augint.net/laugh1/laugh1.wav",
+    src: "https://static.coolhole.org/sfx/laugh1.wav",
     emote: "the dark lord",
   },
   eugh: {
-    src: "https://ark.augint.net/CH_Emote_SFX-eugh/CH_Emote_SFX-eugh.wav",
+    src: "https://static.coolhole.org/sfx/CH_Emote_SFX-eugh.wav",
     emote: "/eugh",
   },
   "and then the door creaked open on its own": {
-    src: "https://ark.augint.net/ch_sfx-door_creek_spooky_knock_ahh/ch_sfx-door_creek_spooky_knock_ahh.mp3",
+    src: "https://static.coolhole.org/sfx/ch_sfx-door_creek_spooky_knock_ahh.mp3",
     emote: "and then the door creaked open on its own",
   },
-  eugh: {
-    src: "https://ark.augint.net/CH_Emote_SFX-eugh/CH_Emote_SFX-eugh.wav",
-    emote: "/eugh",
-  },
   chirp: {
-    src: "https://static.dontcodethis.com/sounds/smoke-alarm-chirp.mp3",
+    src: "https://static.coolhole.org/sfx/smoke-alarm-chirp.mp3",
     // Painful chrip. Uncomment at own risk. May break with stacking
     //src: "https://dl.sndup.net/xv2q/smoke-alarm-chirp.mp3",
     emote: "/beep",
@@ -783,6 +780,9 @@ function playSound(sfxLibItem) {
         typeof sfxLibItem.volume === "number"
       )
         audio.volume = sfxLibItem.volume;
+      else
+        audio.volume =
+          (localStorage.getItem("emoteVolume") ?? EMOTE_VOLUME_DEFAULT) / 100; // Default to 50% volume
 
       // If a playbackRate is set and it's a number, set it.
       if (
@@ -995,6 +995,67 @@ const AUTO_RESIZE_MIN = 3; // 2024-07-12 - hardcoded to be 3 based on cytube's c
 const AUTO_RESIZE_STORAGE_NAME = "autoResizeVideoWidth"; // auto resize key for local storage
 const AUTO_HIDE_USERLIST_STORAGE_NAME = "autoHideUserlist"; // hide userlist key for local storage
 
+// set default volume for emotes and secretary messages
+if (window.localStorage.getItem("emoteVolume") === null) {
+  window.localStorage.setItem("emoteVolume", EMOTE_VOLUME_DEFAULT);
+}
+if (window.localStorage.getItem("secVolume") === null) {
+  window.localStorage.setItem("secVolume", SEC_VOLUME_DEFAULT);
+}
+
+/**
+ * Event listener for slider changes.
+ */
+function setupSliderListener(itemName, sliderId, testCallback) {
+  try {
+    $(`#${sliderId}`).val(window.localStorage.getItem(itemName));
+    $(`#${sliderId}-value`).text(window.localStorage.getItem(itemName) + "%");
+    $(`#${sliderId}`).on("input change", function () {
+      const value = $(this).val();
+      window.localStorage.setItem(itemName, value);
+      $(`#${sliderId}-value`).text(value + "%");
+
+      if (testCallback && typeof testCallback === "function") {
+        testCallback(value);
+      }
+    });
+  } catch (e) {
+    console.error(`Error setting up slider listener for ${itemName}:`, e);
+  }
+}
+
+$(function () {
+  setupSliderListener(
+    "emoteVolume",
+    "chatOptions-sfx-emotevolume-cb",
+    (value) => {
+      // todo: dont play audio if audio is currently playing
+      const audio = new Audio(
+        "https://static.dontcodethis.com/sounds/tink.mp3"
+      );
+      audio.volume = value / 100;
+      audio.play();
+    }
+  );
+
+  setupSliderListener("secVolume", "chatOptions-sfx-secvolume-cb", (value) => {
+    if (!(synth.pending || synth.speaking)) {
+      var speechObj = {
+        rate: 1.2,
+        pitch: 1,
+        voiceObj:
+          voices.find(
+            (voice) => voice.name === "Microsoft Zira - English (United States)"
+          ) ?? voices[0],
+        message: `Test message with volume ${value} percent`,
+      };
+      var utterThis = new SpeechSynthesisUtterance(speechObj.message);
+      utterThis.volume = value / 100;
+      window.speechSynthesis.speak(utterThis);
+    }
+  });
+});
+
 /**
  * Sets up auto resizing functionality.
  * AutoResizing is when coolhole remembers what size the video was set at (via +/- button) and resize it accordingly when the user refreshes the browser.
@@ -1154,3 +1215,26 @@ applyHideMotd();
 //-----------------------------------------------------------
 // [END] CLIENT PREFERENCES
 //-----------------------------------------------------------
+
+
+//-----------------------------------------------------------
+// Other
+//-----------------------------------------------------------
+/**
+ * This makes google drive links unclickable.
+ * It is to avoid extraneous downloads that could flag videos to be taken down.
+ */
+function coolholeAppendQueueTitle(item, video, li) {
+  if(item.media.type === "gd") {
+    return $("<span/>")
+      .addClass("qe_title")
+      .addClass("qe_title_disabled")
+      .appendTo(li)
+      .text(video.title);
+  } else {
+    return $("<a/>").addClass("qe_title").appendTo(li)
+      .text(video.title)
+      .attr("href", formatURL(video))
+      .attr("target", "_blank");
+  }
+}
