@@ -4460,7 +4460,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   line-height: 1.42857143;
   text-decoration: none;
   color: #5ca2b9;
-  background-color: #29353a;
+  background-color: #161c1f;
   border: 1px solid #ddd;
   margin-left: -1px;
 }
@@ -5503,19 +5503,18 @@ a.list-group-item-danger.active:focus {
   font-size: 21px;
   font-weight: bold;
   line-height: 1;
-  color: #ffffff;
-  opacity: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  opacity: 0.2;
   filter: alpha(opacity=20);
 }
-.close:hover{
-  color: white;
+.close:hover,
+.close:focus {
+  color: #000;
   text-decoration: none;
   cursor: pointer;
+  opacity: 0.5;
   filter: alpha(opacity=50);
-}
-.close:focus {
-  color: white;
-  cursor: pointer;
 }
 button.close {
   padding: 0;
@@ -6421,8 +6420,11 @@ body {
 * {
   scrollbar-color: #3b4c5450 transparent;
 }
+.table-striped > tr > th {
+  border-bottom: none;
+}
 .table-striped > tbody > tr:nth-child(odd) {
-  background-color: #131B1D;
+  background-color: #1d2327;
 }
 td > a {
   color: #DCE1D7;
@@ -6431,6 +6433,7 @@ td > a:hover {
   color: #799482;
 }
 .navbar.navbar-inverse {
+  background-color: #12151B;
   border: 0;
   font-size: 16px;
 }
@@ -6539,8 +6542,7 @@ td > a:hover {
 }
 #modflair {
   align-content: center;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+  border-radius: 0;
 }
 #modflair.label-default {
   align-content: center;
@@ -6569,7 +6571,7 @@ td > a:hover {
   color: #212a2e;
 }
 #pollwrap > .well.muted {
-  background-color: #1C2124;
+  background-color: #212527;
 }
 #pollwrap > .well.muted .btn-default {
   background-color: #0F1213;
@@ -6603,7 +6605,6 @@ td > a:hover {
 div[class^="chat-msg-"] {
   padding-top: 5px;
   padding-bottom: 5px;
-  color: #E4E4E6;
 }
 /* Cyzone Defaults */
 .userlist_siteadmin {
@@ -6617,7 +6618,7 @@ div[class^="chat-msg-"] {
   padding-top: 3px;
   padding-bottom: 3px;
   border-bottom: 1px solid;
-  border-color: #334243;
+  border-color: #181E22;
   text-wrap: nowrap;
 }
 .userlist_item > span {
@@ -6627,7 +6628,7 @@ div[class^="chat-msg-"] {
   margin-right: 2px;
 }
 .userlist_item:hover {
-  background-color: #05080C;
+  background-color: #29333a;
 }
 .nick-highlight {
   background-color: #555555;
@@ -6692,7 +6693,7 @@ input[type="checkbox"] {
   background-color: #161a20;
 }
 .btn-default:hover {
-  background-color: #0D0F10;
+  background-color: #467d98;
 }
 .embed-responsive-item {
   background-color: #181E22;
@@ -6729,8 +6730,7 @@ input[type="checkbox"] {
   transition: box-shadow;
   transition-duration: 150ms;
   border: 0;
-  border-bottom-right-radius: 0px;
-  border-bottom-left-radius: 10px;
+  color: #FDFDFD;
   background-color: #12151B;
   font-size: 16px;
   height: 50px;
@@ -6739,8 +6739,6 @@ input[type="checkbox"] {
   transition: box-shadow;
   transition-duration: 150ms;
   border: none;
-  border-bottom-right-radius: 0px;
-  border-bottom-left-radius: 10px;
   color: #FDFDFD;
   background-color: #12151B;
   font-size: 16px;
@@ -6765,9 +6763,6 @@ input[type="checkbox"] {
 #videowrap-header {
   background-color: #12151B;
   height: 30px;
-  border-radius: 0.25em;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
 }
 #chatheader #userlisttoggle,
 #videowrap-header #userlisttoggle {
@@ -6777,7 +6772,7 @@ input[type="checkbox"] {
 }
 #chatheader #userlisttoggle:hover,
 #videowrap-header #userlisttoggle:hover {
-  background-color: #3E97A2;
+  background-color: #467d98;
 }
 #videowrap-header {
   display: flex;
@@ -6799,7 +6794,7 @@ input[type="checkbox"] {
 #usercount {
   width: 1px;
   flex-grow: 0;
-  margin-left: 0.5em;
+  margin-left: auto;
   margin-right: auto;
 }
 #leftcontrols,
@@ -6833,7 +6828,7 @@ input[type="checkbox"] {
   width: 100%;
 }
 .queue_entry > .btn-group > *:hover {
-  background-color: #3E97A2;
+  background-color: #467d98;
 }
 .queue_entry > .btn-group > .qbtn-delete:hover {
   background-color: #A6272D;
@@ -6860,9 +6855,10 @@ input[type="checkbox"] {
   background: rgba(0, 0, 0, 0.9);
 }
 .qe_title {
+  padding: 10px 0;
   margin-left: 10px;
   font-size: 16px;
-  color: #A4AFA9;
+  color: #f3f3f3;
 }
 .qe_title:hover {
   color: #e9edee;
@@ -6872,31 +6868,25 @@ input[type="checkbox"] {
   text-shadow: #0081ab50 0 0 5px;
   outline: none;
 }
-.queue_active:not(.queue_temp) > .qe_title {
-  color: white;
-}
 .qe_time {
+  padding: 10px 0;
   margin-right: 5px;
 }
 #plonotification > div > .btn {
   border: none;
   background-color: #742c00;
 }
-
 #motdrow #motdwrap {
-    background-color: #181e21;
-    padding: 24px;
+  background-color: #181e21;
+  padding: 24px;
 }
-
 #mediaurl.form-control:focus {
-    background-image: linear-gradient(0deg, #0f2036, #1a1a1a);
+  background-image: linear-gradient(0deg, #0f2036, #1a1a1a);
 }
-
 /* Poll UI Themeing */
 .poll-menu > .btn:not(.btn-danger) {
-    background-color: #121312;
+  background-color: #121312;
 }
-
 .poll-menu > .btn:not(.btn-danger):hover {
-    background-color: #3b5660;
+  background-color: #3b5660;
 }

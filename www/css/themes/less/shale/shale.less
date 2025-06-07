@@ -28,8 +28,13 @@ body {
   scrollbar-color: #3b4c5450 transparent;
 }
 
-.table-striped>tbody>tr:nth-child(odd) {
-  background-color: #131B1D;
+.table-striped {
+  >tr>th {
+    border-bottom: none;
+  }
+  >tbody>tr:nth-child(odd) {
+    background-color: #1d2327;
+  }
 }
 
 td>a {
@@ -41,7 +46,7 @@ td>a:hover {
 }
 
 .navbar.navbar-inverse {
-  background-color: transparent;
+  background-color: #12151B;
   border: 0;
   font-size: 16px;
 
@@ -179,8 +184,7 @@ td>a:hover {
 
 #modflair {
   align-content: center;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+  border-radius: 0;
 }
 
 #modflair.label-default {
@@ -206,7 +210,7 @@ td>a:hover {
 
 #pollwrap>.well.active {
   background-color: #181E22;
-
+  
   .btn-default {
     background-color: #475151;
   }
@@ -218,7 +222,7 @@ td>a:hover {
 }
 
 #pollwrap>.well.muted {
-  background-color: #1C2124;
+  background-color: #212527;
 
   .btn-default {
     background-color: #0F1213;
@@ -278,7 +282,7 @@ div[class^="chat-msg-"] {
   padding-top: 3px;
   padding-bottom: 3px;
   border-bottom: 1px solid;
-  border-color: #05080C;
+  border-color: #181E22;
   text-wrap: nowrap;
 
   >span {
@@ -291,7 +295,7 @@ div[class^="chat-msg-"] {
 }
 
 .userlist_item:hover {
-  background-color: #05080C;
+  background-color: #29333a;
 }
 
 .nick-highlight {
@@ -371,7 +375,7 @@ input[type="checkbox"] {
 }
 
 .btn-default:hover {
-  background-color: #0D0F10;
+  background-color: rgb(70, 125, 152);
 }
 
 .embed-responsive-item {
@@ -417,8 +421,6 @@ input[type="checkbox"] {
   transition: box-shadow;
   transition-duration: 150ms;
   border: 0;
-  border-bottom-right-radius: 0px;
-  border-bottom-left-radius: 10px;
   color: #FDFDFD;
   background-color: #12151B;
   font-size: 16px;
@@ -429,8 +431,6 @@ input[type="checkbox"] {
   transition: box-shadow;
   transition-duration: 150ms;
   border: none;
-  border-bottom-right-radius: 0px;
-  border-bottom-left-radius: 10px;
   color: #FDFDFD;
   background-color: #12151B;
   font-size: 16px;
@@ -468,7 +468,7 @@ input[type="checkbox"] {
   }
 
   #userlisttoggle:hover {
-    background-color: #3E97A2;
+    background-color: rgb(70, 125, 152);
   }
 }
 
@@ -536,7 +536,7 @@ input[type="checkbox"] {
     }
 
     >*:hover {
-      background-color: #3E97A2;
+      background-color: rgb(70, 125, 152);
     }
 
     >.qbtn-delete:hover {
@@ -573,9 +573,10 @@ input[type="checkbox"] {
 }
 
 .qe_title {
+  padding: 10px 0;
   margin-left: 10px;
   font-size: 16px;
-  color: #A4AFA9;
+  color: #f3f3f3;
 }
 
 .qe_title:hover {
@@ -589,6 +590,7 @@ input[type="checkbox"] {
 }
 
 .qe_time {
+  padding: 10px 0;
   margin-right: 5px;
 }
 
