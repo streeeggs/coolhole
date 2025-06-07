@@ -60,12 +60,12 @@ mixin ch-coolpointsuserprompt
               strong#cpHeaderBrand
                 svg#cpModalIcon: use(xlink:href="#ch-icon-ui-coin-stencil")
                 h2.modal-title: i(style="font-size: 48px; font-weight: 800") CoolPoints
-                button.close(data-dismiss="modal", aria-label="Close"): span(aria-hidden="true") &times;
+                button.close(data-bs-dismiss="modal", aria-label="Close"): span(aria-hidden="true") &times;
           .modal-body#cpModalBody
             ul#cpTab.nav.nav-tabs.nav-justified(role="tablist")
-              li.nav-item: a#cpPromptTab.nav-link.active(data-toggle="tab", href="#cp-prompt", role="tab", aria-controls="cp-prompt", aria-selected="true") Our mission
-              li.nav-item: a#cpStatusOfActionsTab.nav-link(data-toggle="tab", href="#cp-status-of-actions", role="tab", aria-controls="cp-status-of-actions", aria-selected="false") Status of Actions
-              li.nav-item: a#cpCasinoTab.nav-link(data-toggle="tab", href="#cp-casino", role="tab", aria-controls="cp-casino", aria-selected="false") Casino
+              li.nav-item: a#cpPromptTab.nav-link.active(data-bs-toggle="tab", href="#cp-prompt", role="tab", aria-controls="cp-prompt", aria-selected="true") Our mission
+              li.nav-item: a#cpStatusOfActionsTab.nav-link(data-bs-toggle="tab", href="#cp-status-of-actions", role="tab", aria-controls="cp-status-of-actions", aria-selected="false") Status of Actions
+              li.nav-item: a#cpCasinoTab.nav-link(data-bs-toggle="tab", href="#cp-casino", role="tab", aria-controls="cp-casino", aria-selected="false") Casino
             .container
               #cpTabContent.tab-content.row.pt-2
                 +coolpoints-prompt
@@ -222,7 +222,7 @@ mixin ch-command-modal(title)
       .modal-dialog.modal-dialog-nonfluid
         .modal-content 
           .modal-header
-            button.close(data-dismiss="modal", aria-hidden="true") &times;
+            button.close(data-bs-dismiss="modal", aria-hidden="true") &times;
             h4= title
           .modal-body(id=`${modalId}-body`)
             case title
@@ -253,8 +253,8 @@ mixin ch-secretary-modal-body
     +textbox("secretaryOption-message", "Message")
 
 mixin ch-secretary-modal-footer 
-  button.btn.btn-primary(type="button", data-dismiss="modal") Abort
-  button#secretaryOption-send-btn.btn.btn-primary(type="button", data-dismiss="modal") Send
+  button.btn.btn-primary(type="button", data-bs-dismiss="modal") Abort
+  button#secretaryOption-send-btn.btn.btn-primary(type="button", data-bs-dismiss="modal") Send
 
 mixin ch-poll-modal-body
   h4 Gauge Public Opinion
@@ -267,15 +267,15 @@ mixin ch-poll-modal-body
     +rcheckbox-auto("pollOption-allowGamble", "Allow Gambling")
 
 mixin ch-poll-modal-footer
-  button.btn.btn-primary(type="button", data-dismiss="modal") Abort
-  button#pollOption-send-btn.btn.btn-primary(type="button", data-dismiss="modal") Send
+  button.btn.btn-primary(type="button", data-bs-dismiss="modal") Abort
+  button#pollOption-send-btn.btn.btn-primary(type="button", data-bs-dismiss="modal") Send
 
 mixin ch-poll-wager-modal
   .modal.fade(id="ch-poll-wager-modal" tabindex="-1" role="dialog" aria-hidden="true")
     .modal-dialog.modal-dialog-nonfluid
       .modal-content
         .modal-header
-          button.close(data-dismiss="modal", aria-hidden="true") &times;
+          button.close(data-bs-dismiss="modal", aria-hidden="true") &times;
           h4 Stake CoolPoints with CUM-Powered Precision 
         .modal-body
           form.form-horizontal(action="javascript:void(0)")
@@ -291,20 +291,20 @@ mixin ch-poll-wager-modal
               .col-sm-8.col-sm-offset-4
                 span.text-danger.cp-legal Engaging in wagers beyond your available CoolPoint balance may trigger a Neurological Debt Cascade (NDC). This irreversible biofeedback loop, governed by NWO Regulation 7.12.4, could result in synaptic overclocking, prefrontal cortex depletion, and permanent forfeiture of future reward pathways. Cryptographic Ultra-Modulation (CUM) protocols will enforce immediate corrective measures, including but not limited to: cognitive throttling, asset retention, and potential temporal credit suspension. Bet responsibly—your neural equilibrium depends on it
         .modal-footer
-          button.btn.btn-primary(type="button", data-dismiss="modal") Abort
-          button#ch-poll-wager-send-btn.btn.btn-primary(type="button", data-dismiss="modal") Send
+          button.btn.btn-primary(type="button", data-bs-dismiss="modal") Abort
+          button#ch-poll-wager-send-btn.btn.btn-primary(type="button", data-bs-dismiss="modal") Send
 
   mixin ch-poll-winner-confirmation-modal
     .modal.fade(id="ch-poll-winner-confirmation-modal" tabindex="-1" role="dialog" aria-hidden="true")
       .modal-dialog.modal-dialog-nonfluid
         .modal-content
           .modal-header
-            button.close(data-dismiss="modal", aria-hidden="true") &times;
+            button.close(data-bs-dismiss="modal", aria-hidden="true") &times;
             h4#ch-poll-winner-confirmation-title 
           .modal-body
             .form-horizontal(action="javascript:void(0)")
               #ch-poll-winner-confirmation-text
               input#ch-poll-winner-confirmation-option.form-control(type="hidden")
           .modal-footer
-            button.btn.btn-primary(type="button", data-dismiss="modal") Abort
-            button#ch-poll-winner-confirmation-send-btn.btn.btn-primary(type="button", data-dismiss="modal") Send
+            button.btn.btn-primary(type="button", data-bs-dismiss="modal") Abort
+            button#ch-poll-winner-confirmation-send-btn.btn.btn-primary(type="button", data-bs-dismiss="modal") Send

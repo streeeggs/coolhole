@@ -384,7 +384,7 @@ function showChannelDetailModal(c) {
     var content = $("<div/>").addClass("modal-content").appendTo(dialog);
     var head = $("<div/>").addClass("modal-header").appendTo(content);
     $("<button/>").addClass("close")
-        .attr("data-dismiss", "modal")
+        .attr("data-bs-dismiss", "modal")
         .attr("data-hidden", "true")
         .html("&times;")
         .appendTo(head);

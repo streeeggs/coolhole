@@ -433,7 +433,7 @@ const Callbacks = {
                 .attr("id", "setrank")
                 .appendTo($(".nav")[0]);
             $("<a/>").addClass("dropdown-toggle")
-                .attr("data-toggle", "dropdown")
+                .attr("data-bs-toggle", "dropdown")
                 .attr("href", "javascript:void(0)")
                 .html("Set Rank <b class='caret'></b>")
                 .appendTo(li);

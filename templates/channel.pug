@@ -3,7 +3,7 @@ html(lang="en")
   head
     include head
     +head()
-    link(href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css", rel="stylesheet")
+    link(href="//code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.css", rel="stylesheet")
     link(rel="stylesheet", href="/css/video-js.css")
     link(rel="stylesheet", href="/css/videojs-resolution-switcher.css")
   body
@@ -17,7 +17,7 @@ html(lang="en")
             li: a(href="javascript:void(0)", onclick="javascript:showUserOptions()") Options
             li: a#showchansettings(href="javascript:void(0)", onclick="javascript:showChannelSettings()") Channel Settings
             li.dropdown
-              a.dropdown-toggle(href="#", data-toggle="dropdown") Layout
+              a.dropdown-toggle(href="#", data-bs-toggle="dropdown") Layout
                 b.caret
               ul.dropdown-menu
                 li: a(href="#" onclick="javascript:chatOnly()") Chat Only
@@ -66,14 +66,14 @@ html(lang="en")
                 span#coinAmt
               span#coinMsg
             #rightcontrols.col-lg-7.col-md-7
-              #plcontrol.btn-group
-                button#showmediaurl.btn.btn-sm.btn-default(title="Add video from URL", data-toggle="collapse", data-target="#addfromurl")
+              #plcontrolplcontrol.btn-group
+                button#showmediaurl.btn.btn-sm.btn-default(title="Add video from URL", data-bs-toggle="collapse", data-bs-target="#addfromurl")
                   span.glyphicon.glyphicon-plus
-                button#showsearch.btn.btn-sm.btn-default(title="Search for a video", data-toggle="collapse", data-target="#searchcontrol")
+                button#showsearch.btn.btn-sm.btn-default(title="Search for a video", data-bs-toggle="collapse", data-bs-target="#searchcontrol")
                   span.glyphicon.glyphicon-search
-                button#showcustomembed.btn.btn-sm.btn-default(title="Embed a custom frame", data-toggle="collapse", data-target="#customembed")
+                button#showcustomembed.btn.btn-sm.btn-default(title="Embed a custom frame", data-bs-toggle="collapse", data-bs-target="#customembed")
                   span.glyphicon.glyphicon-th-large
-                button#showplaylistmanager.btn.btn-sm.btn-default(title="Manage playlists", data-toggle="collapse", data-target="#playlistmanager")
+                button#showplaylistmanager.btn.btn-sm.btn-default(title="Manage playlists", data-bs-toggle="collapse", data-bs-target="#playlistmanager")
                   span.glyphicon.glyphicon-list
                 button#clearplaylist.btn.btn-sm.btn-default(title="Clear the playlist")
                   span.glyphicon.glyphicon-trash
@@ -165,14 +165,14 @@ html(lang="en")
       .modal-dialog
         .modal-content
           .modal-header
-            button.close(data-dismiss="modal", aria-hidden="true") &times;
+            button.close(data-bs-dismiss="modal", aria-hidden="true") &times;
             h4 User Preferences
             ul.nav.nav-tabs
-              li: a(href="#us-general", data-toggle="tab") General
-              li: a(href="#us-playback", data-toggle="tab") Playback
-              li: a(href="#us-chat", data-toggle="tab") Chat
-              li: a(href="#us-scriptcontrol", data-toggle="tab") Script Access
-              li: a(href="#us-mod", data-toggle="tab", style="") Moderator
+              li: a(href="#us-general", data-bs-toggle="tab") General
+              li: a(href="#us-playback", data-bs-toggle="tab") Playback
+              li: a(href="#us-chat", data-bs-toggle="tab") Chat
+              li: a(href="#us-scriptcontrol", data-bs-toggle="tab") Script Access
+              li: a(href="#us-mod", data-bs-toggle="tab", style="") Moderator
           .modal-body
             .tab-content
               include useroptions
@@ -182,13 +182,13 @@ html(lang="en")
               +us-scripts()
               +us-mod()
           .modal-footer
-            button.btn.btn-primary(type="button", data-dismiss="modal", onclick="javascript:saveUserOptions()") Save
-            button.btn.btn-default(type="button", data-dismiss="modal") Close
+            button.btn.btn-primary(type="button", data-bs-dismiss="modal", onclick="javascript:saveUserOptions()") Save
+            button.btn.btn-default(type="button", data-bs-dismiss="modal") Close
     #emotelist.modal.fade(tabindex="-1", role="dialog", aria-hidden="true")
       .modal-dialog.modal-dialog-nonfluid
         .modal-content
           .modal-header
-            button.close(data-dismiss="modal", aria-hidden="true") &times;
+            button.close(data-bs-dismiss="modal", aria-hidden="true") &times;
             h4 Emote List
           .modal-body
             .pull-left
@@ -206,30 +206,30 @@ html(lang="en")
       .modal-dialog
         .modal-content
           .modal-header
-            button.close(data-dismiss="modal", aria-hidden="true") &times;
+            button.close(data-bs-dismiss="modal", aria-hidden="true") &times;
             h4 Channel Settings
             ul.nav.nav-tabs
-              li.active: a(href="#cs-miscoptions", data-toggle="tab") General Settings
-              li: a(href="#cs-adminoptions", data-toggle="tab") Admin Settings
+              li.active: a(href="#cs-miscoptions", data-bs-toggle="tab") General Settings
+              li: a(href="#cs-adminoptions", data-bs-toggle="tab") Admin Settings
               li.dropdown
-                a#cs-edit-dd-toggle(href="#", data-toggle="dropdown") Edit
+                a#cs-edit-dd-toggle(href="#", data-bs-toggle="dropdown") Edit
                   span.caret
                 ul.dropdown-menu
-                  li: a(href="#cs-chatfilters", data-toggle="tab", onclick="javascript:socket.emit('requestChatFilters')") Chat Filters
-                  li: a(href="#cs-emotes", data-toggle="tab") Emotes
-                  li: a(href="#cs-motdeditor", data-toggle="tab", tabindex="-1") MOTD
-                  li: a(href="#cs-csseditor", data-toggle="tab", tabindex="-1") CSS
-                  li: a(href="#cs-jseditor", data-toggle="tab", tabindex="-1") Javascript
-                  li: a(href="#cs-permedit", data-toggle="tab", tabindex="-1") Permissions
-                  li: a(href="#cs-chanranks", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestChannelRanks')") Moderators
-              li: a(href="#cs-banlist", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestBanlist')") Ban list
-              li: a(href="#cs-chanlog", data-toggle="tab", onclick="javascript:socket.emit('readChanLog')") Log
+                  li: a(href="#cs-chatfilters", data-bs-toggle="tab", onclick="javascript:socket.emit('requestChatFilters')") Chat Filters
+                  li: a(href="#cs-emotes", data-bs-toggle="tab") Emotes
+                  li: a(href="#cs-motdeditor", data-bs-toggle="tab", tabindex="-1") MOTD
+                  li: a(href="#cs-csseditor", data-bs-toggle="tab", tabindex="-1") CSS
+                  li: a(href="#cs-jseditor", data-bs-toggle="tab", tabindex="-1") Javascript
+                  li: a(href="#cs-permedit", data-bs-toggle="tab", tabindex="-1") Permissions
+                  li: a(href="#cs-chanranks", data-bs-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestChannelRanks')") Moderators
+              li: a(href="#cs-banlist", data-bs-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestBanlist')") Ban list
+              li: a(href="#cs-chanlog", data-bs-toggle="tab", onclick="javascript:socket.emit('readChanLog')") Log
               li.dropdown
-                a#cs-coolpoints-dd-toggle(href="#", data-toggle="dropdown") CoolPoints
+                a#cs-coolpoints-dd-toggle(href="#", data-bs-toggle="dropdown") CoolPoints
                   span.caret
                 ul.dropdown-menu
-                  li: a(href="#cs-chancoolpoint-options", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('getCpOptions')") CoolPoints Actions
-                  li: a(href="#cs-chancoolpoint-user-table", data-toggle="tab", tabindex="-1") CoolPoints User Table
+                  li: a(href="#cs-chancoolpoint-options", data-bs-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('getCpOptions')") CoolPoints Actions
+                  li: a(href="#cs-chancoolpoint-user-table", data-bs-toggle="tab", tabindex="-1") CoolPoints User Table
 
           .modal-body
             .tab-content
@@ -250,7 +250,7 @@ html(lang="en")
               +ch-coolpointoptions()
               +ch-coolpointsusertable()
           .modal-footer
-            button.btn.btn-default(type="button", data-dismiss="modal") Close
+            button.btn.btn-default(type="button", data-bs-dismiss="modal") Close
     +ch-coolpointsuserprompt()
     +ch-command-modal("Secretary")
     +ch-command-modal("Poll")
@@ -260,13 +260,13 @@ html(lang="en")
       .modal-dialog.modal-dialog-nonfluid
         .modal-content 
           .modal-header
-            button.close(data-dismiss="modal", aria-hidden="true") &times;
+            button.close(data-bs-dismiss="modal", aria-hidden="true") &times;
             h4 Chat Options
           .modal-body
             include chatoptions
             +chat-general()
           .modal-footer
-            button.btn.btn-primary(type="button", data-dismiss="modal") Close
+            button.btn.btn-primary(type="button", data-bs-dismiss="modal") Close
     #pmbar
     include footer
     +footer()

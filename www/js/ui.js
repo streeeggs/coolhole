@@ -561,7 +561,7 @@ $("#getplaylist").on('click', function() {
         var head = $("<div/>").addClass("modal-header")
             .appendTo(modal);
         $("<button/>").addClass("close")
-            .attr("data-dismiss", "modal")
+            .attr("data-bs-dismiss", "modal")
             .attr("aria-hidden", "true")
             .html("&times;")
             .appendTo(head);
@@ -633,10 +633,10 @@ $("#cs-chanranks-owner").on('click', chanrankSubmit.bind(this, 4));
         }
     });
 });
-$("#plcontrol button").button();
-$("#plcontrol button").button("hide");
-$(".plcontrol-collapse").collapse();
-$(".plcontrol-collapse").collapse("hide");
+$('#plcontrol').button();
+$('#plcontrol').button("hide");
+//  $(".plcontrol-collapse").collapse();
+//$(".plcontrol-collapse").collapse("hide");
 
 $(".cs-checkbox").on('change', function () {
     var box = $(this);
@@ -864,7 +864,7 @@ $(".add-temp").on('change', function () {
  * the modal must be updated so that the backdrop is resized
  * appropriately.
  */
-$("#channeloptions li > a[data-toggle='tab']").on("shown.bs.tab", function () {
+$("#channeloptions li > a[data-bs-toggle='tab']").on("shown.bs.tab", function () {
     $("#channeloptions").data("bs.modal").handleUpdate();
 });
 

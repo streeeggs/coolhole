@@ -1,6 +1,6 @@
 mixin navheader()
   .navbar-header
-    button.navbar-toggle(type="button", data-toggle="collapse", data-target="#nav-collapsible")
+    button.navbar-toggle(type="button", data-bs-toggle="collapse", data-bs-target="#nav-collapsible")
       span.icon-bar
       span.icon-bar
       span.icon-bar
@@ -10,7 +10,7 @@ mixin navdefaultlinks()
   li
     a(href="/") Home
   li.dropdown
-    a.dropdown-toggle(href="#", data-toggle="dropdown") Account
+    a.dropdown-toggle(href="#", data-bs-toggle="dropdown") Account
       b.caret
     ul.dropdown-menu
       if loggedIn

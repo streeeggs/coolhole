@@ -2196,7 +2196,7 @@ function modalAlert(options) {
 
     var footer = $("<div/>").addClass("modal-footer");
     var okButton = $("<button/>").addClass("btn btn-primary")
-            .attr({ "data-dismiss": "modal"})
+            .attr({ "data-bs-dismiss": "modal"})
             .text(options.dismissText || "OK")
             .appendTo(footer);
     footer.appendTo(modal.find(".modal-content"));
@@ -2332,7 +2332,7 @@ function makeModal() {
 
     var head = $("<div/>").addClass("modal-header").appendTo(content);
     $("<button/>").addClass("close")
-        .attr("data-dismiss", "modal")
+        .attr("data-bs-dismiss", "modal")
         .attr("data-hidden", "true")
         .html("&times;")
         .appendTo(head);
@@ -2366,7 +2366,7 @@ function formatCSModList() {
         var dd = $("<div/>").addClass("btn-group");
         var toggle = $("<button/>")
             .addClass("btn btn-xs btn-default dropdown-toggle")
-            .attr("data-toggle", "dropdown")
+            .attr("data-bs-toggle", "dropdown")
             .html("Edit <span class=caret></span>")
             .appendTo(dd);
         if (CLIENT.rank <= entry.rank && !(CLIENT.rank === 4 && entry.rank === 4)) {
