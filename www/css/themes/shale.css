@@ -6429,11 +6429,6 @@ td > a {
 td > a:hover {
   color: #799482;
 }
-.navbar.navbar-inverse {
-  background-color: transparent;
-  border: 0;
-  font-size: 16px;
-}
 .navbar.navbar-inverse .nav.navbar-nav.open > a:focus,
 .navbar.navbar-inverse .nav.navbar-nav > .open > a {
   background-color: #1A1F22;
@@ -6463,16 +6458,6 @@ td > a:hover {
   padding: 5px;
   padding-left: 10px;
   align-content: center;
-}
-/* Navbar is transparent by default */
-.navbar.navbar-inverse.navbar-transparent {
-  transition: background-color 150ms;
-  background-color: transparent;
-}
-/*... but is solid when scrolled */
-.navbar.navbar-inverse.navbar-solid {
-  transition: background-color 150ms;
-  background-color: #070A12;
 }
 /* Nabbar becomes a dropdown at a specific breakpoint; make it no longer transparent */
 #nav-collapsible.collapse.in,
