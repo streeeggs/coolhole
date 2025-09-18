@@ -147,6 +147,11 @@ const triggerConfettiCelebration = (data) => {
   }
 };
 
+const getWagerTextAttributes = (gambleStatus) =>
+  gambleStatus === "closed"
+    ? { wagerText: "WAGERS CLOSED - Total Wagers: ", wagerClass: "text-danger" }
+    : { wagerText: "Total Wagers: ", wagerClass: "" };
+
 const CoolholeCallbacks = {
   channelCoolPointOpts: function (cpOpts) {
     CHANNEL.opts.cpOpts = cpOpts;
@@ -226,18 +231,20 @@ const CoolholeCallbacks = {
 
     if (hasPermission("pollctl")) {
       if (data.gamble) {
-        let gambleInfoButton = $("<button>", {
-          class: "btn btn-info btn-sm",
-          text: "End Betting",
-          css: {
-            flexGrow: 0,
-            height: "30px",
-          },
-        });
-        gambleInfoButton.click(function () {
-          socket.emit("endBetting");
-        });
-        headerWrap.append(gambleInfoButton);
+        if (data.gambleStatus !== "closed") {
+          let gambleInfoButton = $("<button>", {
+            class: "btn btn-info btn-sm",
+            text: "End Betting",
+            css: {
+              flexGrow: 0,
+              height: "30px",
+            },
+          });
+          gambleInfoButton.click(function () {
+            socket.emit("endBetting");
+          });
+          headerWrap.append(gambleInfoButton);
+        }
       } else {
         let endPollButton = $("<button>", {
           class: "btn btn-danger btn-sm",
@@ -277,7 +284,7 @@ const CoolholeCallbacks = {
       });
       const optionButton = $("<button>", {
         class: "btn btn-default",
-        disabled: CLIENT.rank === -1, // Guests can't vote
+        disabled: CLIENT.rank === -1 || data.gambleStatus === "closed",
       });
       optionButton.click(function () {
         if (data.gamble) {
@@ -385,7 +392,12 @@ const CoolholeCallbacks = {
       innerContentWrap.append(wagerWrap);
 
       if (data.totalWagers ?? 0 > 0) {
-        staticWagerText.text("Total Wagers: ");
+        const { wagerText, wagerClass } = getWagerTextAttributes(
+          data.gambleStatus
+        );
+        staticWagerText
+          .text(wagerText)
+          .attr("class", `wager-text ${wagerClass}`);
         wagerAmount.text(`${data.totalWagers} CP`);
       }
 
@@ -457,10 +469,13 @@ const CoolholeCallbacks = {
     var poll = $("#pollwrap .active");
     const totalVotes = data.counts.reduce((a, b) => a + b, 0);
     if (data.totalWagers ?? 0 > 0) {
-      if (data.gambleStatus === "closed") {
-        poll.find(".wager-wrap span.wager-text").text("WAGERS CLOSED - ");
-      }
-      poll.find(".wager-wrap span.wager-text").text("Total Wagers: ");
+      const { wagerText, wagerClass } = getWagerTextAttributes(
+        data.gambleStatus
+      );
+      poll
+        .find(".wager-wrap span.wager-text")
+        .text(wagerText)
+        .attr("class", `wager-text ${wagerClass}`);
       poll.find(".wager-wrap span.text-lottery").text(`${data.totalWagers} CP`);
     }
     poll
