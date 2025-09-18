@@ -225,18 +225,33 @@ const CoolholeCallbacks = {
     headerWrap.append(questionSpan);
 
     if (hasPermission("pollctl")) {
-      let endPollButton = $("<button>", {
-        class: "btn btn-danger btn-sm",
-        text: "End Poll",
-        css: {
-          flexGrow: 0,
-          height: "30px",
-        },
-      });
-      endPollButton.click(function () {
-        socket.emit("closePoll");
-      });
-      headerWrap.append(endPollButton);
+      if (data.gamble) {
+        let gambleInfoButton = $("<button>", {
+          class: "btn btn-info btn-sm",
+          text: "End Betting",
+          css: {
+            flexGrow: 0,
+            height: "30px",
+          },
+        });
+        gambleInfoButton.click(function () {
+          socket.emit("endBetting");
+        });
+        headerWrap.append(gambleInfoButton);
+      } else {
+        let endPollButton = $("<button>", {
+          class: "btn btn-danger btn-sm",
+          text: "End Poll",
+          css: {
+            flexGrow: 0,
+            height: "30px",
+          },
+        });
+        endPollButton.click(function () {
+          socket.emit("closePoll");
+        });
+        headerWrap.append(endPollButton);
+      }
     }
 
     let closeButton = $("<button>", {
@@ -262,6 +277,7 @@ const CoolholeCallbacks = {
       });
       const optionButton = $("<button>", {
         class: "btn btn-default",
+        disabled: CLIENT.rank === -1, // Guests can't vote
       });
       optionButton.click(function () {
         if (data.gamble) {
@@ -323,7 +339,7 @@ const CoolholeCallbacks = {
           text: `End as winner`,
         });
         const winningOptionsTotal = $("<span>", {
-          text: `${data.wagers[i]} CP wagered`,
+          text: `${data.wagers[i]} CP`,
           class: "percentage text-lottery",
         });
         $("#ch-poll-winner-confirmation-send-btn")
@@ -441,6 +457,9 @@ const CoolholeCallbacks = {
     var poll = $("#pollwrap .active");
     const totalVotes = data.counts.reduce((a, b) => a + b, 0);
     if (data.totalWagers ?? 0 > 0) {
+      if (data.gambleStatus === "closed") {
+        poll.find(".wager-wrap span.wager-text").text("WAGERS CLOSED - ");
+      }
       poll.find(".wager-wrap span.wager-text").text("Total Wagers: ");
       poll.find(".wager-wrap span.text-lottery").text(`${data.totalWagers} CP`);
     }
@@ -455,6 +474,11 @@ const CoolholeCallbacks = {
           })`
         );
       });
+
+    if (data.gambleStatus === "closed") {
+      poll.find(".option button:not(.btn-danger)").attr("disabled", true);
+    }
+
     if (data.gamble && hasPermission("pollctl")) {
       poll
         .find(".option button span.percentage.text-lottery")

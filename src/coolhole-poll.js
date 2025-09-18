@@ -9,6 +9,12 @@ function sanitizedWithLinksReplaced(text) {
   );
 }
 
+const GAMBLE_STATUSES = {
+  open: "open",
+  closed: "closed",
+  resolved: "resolved",
+};
+
 class CoolholePoll {
   static create(
     createdBy,
@@ -26,6 +32,7 @@ class CoolholePoll {
     poll.gamble = options.gamble;
     poll.votes = new Map();
     poll.winningOption = -1;
+    poll.gambleStatus = GAMBLE_STATUSES.open;
     return poll;
   }
 
@@ -139,6 +146,7 @@ class CoolholePoll {
       timestamp: this.createdAt.getTime(),
       gamble: this.gamble,
       hideVotes: this.hideVotes,
+      gambleStatus: this.gambleStatus,
     };
   }
 }

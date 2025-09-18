@@ -87,6 +87,7 @@ CoolholePollModule.prototype.onUserPostJoin = function (user) {
     this.handleVote.bind(this, user)
   );
   user.socket.on("closePoll", this.handleClosePoll.bind(this, user));
+  user.socket.on("endBetting", this.endBetting.bind(this, user));
   user.socket.on(
     "chooseWinningPollOption",
     this.handleChooseWinningPollOption.bind(this, user)
@@ -297,6 +298,22 @@ CoolholePollModule.prototype.handleVote = function (user, data) {
       });
     }
   }
+};
+
+CoolholePollModule.prototype.endBetting = function (user) {
+  if (!this.channel.modules.permissions.canControlPoll(user)) {
+    return;
+  }
+
+  if (!this.poll || !this.poll.gamble) {
+    return;
+  }
+
+  this.poll.gambleStatus = "closed";
+  this.channel.broadcastAll("updatePoll", this.poll.toUpdateFrame(true));
+  this.channel.logger.log(
+    "[poll] " + user.getName() + " ended betting for the active poll"
+  );
 };
 
 CoolholePollModule.prototype.handleClosePoll = function (user) {
