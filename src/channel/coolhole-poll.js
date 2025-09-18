@@ -87,7 +87,7 @@ CoolholePollModule.prototype.onUserPostJoin = function (user) {
     this.handleVote.bind(this, user)
   );
   user.socket.on("closePoll", this.handleClosePoll.bind(this, user));
-  user.socket.on("endBetting", this.endBetting.bind(this, user));
+  user.socket.on("endBetting", this.handleEndBetting.bind(this, user));
   user.socket.on(
     "chooseWinningPollOption",
     this.handleChooseWinningPollOption.bind(this, user)
@@ -300,7 +300,7 @@ CoolholePollModule.prototype.handleVote = function (user, data) {
   }
 };
 
-CoolholePollModule.prototype.endBetting = function (user) {
+CoolholePollModule.prototype.handleEndBetting = function (user) {
   if (!this.channel.modules.permissions.canControlPoll(user)) {
     return;
   }

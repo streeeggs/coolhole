@@ -8,13 +8,6 @@ function sanitizedWithLinksReplaced(text) {
     '<a href="$1" target="_blank" rel="noopener noreferer">$1</a>'
   );
 }
-
-const GAMBLE_STATUSES = {
-  open: "open",
-  closed: "closed",
-  resolved: "resolved",
-};
-
 class CoolholePoll {
   static create(
     createdBy,
@@ -32,7 +25,7 @@ class CoolholePoll {
     poll.gamble = options.gamble;
     poll.votes = new Map();
     poll.winningOption = -1;
-    poll.gambleStatus = GAMBLE_STATUSES.open;
+    poll.gambleStatus = "open"; // TODO: exported enum?
     return poll;
   }
 
