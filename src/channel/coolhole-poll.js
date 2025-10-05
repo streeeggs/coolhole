@@ -275,6 +275,14 @@ CoolholePollModule.prototype.handleVote = function (user, data) {
       });
       return;
     }
+
+    if (this.poll.gambleStatus != "open") {
+      user.socket.emit("validationError", {
+        target: "#ch-poll-wager-wager",
+        message: `Poll is no longer open.`,
+      });
+      return;
+    }
   }
 
   if (this.poll) {
@@ -290,6 +298,11 @@ CoolholePollModule.prototype.handleVote = function (user, data) {
       // if (this.poll.gamble) {
       //   this.channel.modules.coolholepoints.spend(user, data.wager);
       // }
+
+      if (this.poll.gamble) {
+          this.channel.logger.log("[poll] For gambling poll '" + this.poll.title + "', user " + user.getName() + " gambled " + data.wager + " points on option " + parseInt(data.option));
+      }
+
       this.broadcastPoll(false);
     } else if (this.poll.gamble) {
       // HACK: Assumes that if countVote returned false and the poll is gambling, the user has already voted
@@ -381,7 +394,7 @@ CoolholePollModule.prototype.handleChooseWinningPollOption = function (
     votes,
   });
   this.channel.logger.log(
-    "[poll] " + user.getName() + " selected the winning option for the poll"
+    "[poll] " + user.getName() + " selected the winning option " + this.poll.winningOption + " for the poll '" + this.poll.title + "'."
   );
   this.poll = null;
   this.dirty = true;
