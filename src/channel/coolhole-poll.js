@@ -277,9 +277,8 @@ CoolholePollModule.prototype.handleVote = function (user, data) {
     }
 
     if (this.poll.gambleStatus != "open") {
-      user.socket.emit("validationError", {
-        target: "#ch-poll-wager-wager",
-        message: `Poll is no longer open.`,
+      user.socket.emit("errorMsg", {
+        msg: "Poll is no longer open.",
       });
       return;
     }
