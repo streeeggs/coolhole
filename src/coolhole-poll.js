@@ -40,6 +40,7 @@ class CoolholePoll {
     retainVotes,
     gamble,
     winningOption,
+    gambleStatus,
   }) {
     let poll = new CoolholePoll();
     if (timestamp === undefined)
@@ -57,6 +58,7 @@ class CoolholePoll {
     poll.retainVotes = retainVotes || false;
     poll.gamble = gamble || false;
     poll.winningOption = winningOption || -1;
+    poll.gambleStatus = gambleStatus || "open";
     return poll;
   }
 
@@ -84,6 +86,7 @@ class CoolholePoll {
       timestamp: this.createdAt.getTime(),
       gamble: this.gamble,
       winningOption: this.winningOption,
+      gambleStatus: this.gambleStatus,
     };
   }
 

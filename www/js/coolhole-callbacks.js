@@ -152,6 +152,26 @@ const getWagerTextAttributes = (gambleStatus) =>
     ? { wagerText: "WAGERS CLOSED - Total Wagers: ", wagerClass: "text-danger" }
     : { wagerText: "Total Wagers: ", wagerClass: "" };
 
+const gambleEndBettingButton = $("<button>", {
+  id: "ch-end-betting-btn",
+  class: "btn btn-info btn-sm",
+  text: "End Betting",
+  css: {
+    flexGrow: 0,
+    height: "30px",
+  },
+});
+
+const endPollButton = $("<button>", {
+  id: "ch-end-poll-btn",
+  class: "btn btn-danger btn-sm",
+  text: "End Poll",
+  css: {
+    flexGrow: 0,
+    height: "30px",
+  },
+});
+
 const CoolholeCallbacks = {
   channelCoolPointOpts: function (cpOpts) {
     CHANNEL.opts.cpOpts = cpOpts;
@@ -232,28 +252,17 @@ const CoolholeCallbacks = {
     if (hasPermission("pollctl")) {
       if (data.gamble) {
         if (data.gambleStatus !== "closed") {
-          let gambleInfoButton = $("<button>", {
-            class: "btn btn-info btn-sm",
-            text: "End Betting",
-            css: {
-              flexGrow: 0,
-              height: "30px",
-            },
-          });
-          gambleInfoButton.click(function () {
+          gambleEndBettingButton.click(function () {
             socket.emit("endBetting");
           });
-          headerWrap.append(gambleInfoButton);
+          headerWrap.append(gambleEndBettingButton);
+        } else {
+          endPollButton.click(function () {
+            socket.emit("closePoll");
+          });
+          headerWrap.append(endPollButton);
         }
       } else {
-        let endPollButton = $("<button>", {
-          class: "btn btn-danger btn-sm",
-          text: "End Poll",
-          css: {
-            flexGrow: 0,
-            height: "30px",
-          },
-        });
         endPollButton.click(function () {
           socket.emit("closePoll");
         });
@@ -490,11 +499,30 @@ const CoolholeCallbacks = {
         );
       });
 
-    if (data.gambleStatus === "closed") {
-      poll.find(".option button:not(.btn-danger)").attr("disabled", true);
-    }
-
     if (data.gamble && hasPermission("pollctl")) {
+      if (data.gamble && hasPermission("pollctl")) {
+        if (data.gambleStatus === "closed") {
+          poll.find(".option button:not(.btn-danger)").attr("disabled", true);
+
+          // Transform end betting into close poll button
+          const headerWrap = poll.find(".pollHeader");
+          const endBettingButton = headerWrap.find("#ch-end-betting-btn");
+          endBettingButton
+            .attr("id", "ch-end-poll-btn")
+            .removeClass("btn-info")
+            .addClass("btn-danger")
+            .text("End Poll");
+          endBettingButton.off("click");
+          endBettingButton.click(function () {
+            socket.emit("closePoll");
+          });
+        }
+        poll
+          .find(".option button span.percentage.text-lottery")
+          .each(function (i) {
+            $(this).text(`${data.wagers[i]} CP`);
+          });
+      }
       poll
         .find(".option button span.percentage.text-lottery")
         .each(function (i) {

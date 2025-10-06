@@ -276,7 +276,7 @@ CoolholePollModule.prototype.handleVote = function (user, data) {
       return;
     }
 
-    if (this.poll.gambleStatus != "open") {
+    if (this.poll.gambleStatus !== "open") {
       user.socket.emit("errorMsg", {
         msg: "Poll is no longer open.",
       });
@@ -299,7 +299,13 @@ CoolholePollModule.prototype.handleVote = function (user, data) {
       // }
 
       if (this.poll.gamble) {
-          this.channel.logger.log("[poll] For gambling poll '" + this.poll.title + "', user " + user.getName() + " gambled " + data.wager + " points on option " + parseInt(data.option));
+        this.channel.logger.log(
+          `[poll] For gambling poll '${
+            this.poll.title
+          }', user ${user.getName()} gambled ${
+            data.wager
+          } points on option ${parseInt(data.option)}`
+        );
       }
 
       this.broadcastPoll(false);
@@ -322,6 +328,7 @@ CoolholePollModule.prototype.handleEndBetting = function (user) {
   }
 
   this.poll.gambleStatus = "closed";
+  this.dirty = true;
   this.channel.broadcastAll("updatePoll", this.poll.toUpdateFrame(true));
   this.channel.logger.log(
     "[poll] " + user.getName() + " ended betting for the active poll"
@@ -393,7 +400,13 @@ CoolholePollModule.prototype.handleChooseWinningPollOption = function (
     votes,
   });
   this.channel.logger.log(
-    "[poll] " + user.getName() + " selected the winning option " + this.poll.winningOption + " for the poll '" + this.poll.title + "'."
+    "[poll] " +
+      user.getName() +
+      " selected the winning option " +
+      this.poll.winningOption +
+      " for the poll '" +
+      this.poll.title +
+      "'."
   );
   this.poll = null;
   this.dirty = true;
