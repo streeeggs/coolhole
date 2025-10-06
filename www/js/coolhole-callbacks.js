@@ -154,7 +154,7 @@ const getWagerTextAttributes = (gambleStatus) =>
 
 const gambleEndBettingButton = $("<button>", {
   id: "ch-end-betting-btn",
-  class: "btn btn-info btn-sm",
+  class: "btn btn-info btn-sm poll-admin-btn",
   text: "End Betting",
   css: {
     flexGrow: 0,
@@ -164,7 +164,7 @@ const gambleEndBettingButton = $("<button>", {
 
 const endPollButton = $("<button>", {
   id: "ch-end-poll-btn",
-  class: "btn btn-danger btn-sm",
+  class: "btn btn-danger btn-sm poll-admin-btn",
   text: "End Poll",
   css: {
     flexGrow: 0,
@@ -327,7 +327,11 @@ const CoolholeCallbacks = {
       optionWrapper.append(optionButton);
       optionsWrapper.append(optionWrapper);
 
-      if (data.gamble && hasPermission("pollctl")) {
+      if (
+        data.gamble &&
+        hasPermission("pollctl") &&
+        data.gambleStatus === "closed"
+      ) {
         optionWrapper.css({
           display: "flex",
           gap: "10px",
@@ -509,6 +513,52 @@ const CoolholeCallbacks = {
           socket.emit("closePoll");
         });
         endPollButton.insertAfter($("#pollwrap .active .pollHeader span"));
+
+        // Create winnning option buttons if they don't exist
+        poll.find(".option").each(function (i) {
+          if ($(this).find(".btn-danger").length === 0) {
+            const winningOptionButton = $("<button>", {
+              class: "btn btn-danger btn-sm",
+              css: {
+                flex: 1,
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+              },
+            });
+            winningOptionButton.click(function () {
+              $("#ch-poll-winner-confirmation-title").text(
+                `Choose "${data.options[i]}" as the winner?`
+              );
+              $("#ch-poll-winner-confirmation-text").text(
+                `Are you sure you want to end the poll with "${data.options[i]}" as the winner?`
+              );
+              $("#ch-poll-winner-confirmation-option").val(i);
+              $("#ch-poll-winner-confirmation-modal").modal();
+            });
+            const winningOptionText = $("<span>", {
+              text: `End as winner`,
+            });
+            const winningOptionsTotal = $("<span>", {
+              text: `${data.wagers[i]} CP`,
+              class: "percentage text-lottery",
+            });
+            $("#ch-poll-winner-confirmation-send-btn")
+              .off("click")
+              .on("click", function () {
+                socket.emit("chooseWinningPollOption", {
+                  option: $("#ch-poll-winner-confirmation-option").val(),
+                });
+              });
+
+            winningOptionButton.append(winningOptionText, winningOptionsTotal);
+            $(this).css({
+              display: "flex",
+              gap: "10px",
+            });
+            $(this).append(winningOptionButton);
+          }
+        });
       }
       poll
         .find(".option button span.percentage.text-lottery")
@@ -528,6 +578,7 @@ const CoolholeCallbacks = {
       poll.find(".btn-danger").each(function () {
         $(this).remove();
       });
+      poll.find(".pollHeader button.poll-admin-btn").remove();
     }
   },
 
