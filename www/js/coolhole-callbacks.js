@@ -329,13 +329,13 @@ const CoolholeCallbacks = {
 
       if (data.gamble && hasPermission("pollctl")) {
         optionWrapper.css({
-          display: "grid",
-          gridTemplateColumns: "3.5fr 1fr",
+          display: "flex",
           gap: "10px",
         });
         const winningOptionButton = $("<button>", {
           class: "btn btn-danger btn-sm",
           css: {
+            flex: 1,
             height: "100%",
             display: "flex",
             flexDirection: "column",
@@ -500,28 +500,15 @@ const CoolholeCallbacks = {
       });
 
     if (data.gamble && hasPermission("pollctl")) {
-      if (data.gamble && hasPermission("pollctl")) {
-        if (data.gambleStatus === "closed") {
-          poll.find(".option button:not(.btn-danger)").attr("disabled", true);
+      if (data.gambleStatus === "closed") {
+        poll.find(".option button:not(.btn-danger)").attr("disabled", true);
 
-          // Transform end betting into close poll button
-          const headerWrap = poll.find(".pollHeader");
-          const endBettingButton = headerWrap.find("#ch-end-betting-btn");
-          endBettingButton
-            .attr("id", "ch-end-poll-btn")
-            .removeClass("btn-info")
-            .addClass("btn-danger")
-            .text("End Poll");
-          endBettingButton.off("click");
-          endBettingButton.click(function () {
-            socket.emit("closePoll");
-          });
-        }
-        poll
-          .find(".option button span.percentage.text-lottery")
-          .each(function (i) {
-            $(this).text(`${data.wagers[i]} CP`);
-          });
+        // Replace end betting button with end poll button
+        gambleEndBettingButton.remove();
+        endPollButton.click(function () {
+          socket.emit("closePoll");
+        });
+        endPollButton.insertAfter($("#pollwrap .active .pollHeader span"));
       }
       poll
         .find(".option button span.percentage.text-lottery")
