@@ -87,6 +87,7 @@ CoolholePollModule.prototype.onUserPostJoin = function (user) {
     this.handleVote.bind(this, user)
   );
   user.socket.on("closePoll", this.handleClosePoll.bind(this, user));
+  user.socket.on("endBetting", this.handleEndBetting.bind(this, user));
   user.socket.on(
     "chooseWinningPollOption",
     this.handleChooseWinningPollOption.bind(this, user)
@@ -274,6 +275,13 @@ CoolholePollModule.prototype.handleVote = function (user, data) {
       });
       return;
     }
+
+    if (this.poll.gambleStatus !== "open") {
+      user.socket.emit("errorMsg", {
+        msg: "Poll is no longer open.",
+      });
+      return;
+    }
   }
 
   if (this.poll) {
@@ -289,6 +297,17 @@ CoolholePollModule.prototype.handleVote = function (user, data) {
       // if (this.poll.gamble) {
       //   this.channel.modules.coolholepoints.spend(user, data.wager);
       // }
+
+      if (this.poll.gamble) {
+        this.channel.logger.log(
+          `[poll] For gambling poll '${
+            this.poll.title
+          }', user ${user.getName()} gambled ${
+            data.wager
+          } points on option ${parseInt(data.option)}`
+        );
+      }
+
       this.broadcastPoll(false);
     } else if (this.poll.gamble) {
       // HACK: Assumes that if countVote returned false and the poll is gambling, the user has already voted
@@ -297,6 +316,23 @@ CoolholePollModule.prototype.handleVote = function (user, data) {
       });
     }
   }
+};
+
+CoolholePollModule.prototype.handleEndBetting = function (user) {
+  if (!this.channel.modules.permissions.canControlPoll(user)) {
+    return;
+  }
+
+  if (!this.poll || !this.poll.gamble) {
+    return;
+  }
+
+  this.poll.gambleStatus = "closed";
+  this.dirty = true;
+  this.channel.broadcastAll("updatePoll", this.poll.toUpdateFrame(true));
+  this.channel.logger.log(
+    "[poll] " + user.getName() + " ended betting for the active poll"
+  );
 };
 
 CoolholePollModule.prototype.handleClosePoll = function (user) {
@@ -364,7 +400,13 @@ CoolholePollModule.prototype.handleChooseWinningPollOption = function (
     votes,
   });
   this.channel.logger.log(
-    "[poll] " + user.getName() + " selected the winning option for the poll"
+    "[poll] " +
+      user.getName() +
+      " selected the winning option " +
+      this.poll.winningOption +
+      " for the poll '" +
+      this.poll.title +
+      "'."
   );
   this.poll = null;
   this.dirty = true;

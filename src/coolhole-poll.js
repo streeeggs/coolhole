@@ -8,7 +8,6 @@ function sanitizedWithLinksReplaced(text) {
     '<a href="$1" target="_blank" rel="noopener noreferer">$1</a>'
   );
 }
-
 class CoolholePoll {
   static create(
     createdBy,
@@ -26,6 +25,7 @@ class CoolholePoll {
     poll.gamble = options.gamble;
     poll.votes = new Map();
     poll.winningOption = -1;
+    poll.gambleStatus = "open"; // TODO: exported enum?
     return poll;
   }
 
@@ -40,6 +40,7 @@ class CoolholePoll {
     retainVotes,
     gamble,
     winningOption,
+    gambleStatus,
   }) {
     let poll = new CoolholePoll();
     if (timestamp === undefined)
@@ -57,6 +58,7 @@ class CoolholePoll {
     poll.retainVotes = retainVotes || false;
     poll.gamble = gamble || false;
     poll.winningOption = winningOption || -1;
+    poll.gambleStatus = gambleStatus || "open";
     return poll;
   }
 
@@ -84,6 +86,7 @@ class CoolholePoll {
       timestamp: this.createdAt.getTime(),
       gamble: this.gamble,
       winningOption: this.winningOption,
+      gambleStatus: this.gambleStatus,
     };
   }
 
@@ -139,6 +142,7 @@ class CoolholePoll {
       timestamp: this.createdAt.getTime(),
       gamble: this.gamble,
       hideVotes: this.hideVotes,
+      gambleStatus: this.gambleStatus,
     };
   }
 }
