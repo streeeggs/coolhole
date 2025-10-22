@@ -924,7 +924,7 @@ class Coolpoints extends ChannelModule {
             0
           );
           const shareOfThePot =
-            Math.round(wager / totalWagersOfWinners * totalWagers);
+            Math.round(wager / totalWagersOfWinners * totalWagers) - wager;
           this.add(userName, shareOfThePot);
           this.channel.logger.log(
             `User ${userName} earned ${shareOfThePot} points while betting on poll "${poll.title}"`
