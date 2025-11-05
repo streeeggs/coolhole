@@ -82,17 +82,35 @@ var Server = function () {
     ChannelStore.init();
 
     let emailTransport;
-    if (Config.getEmailConfig().getPasswordReset().isEnabled()) {
-        const smtpConfig = Config.getEmailConfig().getSmtp();
-        emailTransport = require("nodemailer").createTransport({
-            host: smtpConfig.getHost(),
-            port: smtpConfig.getPort(),
-            secure: smtpConfig.isSecure(),
-            auth: {
+    const emailConfig = Config.getEmailConfig();
+    if (emailConfig.getPasswordReset().isEnabled()) {
+        const emailConfigType = emailConfig.getType();
+        switch (emailConfigType) {
+          case "mailgun":
+            const apiKey = emailConfig.getApiKey().getMailgun();
+            const MailGun = require("mailgun.js");
+            const FormData = require("form-data");
+            const mailgun = new MailGun(FormData);
+
+            emailTransport = mailgun.client({
+              username: "api",
+              key: apiKey,
+            });
+            break;
+          case "smtp":
+          default:
+            const smtpConfig = Config.getEmailConfig().getSmtp();
+            emailTransport = require("nodemailer").createTransport({
+              host: smtpConfig.getHost(),
+              port: smtpConfig.getPort(),
+              secure: smtpConfig.isSecure(),
+              auth: {
                 user: smtpConfig.getUser(),
-                pass: smtpConfig.getPassword()
-            }
-        });
+                pass: smtpConfig.getPassword(),
+              },
+            });
+            break;
+        }
     } else {
         emailTransport = {
             sendMail() {

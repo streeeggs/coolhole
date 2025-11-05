@@ -1,3 +1,15 @@
+# Email Type (smtp or otherwise)
+[email-type]
+email-type = 'mailgun'
+
+# API keys
+[api-key]
+mailgun = 'mail-gun-apikey'
+
+# API user
+[api-user]
+mailgun = 'user@mailgun.com'
+
 # SMTP configuration for sending mail
 [smtp]
 host = 'smtp.gmail.com'
