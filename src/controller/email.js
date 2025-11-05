@@ -45,19 +45,31 @@ class EmailController {
     const { address, username } = params;
 
     const deleteConfig = this.config.getDeleteAccount();
+    const emailType = this.config.getType();
 
     const html = deleteConfig.getHTML().replace(/\$user\$/g, username);
     const text = deleteConfig.getText().replace(/\$user\$/g, username);
 
-    const result = await this.mailer.sendMail({
-      from: deleteConfig.getFrom(),
-      to: `${username} <${address}>`,
-      subject: deleteConfig.getSubject(),
-      html,
-      text,
-    });
-
-    return result;
+    switch (emailType) {
+      case "mailgun":
+        const mailgunUser = this.config.getApiUser().getMailgun();
+        return await this.mailer.messages.create(mailgunUser, {
+          from: deleteConfig.getFrom(),
+          to: `${username} <${address}>`,
+          subject: deleteConfig.getSubject(),
+          html,
+          text,
+        });
+      case "smtp":
+      default:
+        return await this.mailer.sendMail({
+          from: deleteConfig.getFrom(),
+          to: `${username} <${address}>`,
+          subject: deleteConfig.getSubject(),
+          html,
+          text,
+        });
+    }
   }
 }
 
