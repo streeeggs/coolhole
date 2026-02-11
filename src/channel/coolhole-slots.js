@@ -226,7 +226,7 @@ const patterns = [
     - An Eye match negates any Horizontal matches in the center of the row and the vertical matches in the 2nd and 4th columns
     - Jackpot does not negate any patterns.
   */
-const removeAlreadyMatched = (hits, pattern, matchedPositions) => {
+const removeAlreadyMatched = (hits, pattern) => {
   const negatedPatterns = {
     horizontalXLarge: ["horizontalLarge", "horizontal"],
     horizontalLarge: ["horizontal"],
@@ -238,7 +238,7 @@ const removeAlreadyMatched = (hits, pattern, matchedPositions) => {
     jackpot: [],
   };
   const patternsToNegate = negatedPatterns[pattern.name] || [];
-  // todo
+  return hits.filter((hit) => !patternsToNegate.includes(hit.pattern));
 };
 
 // dictionary of odds for each symbol; adds up to 100 (based on 2x+1)
@@ -347,7 +347,7 @@ class CoolholeSlots extends ChannelModule {
 
   determineHits(grid, bet) {
     let totalPayout = 0;
-    const hits = [];
+    let hits = [];
 
     for (const pattern of patterns.toSorted(
       (a, b) => a.multiplier - b.multiplier
@@ -366,6 +366,7 @@ class CoolholeSlots extends ChannelModule {
           symbolId,
           payout,
         });
+        hits = removeAlreadyMatched(hits, pattern.name);
       }
     }
     totalPayout = Math.round(totalPayout);
@@ -403,7 +404,7 @@ class CoolholeSlots extends ChannelModule {
     });
 
     LOGGER.info(
-      `User ${user.name} spun the slots with bet ${bet} and won ${totalPayout}`
+      `User ${user.getName()} spun the slots with bet ${bet} and won ${totalPayout}`
     );
 
     return {
