@@ -88,11 +88,12 @@ const arePosEqual = (posArr1, posArr2) =>
 
 /**
  * Finds zig pattern (downward arrow) matches in the grid.
- * @param {Array<number>} diagonalAscRes result from diagonalAsc
- * @param {Array<number} diagonalDescRes result from diagonalDesc
+ * @param {Array<Array<number>>} grid grid
  * @returns array of matched positions or null if no matches
  */
-const zig = (diagonalAscRes, diagonalDescRes) => {
+const zig = (gird) => {
+  const diagonalAscRes = diagonalAsc(gird);
+  const diagonalDescRes = diagonalDesc(gird);
   if (!diagonalAscRes || !diagonalDescRes) return null;
   // hardcoded intersection point for 5x3 grid zig pattern
   const inserssectionPoint = [2, 2];
@@ -110,11 +111,12 @@ const zig = (diagonalAscRes, diagonalDescRes) => {
 
 /**
  * Finds zag pattern (upward arrow) matches in the grid.
- * @param {Array<number>} diagonalAscRes result from diagonalAsc
- * @param {Array<number} diagonalDescRes result from diagonalDesc
+ * @param {Array<Array<number>>} grid grid
  * @returns array of matched positions or null if no matches
  */
-const zag = (diagonalAscRes, diagonalDescRes) => {
+const zag = (grid) => {
+  const diagonalAscRes = diagonalAsc(grid);
+  const diagonalDescRes = diagonalDesc(grid);
   if (!diagonalAscRes || !diagonalDescRes) return null;
   // hardcoded intersection point for 5x3 grid zag pattern
   const inserssectionPoint = [0, 2];
@@ -188,31 +190,50 @@ const jackpot = (horizontalXLargeRes) =>
     ? horizontalXLargeRes
     : null;
 
+/**
+ * name: pattern name
+ * fn: function that takes in the grid and returns matched positions or null if no matches
+ * multiplier: payout multiplier for the pattern
+ * rank: used to determine which pattern negates which when multiple patterns are hit; higher rank patterns negate lower rank patterns; jackpot is special and does not negate or get negated by any patterns
+ */
 const patterns = [
-  { name: "horizontal", fn: (grid) => horizontal(grid, 3), multiplier: 1 },
-  { name: "horizontalLarge", fn: (grid) => horizontal(grid, 4), multiplier: 2 },
+  {
+    name: "horizontal",
+    fn: (grid) => horizontal(grid, 3),
+    multiplier: 1,
+    rank: 1,
+  },
+  {
+    name: "horizontalLarge",
+    fn: (grid) => horizontal(grid, 4),
+    multiplier: 2,
+    rank: 2,
+  },
   {
     name: "horizontalXLarge",
     fn: (grid) => horizontal(grid, 5),
     multiplier: 3,
+    rank: 3,
   },
-  { name: "vertical", fn: (grid) => vertical(grid), multiplier: 1 },
+  { name: "vertical", fn: (grid) => vertical(grid), multiplier: 1, rank: 1 },
   {
     name: "diagonalAsc",
     fn: (grid) => diagonalAsc(grid),
     multiplier: 1.5,
+    rank: 1,
   },
   {
     name: "diagonalDsc",
     fn: (grid) => diagonalDesc(grid),
     multiplier: 1.5,
+    rank: 1,
   },
-  { name: "zig", fn: (grid) => zig(grid), multiplier: 4 },
-  { name: "zag", fn: (grid) => zag(grid), multiplier: 4 },
-  { name: "above", fn: (grid) => above(grid), multiplier: 7 },
-  { name: "below", fn: (grid) => below(grid), multiplier: 7 },
-  { name: "eye", fn: (grid) => eye(grid), multiplier: 8 },
-  { name: "jackpot", fn: (grid) => jackpot(grid), multiplier: 10 },
+  { name: "zig", fn: (grid) => zig(grid), multiplier: 4, rank: 4 },
+  { name: "zag", fn: (grid) => zag(grid), multiplier: 4, rank: 4 },
+  { name: "above", fn: (grid) => above(grid), multiplier: 7, rank: 5 },
+  { name: "below", fn: (grid) => below(grid), multiplier: 7, rank: 5 },
+  { name: "eye", fn: (grid) => eye(grid), multiplier: 8, rank: 6 },
+  { name: "jackpot", fn: (grid) => jackpot(grid), multiplier: 10, rank: 7 },
 ];
 
 /* Patterns are only scored if any larger Pattern (except Jackpot) does not contain them. 
@@ -226,19 +247,30 @@ const patterns = [
     - An Eye match negates any Horizontal matches in the center of the row and the vertical matches in the 2nd and 4th columns
     - Jackpot does not negate any patterns.
   */
-const removeAlreadyMatched = (hits, pattern) => {
+const removeAlreadyMatched = (hits, patternName) => {
   const negatedPatterns = {
-    horizontalXLarge: ["horizontalLarge", "horizontal"],
-    horizontalLarge: ["horizontal"],
-    above: ["zig", "horizontalXLarge", "horizontalLarge", "horizontal"],
-    below: ["zag", "horizontalXLarge", "horizontalLarge", "horizontal"],
-    zig: ["diagonalAsc", "diagonalDsc"],
-    zag: ["diagonalDsc", "diagonalAsc"],
-    eye: ["horizontal", "vertical"],
-    jackpot: [],
+    horizontalXLarge: new Set(["horizontalLarge", "horizontal"]),
+    horizontalLarge: new Set(["horizontal"]),
+    above: new Set([
+      "zig",
+      "horizontalXLarge",
+      "horizontalLarge",
+      "horizontal",
+    ]),
+    below: new Set([
+      "zag",
+      "horizontalXLarge",
+      "horizontalLarge",
+      "horizontal",
+    ]),
+    zig: new Set(["diagonalAsc", "diagonalDsc"]),
+    zag: new Set(["diagonalDsc", "diagonalAsc"]),
+    eye: new Set(["horizontal", "vertical"]),
+    jackpot: new Set(),
   };
-  const patternsToNegate = negatedPatterns[pattern.name] || [];
-  return hits.filter((hit) => !patternsToNegate.includes(hit.pattern));
+
+  const toNegate = negatedPatterns[patternName] || new Set();
+  return hits.filter((hit) => !toNegate.has(hit.pattern));
 };
 
 // dictionary of odds for each symbol; adds up to 100 (based on 2x+1)
@@ -349,10 +381,8 @@ class CoolholeSlots extends ChannelModule {
     let totalPayout = 0;
     let hits = [];
 
-    for (const pattern of patterns.toSorted(
-      (a, b) => a.multiplier - b.multiplier
-    )) {
-      // fix: sort patterns by fixed rank instead of multiplier since multipliers might change in the future
+    // add lower ranked patterns first so they get negated by higher ranked patterns if they overlap
+    for (const pattern of patterns.toSorted((a, b) => a.rank - b.rank)) {
       const matchedPositions = pattern.fn(grid);
       if (matchedPositions) {
         // get symbol at first matched position
