@@ -116,20 +116,26 @@ function spinReels(grid, onComplete) {
   for (const [index, reel] of reels.entries()) {
     const tl = gsap.timeline();
     tl.to(reel, {
-      y: totalReelHeight,
+      y: resultReelHeight + randomReelHeight,
       duration: 0.4,
-      ease: "linear",
-      repeat: 5,
+      ease: "power1.in",
       delay: index * 0.4,
-      onComplete: () => {
-        gsap.set(reel, { y: 0 });
-        updateGroupReel($(reel), columns[index]);
-      },
-    }).to(reel, {
-      y: randomReelHeight, // move down by the height of the random reel so that the result reel is in the visible area
-      duration: 1,
-      ease: "power2.out",
-    });
+    })
+      .to(reel, {
+        y: totalReelHeight,
+        duration: 0.4,
+        ease: "linear",
+        repeat: 5,
+        onComplete: () => {
+          gsap.set(reel, { y: 0 });
+          updateGroupReel($(reel), columns[index]);
+        },
+      })
+      .to(reel, {
+        y: randomReelHeight, // move down by the height of the random reel so that the result reel is in the visible area
+        duration: 1,
+        ease: "bounce",
+      });
     globalTl.add(tl, 0); // start all reel animations at the same time
   }
 
