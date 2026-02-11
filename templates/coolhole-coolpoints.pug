@@ -141,8 +141,7 @@ mixin casino
                   each val in [1,2,3,4,5,6,7,8,9,10]
                     .cp-slots-symbol
         .cp-slots-controls
-          label(for="cp-slots-bet-input") Bet Amount:
-          input#cp-slots-bet-input(type="number" min="1" value="1")
+          +textbox-auto("cp-slots-bet-input", "Bet Amount", "1")
           button#cp-slots-spin-btn.btn.btn-primary(type="button") Spin
         .cp-slots-result
           h4 Result:
