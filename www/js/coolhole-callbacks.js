@@ -640,7 +640,6 @@ const CoolholeCallbacks = {
   },
 
   coolholeSpinSlotResponse: function (response) {
-    $("#cp-slots-spin-btn").prop("disabled", false);
     handleSlotSpinResponse(response);
   },
 };

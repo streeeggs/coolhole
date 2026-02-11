@@ -28,13 +28,14 @@ function symbolToUrl(symbolIndex) {
 }
 
 function handleSpinButtonClick() {
-  const bet = parseInt($("#cp-slots-bet-input").val(), 10);
+  const bet = parseInt($("#cp-slots-bet-input").val());
   if (isNaN(bet) || bet <= 0) {
     alert("Please enter a valid bet amount.");
     return;
   }
 
   const data = { bet };
+  $("#cp-slots-spin-btn").prop("disabled", true);
 
   socket.emit("coolholeSpinSlot", data);
 }
@@ -155,5 +156,6 @@ function handleSlotSpinResponse(response) {
     if (totalPayout > 0 && typeof applyPointsToSelf === "function") {
       applyPointsToSelf(response.totalPayout);
     }
+    $("#cp-slots-spin-btn").prop("disabled", false);
   });
 }
