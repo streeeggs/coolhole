@@ -115,25 +115,31 @@ function spinReels(grid, onComplete) {
 
   for (const [index, reel] of reels.entries()) {
     const tl = gsap.timeline();
+    // HACK: because repeat also repeats the easing effect, we have to create a seperate tween to slowly roll into the true "spinning" effect.
     tl.to(reel, {
-      y: resultReelHeight + randomReelHeight,
-      duration: 0.4,
-      ease: "power1.in",
+      y: randomReelHeight * 2, // top of "top most" random reel
+      duration: 1,
+      ease: "power2.in",
       delay: index * 0.4,
+      onComplete: () => {
+        gsap.set(reel, { y: randomReelHeight - resultReelHeight }); // snap to top of "bottom most" random reel (same as top of "top most" random reel)
+        setTimeout(() => {
+          updateGroupReel($(reel), columns[index]);
+        }, 300); // wait for DOM to update before the next animation to prevent jank
+      },
     })
       .to(reel, {
-        y: totalReelHeight,
-        duration: 0.4,
+        y: randomReelHeight * 2, // top of "top most" random reel
+        duration: 0.5,
         ease: "linear",
-        repeat: 5,
+        repeat: 3,
         onComplete: () => {
-          gsap.set(reel, { y: 0 });
-          updateGroupReel($(reel), columns[index]);
+          gsap.set(reel, { y: randomReelHeight - resultReelHeight }); // snap to top of "bottom most" random reel (same as top of "top most" random reel)
         },
       })
       .to(reel, {
-        y: randomReelHeight, // move down by the height of the random reel so that the result reel is in the visible area
-        duration: 1,
+        y: randomReelHeight, // move down to result reel
+        duration: 0.5,
         ease: "bounce",
       });
     globalTl.add(tl, 0); // start all reel animations at the same time
