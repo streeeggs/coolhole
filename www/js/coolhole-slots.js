@@ -1,5 +1,9 @@
 $(function () {
   $("#cp-slots-spin-btn").on("click", handleSpinButtonClick);
+  // Preload slot emotes
+  preloadEmotes(TEMP_SLOT_SYMBOL_TO_EMOTE_MAPPING).catch((err) =>
+    console.warn("Some emotes failed to preload:", err)
+  );
 });
 
 const TEMP_SLOT_SYMBOL_TO_EMOTE_MAPPING = [
@@ -107,8 +111,6 @@ function spinReels(grid, onComplete) {
 
   const randomReelHeight = $(".cp-slots-reel.random").first().height();
   const resultReelHeight = $(".cp-slots-reel.result").first().height();
-
-  const totalReelHeight = randomReelHeight * 2 + resultReelHeight;
 
   const reels = $(".cp-slots-reel-group").toArray();
   const globalTl = gsap.timeline({ onComplete });

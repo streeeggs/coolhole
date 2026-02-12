@@ -38,6 +38,28 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
 populateVoiceList();
 
 /**
+ * Preloads images for a given set of emote names
+ * @param {Array<string>} emoteNames - Array of emote names to preload
+ * @returns {Promise} Resolves when all images are loaded
+ */
+function preloadEmotes(emoteNames) {
+  const imageUrls = emoteNames
+    .map((emoteName) => symbolToUrl(emoteName))
+    .filter((url) => url); // Filter out empty URLs
+
+  return Promise.all(
+    imageUrls.map((url) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = url;
+      });
+    })
+  );
+}
+
+/**
  * Additional logic after the chat message div is created, but before its appended to the #messagebuffer, such as additional css classes.
  * @param {Object} data chat message object
  * @param {Object} last LASTCHAT object
