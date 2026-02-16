@@ -1,0 +1,51 @@
+version: '3.8'
+
+x-mariadb: &mariadb
+  MARIADB_ROOT_PASSWORD: 'root_password_change_me'
+  CYTUBE_MARIADB_PASSWORD: 'cytube_password_change_me'
+
+services:
+  db:
+    image: mariadb:latest
+    restart: unless-stopped
+    environment: *mariadb
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./build/postinst.sh:/docker-entrypoint-initdb.d/postinst.sh
+      - ./build/make_admin.sh:/make_admin.sh
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  web:
+    build:
+      context: ./build
+      args:
+        <<: *mariadb
+        COOLHOLE_URL: 'localhost:8080'
+        COOLHOLE_TITLE: 'Coolhole Dev'
+        COOLHOLE_DESC: 'Coolhole Development'
+        YOUTUBE_V3_API_KEY: 'null'
+        TWITCH_CLIENT_ID: 'null'
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+      - "1337:1337"
+    volumes:
+      - ../src:/service/coolhole/src
+      - ../www:/service/coolhole/www
+      - ../lib:/service/coolhole/lib
+    environment:
+      - NODE_ENV=development
+      - BABEL_WATCH=true
+    stdin_open: true
+    tty: true
+
+volumes:
+  db_data:
