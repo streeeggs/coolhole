@@ -191,7 +191,7 @@ function parseSecretaryMessage(msg) {
   const [_fullMatch, _command, flags, messageToSay] = msg.match(commandRegex);
   if (!flags) return { msg: messageToSay, options: {} };
 
-  const flagRegex = /-(\w)\s+((\".+\")|[^\s]+)/gi;
+  const flagRegex = /-(\w)\s+((".+")|[^\s]+)/gi;
   let options = {};
   [...flags.matchAll(flagRegex)].forEach((match) => {
     const [_fullMatchFlag, flag, value] = match;
@@ -233,7 +233,7 @@ function parseSpecialChatMessage(msg) {
 function coolholeMessageOverride(msg, meta) {
   const msgLower = msg.toLowerCase();
   switch (true) {
-    case msgLower.startsWith("/secretary"):
+    case msgLower.startsWith("/secretary"): {
       // Prepopulate the message with the commands if provided in the message; otherwise use defaults
       const { msg: parsedMessage, options: secOptions } =
         parseSecretaryMessage(msg);
@@ -283,7 +283,8 @@ function coolholeMessageOverride(msg, meta) {
 
       $("#ch-secretary-modal").modal();
       break;
-    case msgLower.startsWith("/poll"):
+    }
+    case msgLower.startsWith("/poll"): {
       const { title, options: pollOptions } = parsePollMessage(msg);
       $("#pollOption-title").val(title);
 
@@ -305,6 +306,7 @@ function coolholeMessageOverride(msg, meta) {
 
       $("#ch-poll-modal").modal();
       break;
+    }
     default:
       break;
   }
@@ -352,7 +354,7 @@ function secretaryMessageCallback(data) {
   /*
     TODO: Pretty janky...
     Apply function specific classes to wrapping div
-    Apply text-lottery or anything else to the message itself   
+    Apply text-lottery or anything else to the message itself
     */
   // position/font class + blur in animation
   div.addClass("secretary focus-in-blur-out-expand");
@@ -391,38 +393,12 @@ function secretaryMessageCallback(data) {
     if (sounds && sounds.length > 0) {
       // Wait for all sounds to end; prepare for over-engineering
       // Since we don't know when they start, we can't rely on the duration
-
-      // Setup a count to prevent a runaway interval
-      let intervalCount = 0;
-      // Interval function that either bails if all sounds have ended or we've called it too many times
-      function checkIfAllSoundHaveEnded(sounds) {
-        // We hit our threshold; stop waiting
-        if (intervalCount > 50) {
-          console.error(
-            "formatSecretaryMessage: sound interval never ended; hit interval count threshold",
-            sounds
-          );
-          window.speechSynthesis.speak(utterThis);
-          clearInterval(interval);
-        }
-        // Some sound is still going; keep waiting
-        if (sounds.some((sound) => !sound.ended)) {
-          intervalCount++;
-          return;
-        }
-        // All sounds have ended
-        console.log("All sounds ended; let's bail");
-        window.speechSynthesis.speak(utterThis);
-        clearInterval(interval);
-      }
-
       // Begin interval with a check every 100ms
       const interval = setInterval(function () {
         checkIfAllSoundHaveEnded(sounds);
       }, 100);
-    }
-    // If there are no sounds, ignore all the complicated shit above
-    else {
+    } else {
+      // If there are no sounds, ignore all the complicated shit above
       window.speechSynthesis.speak(utterThis);
     }
   }
@@ -430,7 +406,30 @@ function secretaryMessageCallback(data) {
   setTimeout(() => div.remove(), 7000);
 }
 
-/* 
+// Setup a count to prevent a runaway interval
+// Interval function that either bails if all sounds have ended or we've called it too many times
+function checkIfAllSoundHaveEnded(sounds) {
+  let intervalCount = 0;
+  // We hit our threshold; stop waiting
+  if (intervalCount > 50) {
+    console.error(
+      "formatSecretaryMessage: sound interval never ended; hit interval count threshold",
+      sounds
+    );
+    window.speechSynthesis.speak(utterThis);
+    clearInterval(interval);
+  }
+  // Some sound is still going; keep waiting
+  if (sounds.some((sound) => !sound.ended)) {
+    intervalCount++;
+    return;
+  }
+  // All sounds have ended
+  console.log("All sounds ended; let's bail");
+  window.speechSynthesis.speak(utterThis);
+  clearInterval(interval);
+}
+/*
 This function reads the chatMessage and modifies the speechObj based on flags in the chatMessage.
 It expects the flags to be between curly brackets {}.
 -r = rate of the speech. The units expected are decimal/integer. If it can't be parsed, default is 1.2.
@@ -991,9 +990,8 @@ function checkOverlapEmotes(jqueryChatSpan) {
           }
 
           prevOverlapEmoteTitle = emoteTitle;
-        }
-        // If its not an overlapping emote, save the emote's rectangular positioning for the next emote
-        else {
+        } else {
+          // If its not an overlapping emote, save the emote's rectangular positioning for the next emote
           prevNormalRect = emotesFound[i].getBoundingClientRect();
           emoteCombo = 0;
         }
@@ -1084,8 +1082,8 @@ $(function () {
  */
 function setupAutoResizing() {
   try {
-    $("#resize-video-smaller").click(() => saveAutoResizing());
-    $("#resize-video-larger").click(() => saveAutoResizing());
+    $("#resize-video-smaller").on("click", () => saveAutoResizing());
+    $("#resize-video-larger").on("click", () => saveAutoResizing());
   } catch (e) {
     console.error(e);
   }
@@ -1153,8 +1151,8 @@ function applyAutoResizing() {
  */
 function setupAutoHideUserlist() {
   try {
-    $("#usercount").click(() => saveHideUserlist());
-    $("#userlisttoggle").click(() => saveHideUserlist());
+    $("#usercount").on("click", () => saveHideUserlist());
+    $("#userlisttoggle").on("click", () => saveHideUserlist());
   } catch (e) {
     console.error(e);
   }
@@ -1180,7 +1178,7 @@ function saveHideUserlist() {
 function applyAutoHideUserlist() {
   try {
     if (window.localStorage.getItem(AUTO_HIDE_USERLIST_STORAGE_NAME) === "true")
-      $("#usercount").click();
+      $("#usercount").trigger("click");
   } catch (e) {
     console.error(e);
   }

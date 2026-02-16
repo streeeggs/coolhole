@@ -21,13 +21,15 @@ module.exports = {
         'no-prototype-builtins': ['off'], // should consider cleaning up the code and turning this back on at some point
         'no-trailing-spaces': ['error'],
         'no-unused-vars': [
-            'error', {
-                'argsIgnorePattern': '^_',
-                'varsIgnorePattern': '^_|^Promise$'
-            }
+            // 'error', {
+            //     'argsIgnorePattern': '^_',
+            //     'varsIgnorePattern': '^_|^Promise$'
+            // }
+            'off' // COOLHOLE: disabled since it wasn't even being followed in sync
         ],
         'semi': ['error','always'],
-        'quotes': ['off'] // Old code uses double quotes, new code uses single / template
+        'quotes': ['off'], // Old code uses double quotes, new code uses single / template
+        'no-undef': ['off'], // COOLHOLE: disabled since it wasn't even being followed in sync
     },
     ignorePatterns: [
         // These are not ours

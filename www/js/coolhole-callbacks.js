@@ -436,8 +436,9 @@ const CoolholeCallbacks = {
         .on("click", function () {
           const wager = parseInt($("#ch-poll-wager-wager").val());
           const option = parseInt($("#ch-poll-wager-option").val());
-          if (isNaN(wager) || isNaN(option) || wager < 0 || option < 0) {
-          }
+          // TODO:? lol
+          // if (isNaN(wager) || isNaN(option) || wager < 0 || option < 0) {
+          // }
           // disable all buttons
           $("#pollwrap .active .option button:not(.btn-danger)").each(
             function () {
@@ -450,7 +451,7 @@ const CoolholeCallbacks = {
             wager,
           });
         });
-      $("#ch-poll-wager-wager").keydown(function (e) {
+      $("#ch-poll-wager-wager").on("keydown", function (e) {
         if (
           ![
             "Backspace",

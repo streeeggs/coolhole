@@ -440,6 +440,8 @@ const Callbacks = {
             var menu = $("<ul/>").addClass("dropdown-menu")
                 .appendTo(li);
 
+            // COOLHOLE: part of sync
+            // eslint-disable-next-line no-inner-declarations
             function addRank(r, disp) {
                 var li = $("<li/>").appendTo(menu);
                 $("<a/>").attr("href", "javascript:void(0)")
@@ -1169,7 +1171,7 @@ const Callbacks = {
 };
 
 // Stuff Coolhole callbacks into Callbacks
-Object.assign(Callbacks, CoolholeCallbacks)
+Object.assign(Callbacks, CoolholeCallbacks);
 
 window.Callbacks = Callbacks;
 

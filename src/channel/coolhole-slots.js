@@ -236,7 +236,7 @@ const patterns = [
   { name: "jackpot", fn: (grid) => jackpot(grid), multiplier: 10, rank: 7 },
 ];
 
-/* Patterns are only scored if any larger Pattern (except Jackpot) does not contain them. 
+/* Patterns are only scored if any larger Pattern (except Jackpot) does not contain them.
     All examples:
     - A HorizontalXLarge match negates any Horizontal or HorizontalLarge matches in the same rows.
     - A HorizontalLarge match negates any Horizontal matches in the same rows.
