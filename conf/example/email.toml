@@ -1,3 +1,15 @@
+# Email Type (smtp or otherwise)
+[email-type]
+email-type = 'mailgun'
+
+# API keys
+[api-key]
+mailgun = 'mail-gun-apikey'
+
+# API user
+[api-user]
+mailgun = 'user@mailgun.com'
+
 # SMTP configuration for sending mail
 [smtp]
 host = 'smtp.gmail.com'
@@ -18,11 +30,11 @@ enabled = true
 html-template = """
 Hi $user$,<br>
 <br>
-A password reset was requested for your account on CHANGE ME.  You can complete the reset by opening the following link in your browser: <a href="$url$">$url$</a><br>
+A password reset was requested for your account on coolhole.org.  You can complete the reset by opening the following link in your browser: <a href="$url$">$url$</a><br>
 <br>
 This link will expire in 24 hours.<br>
 <br>
-This email address is not monitored for replies.  For assistance with password resets, please <a href="http://example.com/contact">contact an administrator</a>.
+This email address is not monitored for replies.  For assistance with password resets, please <a href="http://coolhole.org/contact">contact an administrator</a>.
 """
 
 # Template to use for plaintext emails
@@ -30,37 +42,39 @@ This email address is not monitored for replies.  For assistance with password r
 text-template = """
 Hi $user$,
 
-A password reset was requested for your account on CHANGE ME.  You can complete the reset by opening the following link in your browser: $url$
+A password reset was requested for your account on coolhole.org.  You can complete the reset by opening the following link in your browser: $url$
 
 This link will expire in 24 hours.
 
-This email address is not monitored for replies.  For assistance with password resets, please contact an administrator.  See http://example.com/contact for contact information.
+This email address is not monitored for replies.  For assistance with password resets, please contact an administrator.  See http://coolhole.org/contact for contact information.
 """
 
-from = "Example Website <website@example.com>"
+# Replace with your actual user (either SMTP or service user like mailgun)
+from = "user <user@mailgun.com>"
 subject = "Password reset request"
 
+# Coolhole doesn't have delete emails
 # Email configuration for account deletion request notifications
-[delete-account]
-enabled = true
-
-html-template = """
-Hi $user$,
-<br>
-<br>
-Account deletion was requested for your account on CHANGE ME.  Your account will be automatically deleted in 7 days without any further action from you.
-<br>
-<br>
-This email address is not monitored for replies.  For assistance, please <a href="http://example.com/contact">contact an administrator</a>.
-"""
-
-text-template = """
-Hi $user$,
-
-Account deletion was requested for your account on CHANGE ME.  Your account will be automatically deleted in 7 days without any further action from you.
-
-This email address is not monitored for replies.  For assistance, please contact an administrator.  See http://example.com/contact for contact information.
-"""
-
-from = "Example Website <website@example.com>"
-subject = "Account deletion request"
+#[delete-account]
+#enabled = false
+#
+#html-template = """
+#Hi $user$,
+#<br>
+#<br>
+#Account deletion was requested for your account on CHANGE ME.  Your account will be automatically deleted in 7 days without any further action from you.
+#<br>
+#<br>
+#This email address is not monitored for replies.  For assistance, please <a href="http://example.com/contact">contact an administrator</a>.
+#"""
+#
+#text-template = """
+#Hi $user$,
+#
+#Account deletion was requested for your account on CHANGE ME.  Your account will be automatically deleted in 7 days without any further action from you.
+#
+#This email address is not monitored for replies.  For assistance, please contact an administrator.  See http://example.com/contact for contact information.
+#"""
+#
+#from = "Example Website <website@example.com>"
+#subject = "Account deletion request"
