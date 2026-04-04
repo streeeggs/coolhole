@@ -120,7 +120,35 @@ mixin status-of-actions
 
 mixin casino
   #cp-casino.tab-pane.fade.col-12(role="tabpanel", aria-labelledby="cpCasinoTab")
-    +under-construction
+    .modal-header
+      h2 CoolPoints Casino
+      p sub
+    .modal-body
+      .cp-casino-slots#cp-slots
+        h3 Slot Machine
+        .cp-slots-machine
+          #cp-slots-reels
+            //- create 5 reel groups
+            each val in [1,2,3,4,5]
+              .cp-slots-reel-group
+                .cp-slots-reel.random
+                  each val in [1,2,3,4,5,6,7,8,9,10]
+                    .cp-slots-symbol
+                .cp-slots-reel.result
+                  each val in [1,2,3]
+                    .cp-slots-symbol
+                .cp-slots-reel.random
+                  each val in [1,2,3,4,5,6,7,8,9,10]
+                    .cp-slots-symbol
+        .cp-slots-controls
+          +textbox-auto("cp-slots-bet-input", "Bet Amount", "1")
+          button#cp-slots-spin-btn.btn.btn-primary(type="button") Spin
+        .cp-slots-result
+          h4 Result:
+          .cp-slots-result-grid
+          .cp-slots-result-message
+    .modal-footer
+      p footer
 
 mixin under-construction
   #cp-under-construction

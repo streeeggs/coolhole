@@ -19,7 +19,7 @@ class ActionResult {
 }
 
 /**
- * @typedef {Object} ActionStatus
+ * @typedef {Object} ActionStatus Status of a coolpoints action
  * @property {string} Success - Indicates the action was successful.
  * @property {string} InsufficentPoints - Indicates the user does not have enough points.
  * @property {string} InvalidAction - Indicates the action is invalid.
@@ -33,6 +33,20 @@ const ActionStatus = {
   ActionDisabled: "actionDisabled",
   InvalidUser: "invalidUser",
   UnknownError: "unknownError",
+};
+
+/**
+ * @typedef {Object} WhoToNotify Who to notify about point changes ordered by most permissive to least. NOTE: When choosing to notify anyone other than `All`, the user themselves will not have their counter updated automatically. Use only when you plan on updating the user's UI outside of `updateCoolPointsResponse`
+ * @property {String} All notify everyone including self
+ * @property {String} Channel notify channel only (not self)
+ * @property {String} Mods notify mods only
+ * @property {String} None notify no one
+ */
+const WhoToNotify = {
+  All: 0,
+  Channel: 1,
+  Mods: 2,
+  None: 3,
 };
 
 /**
@@ -66,13 +80,24 @@ class PointData {
  * @param {String} user user
  * @param {Number} points difference in points
  * @param {Number} currentPoints currentPoints
+ * @param {String} reason reason for point change
+ * @param {String} whoToNotify who to notify about point change
  * @returns {Object} ReturnPointData object
  */
 class ReturnPointData {
-  constructor(user, points, currentPoints) {
+  // TODO: update rest of app with reasons
+  constructor(
+    user,
+    points,
+    currentPoints,
+    reason = null,
+    whoToNotify = WhoToNotify.All
+  ) {
     this.user = user;
     this.points = points;
     this.currentPoints = currentPoints;
+    this.reason = reason;
+    this.whoToNotify = whoToNotify;
   }
 }
 
@@ -1240,6 +1265,109 @@ class Coolpoints extends ChannelModule {
         });
         return new ActionResult(false, "Command not found");
       }
+    }
+  }
+
+  handleSlotBet(userName, betAmount) {
+    try {
+      if (!this.isUserEligibleForPoints(userName)) {
+        this.logError({
+          userName: userName,
+          callingFunction: "handleSlotBet",
+          returnSocket: "coolpointsFailure",
+          errMsg: `User ${
+            userName || "(anonymous)"
+          } is not registered or has something wrong with their account`,
+          errStack: null,
+          data: userName || "(anonymous)",
+          userMessage: `Error: You must join cause if you wish to participate.`,
+        });
+        return false;
+      }
+
+      // TODO: Validate bet amount is < user points
+      this.subtract(userName, betAmount);
+
+      this.channel.logger.log(
+        `User ${userName} placed a slot bet of ${betAmount} coolpoints`
+      );
+
+      this.channel.broadcastAll(
+        "updateCoolPointsResponse",
+        new ReturnMsg(
+          `User ${userName} placed a slot bet of ${betAmount} coolpoints`,
+          `${userName} placed a slot bet of ${betAmount} coolpoints`,
+          new ReturnPointData(
+            userName,
+            -betAmount,
+            this.get(userName).points,
+            "slotsBet"
+          )
+        )
+      );
+      return true;
+    } catch (err) {
+      this.logError({
+        userName: userName,
+        callingFunction: "handleSlotBet",
+        returnSocket: "coolpointsFailure",
+        errMsg: err,
+        errStack: err.stack,
+        data: userName || "(anonymous)",
+        userMessage: `Error: Unable to place slot bet. Let the head monkey in charge know`,
+      });
+      return false;
+    }
+  }
+
+  handleSlotPayout(userName, spinData) {
+    try {
+      if (!this.isUserEligibleForPoints(userName)) {
+        this.logError({
+          userName: userName,
+          callingFunction: "handleSlotPayout",
+          returnSocket: "coolpointsFailure",
+          errMsg: `User ${
+            userName || "(anonymous)"
+          } is not registered or has something wrong with their account`,
+          errStack: null,
+          data: userName || "(anonymous)",
+          userMessage: `Error: You must join cause if you wish to participate.`,
+        });
+        return;
+      }
+
+      if (spinData.totalPayout <= 0) return;
+
+      this.add(userName, spinData.totalPayout);
+
+      this.channel.logger.log(
+        `User ${userName} won ${spinData.totalPayout} coolpoints from slots from hits: ${spinData.hits}`
+      );
+      this.channel.broadcastAll(
+        "updateCoolPointsResponse",
+        new ReturnMsg(
+          `User ${userName} won ${spinData.totalPayout} coolpoints from slots`,
+          `${userName} won ${spinData.totalPayout} coolpoints from slots`,
+          new ReturnPointData(
+            userName,
+            spinData.totalPayout,
+            this.get(userName).points,
+            "slotsWin",
+            WhoToNotify.Channel // Notify the channel but not the user themselves. Their UI should only update once the slot animation has finished
+          )
+        )
+      );
+    } catch (err) {
+      this.logError({
+        userName: userName,
+        callingFunction: "handleSlotPayout",
+        returnSocket: "coolpointsFailure",
+        errMsg: err,
+        errStack: err.stack,
+        data: userName || "(anonymous)",
+        userMessage: `Error: Unable to award points. Let the head monkey in charge know`,
+      });
     }
   }
 }
