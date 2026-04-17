@@ -4,7 +4,8 @@ import { sanitizeText } from '../../xss';
 import { sendPug } from '../pug';
 import * as HTTPStatus from '../httpstatus';
 import { HTTPError } from '../../errors';
-import { cpOptsDefaults, cpOptTypes } from '../../channel/coolholepoints-actions-options'
+import { cpOptsDefaults, cpOptTypes } from '../../channel/coolholepoints-actions-options';
+import { coolholeSlotOptionsDefaults } from '../../channel/coolhole-slot-options';
 
 export default function initialize(app, ioConfig, chanPath, getBannedChannel) {
     app.get(`/${chanPath}/:channel`, async (req, res) => {
@@ -33,7 +34,8 @@ export default function initialize(app, ioConfig, chanPath, getBannedChannel) {
             maxMsgLen: Config.get("max-chat-message-length"),
             // Inject coolhole default variables into pug
             cpOptsDefaults: cpOptsDefaults,
-            cpOptsTypes: cpOptTypes
+            cpOptsTypes: cpOptTypes,
+            coolholeSlotOptionsDefaults: coolholeSlotOptionsDefaults,
         });
     });
 }

@@ -57,7 +57,7 @@ function animatePointUpdate(
   $msgEl,
   diff,
   $btnEl = null,
-  $animationTarget = null
+  $animationTarget = null,
 ) {
   if (!diff) return;
   const isPositive = diff > 0;
@@ -89,7 +89,7 @@ function applyPointsToSelf(incCoolPoints) {
 $(".cp-option-form-group input").each(function () {
   const classNames = $(this).attr("class").split(" ");
   if (classNames.includes("cs-checkbox")) {
-    $(this).change(cpCheckboxChange);
+    $(this).on("change", cpCheckboxChange);
   } else if (classNames.includes("cp-option-input")) {
     $(this).on("keyup keypress", debounce(1000, cpNumericInputChange));
   } else if (classNames.includes("cp-option-timeinput")) {
@@ -113,7 +113,7 @@ class CoolpointsUserList {
     //this.initSortOption();
     this.table = this.elem.find(".users-coolpoints-table")[0];
     this.paginatorContainer = this.elem.find(
-      ".users-coolpoints-paginator-container"
+      ".users-coolpoints-paginator-container",
     );
     this.users = [];
     this.page = 0;
@@ -175,7 +175,7 @@ CoolpointsUserList.prototype.handleChange = function () {
   this.paginator = new NewPaginator(
     this.usersCoolPoints.length,
     this.itemsPerPage,
-    this.loadPage.bind(this)
+    this.loadPage.bind(this),
   );
   this.paginatorContainer.html("");
   this.paginatorContainer.append(this.paginator.elem);
@@ -296,17 +296,17 @@ CoolpointsUserList.prototype.loadPage = function (page) {
 
 // Initialize Coolpoints User List
 window.USERCOOLPOINTSLIST = new CoolpointsUserList(
-  "#cs-chancoolpoint-user-table"
+  "#cs-chancoolpoint-user-table",
 );
 //window.USERCOOLPOINTSLIST.sortAlphabetical = USEROPTS.emotelist_sort;
 
 function applyPointsToTable(pointData) {
   const userCoolPointListItem = window.USERCOOLPOINTSLIST.usersCoolPoints.find(
-    (d) => d.user === pointData.user
+    (d) => d.user === pointData.user,
   );
   if (!userCoolPointListItem) return;
   userCoolPointListItem.points = CHANNEL.usersCoolPoints.find(
-    (d) => d.user === pointData.user
+    (d) => d.user === pointData.user,
   ).points;
 
   // Run animation
@@ -446,7 +446,7 @@ function handleCPOptionChanges() {
             setDisableOnRelatedOptions(
               `cp-${actionName}-${optionName}`,
               actionName,
-              !optionValue
+              !optionValue,
             );
             break;
           case "int":
@@ -496,7 +496,7 @@ function greatResetOnClick() {
 
   if (
     confirm(
-      "All points for all users will be set to 0. Are you sure about this?"
+      "All points for all users will be set to 0. Are you sure about this?",
     )
   ) {
     socket.emit("greatReset", {});

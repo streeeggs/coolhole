@@ -98,10 +98,10 @@ const zig = (gird) => {
   // hardcoded intersection point for 5x3 grid zig pattern
   const inserssectionPoint = [2, 2];
   const ascPattern = diagonalAscRes.find((pos) =>
-    arePosEqual(pos, inserssectionPoint)
+    arePosEqual(pos, inserssectionPoint),
   );
   const descPattern = diagonalDescRes.find((pos) =>
-    arePosEqual(pos, inserssectionPoint)
+    arePosEqual(pos, inserssectionPoint),
   );
   if (ascPattern && descPattern) {
     return [...ascPattern, ...descPattern];
@@ -121,10 +121,10 @@ const zag = (grid) => {
   // hardcoded intersection point for 5x3 grid zag pattern
   const inserssectionPoint = [0, 2];
   const ascPattern = diagonalAscRes.find((pos) =>
-    arePosEqual(pos, inserssectionPoint)
+    arePosEqual(pos, inserssectionPoint),
   );
   const descPattern = diagonalDescRes.find((pos) =>
-    arePosEqual(pos, inserssectionPoint)
+    arePosEqual(pos, inserssectionPoint),
   );
   if (ascPattern && descPattern) {
     return [...ascPattern, ...descPattern];
@@ -303,7 +303,7 @@ const defaultSymbolPayouts = {
 // just easier in case symbols changes rather than hardcoding 100
 const defaultSymbolOddsTotal = Object.values(defaultSymbolOdds).reduce(
   (a, b) => a + b,
-  0
+  0,
 );
 
 const baseSymbols = [...Array(10).keys()].map((i) => ({
@@ -342,11 +342,21 @@ class CoolholeSlots extends ChannelModule {
     user.socket.emit("coolholeSlotsInitResponse", this.generateGrid());
   }
 
+  toBaseSymbols(symbolPayouts, symbolOdds) {
+    return [...Array(symbolPayouts.length).keys()].map((i) => ({
+      id: i,
+      odds: symbolOdds[i],
+      payout: symbolPayouts[i],
+    }));
+  }
+
   // todo: handle anything that might effect odds temporarily here
   getSymbol() {
-    // todo: replace with channel config
-    const symbols = baseSymbols;
-    const odds = defaultSymbolOddsTotal;
+    const slotOptionData =
+      this.channel.modules.coolholeSlotOptions.coolholeSlotOptions;
+
+    const symbols = slotOptionData.symbolPayouts || defaultSymbolPayouts;
+    const odds = slotOptionData.symbolOdds || defaultSymbolOddsTotal;
 
     const rand = util.randomInt(1, odds);
     let cum = 0;
@@ -362,7 +372,10 @@ class CoolholeSlots extends ChannelModule {
   }
 
   getPayout(symbolId, pattern, bet) {
-    const symbols = baseSymbols;
+    const slotOptionData =
+      this.channel.modules.coolholeSlotOptions.coolholeSlotOptions;
+
+    const symbols = slotOptionData.symbolPayouts || defaultSymbolPayouts;
     const symbol = symbols.find((s) => s.id === symbolId);
     if (!symbol) {
       return 0;
@@ -408,8 +421,11 @@ class CoolholeSlots extends ChannelModule {
 
     // TODO: Check CP ops if slots are enabled
     const { bet } = data;
+    const slotOptionData =
+      this.channel.modules.coolholeSlotOptions.coolholeSlotOptions;
+    const minBet = slotOptionData.minBet || 1;
 
-    if (typeof bet !== "number" || bet <= 0 || !Number.isInteger(bet)) {
+    if (typeof bet !== "number" || bet <= minBet || !Number.isInteger(bet)) {
       LOGGER.warn("Invalid bet from user " + user.name);
       return;
     }
@@ -434,7 +450,7 @@ class CoolholeSlots extends ChannelModule {
     });
 
     LOGGER.info(
-      `User ${user.getName()} spun the slots with bet ${bet} and won ${totalPayout}`
+      `User ${user.getName()} spun the slots with bet ${bet} and won ${totalPayout}`,
     );
 
     return {

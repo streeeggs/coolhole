@@ -55,7 +55,23 @@ function preloadEmotes(emoteNames) {
         img.onerror = reject;
         img.src = url;
       });
-    })
+    }),
+  );
+}
+
+/**
+ * Converts a symbol name to its corresponding emote image URL
+ * @param {string} symbolName - The name of the symbol/emote
+ * @returns {string} The URL of the emote image, or an empty string if not found
+ */
+function symbolToUrl(symbolName) {
+  if (CHANNEL.emoteMap.length === 0 || CHANNEL.emotes.length === 0) {
+    return "";
+  }
+  return (
+    CHANNEL.emoteMap[symbolName]?.image ||
+    CHANNEL.emotes.filter((e) => e.name === symbolName)[0]?.image ||
+    ""
   );
 }
 
@@ -135,7 +151,7 @@ function isMessageTooOld(msgTime) {
 function coolholeShouldShowMessageOutOfBuffer(data) {
   if (
     data.meta.coolholeMeta.otherClasses.some(
-      (c) => c === "secretary" || c === "danmu"
+      (c) => c === "secretary" || c === "danmu",
     )
   ) {
     return true;
@@ -242,12 +258,12 @@ function coolholeMessageOverride(msg, meta) {
       if (secOptions["r"]) SEC_RATE_INPUT.val(secOptions["r"]);
       if (secOptions["v"]) {
         const voiceFound = voices.some(
-          (voice) => voice.name === secOptions["v"]
+          (voice) => voice.name === secOptions["v"],
         );
         if (voiceFound)
           $(`#secretaryOption-voice option[value="${secOptions["v"]}"]`).prop(
             "selected",
-            true
+            true,
           );
       }
 
@@ -362,7 +378,7 @@ function secretaryMessageCallback(data) {
   messageSpan.addClass(
     data.meta.coolholeMeta.otherClasses
       .filter((oc) => oc !== "secretary" && oc !== "danmu")
-      .join(" ") // HACK: way to avoid adding classes that clash
+      .join(" "), // HACK: way to avoid adding classes that clash
   );
 
   // Pulled from formatMessage; this controls just about all of the custom js like golds and soy
@@ -414,7 +430,7 @@ function checkIfAllSoundHaveEnded(sounds) {
   if (intervalCount > 50) {
     console.error(
       "formatSecretaryMessage: sound interval never ended; hit interval count threshold",
-      sounds
+      sounds,
     );
     window.speechSynthesis.speak(utterThis);
     clearInterval(interval);
@@ -465,7 +481,7 @@ function processSpeechMessage(chatMessage) {
     voiceObj: voices.find(
       (voice) =>
         voice.name.toLowerCase().includes(options["v"].toLowerCase()) ||
-        voice.name === options["v"]
+        voice.name === options["v"],
     ),
     message: speechMessage,
   };
@@ -517,7 +533,7 @@ function danmuMessageCallback(data) {
   message.addClass(
     data.meta.coolholeMeta.otherClasses
       .filter((oc) => oc !== "secretary" && oc !== "danmu")
-      .join(" ")
+      .join(" "),
   ); // HACK: way to avoid adding classes that clash or are meant to be on the wrapper, not the message span
 
   // Pulled from formatMessage; this controls just about all of the custom js like golds and soy
@@ -627,7 +643,7 @@ const SFX = {
       // Updates LocalStorage item to match checkbox state
       SFX[type].setState.ls(state);
       SFX[type].isEnabled = state;
-    }
+    },
   );
 });
 // SFX Library
@@ -677,7 +693,7 @@ SFX.mod.sounds = {
     emote: "/beep",
     condition: () =>
       $(
-        "#messagebuffer>div:not('.shotKilled') .channel-emote[title='/battery']"
+        "#messagebuffer>div:not('.shotKilled') .channel-emote[title='/battery']",
       ).length == 0,
   },
 };
@@ -691,7 +707,7 @@ SFX.global.sounds = {
     emote: "/beep",
     condition: () =>
       $(
-        "#messagebuffer>div:not('.shotKilled') .channel-emote[title='/battery']"
+        "#messagebuffer>div:not('.shotKilled') .channel-emote[title='/battery']",
       ).length == 0,
   },
 };
@@ -719,7 +735,7 @@ SFX.secretary.sounds = {
     emote: "/beep",
     condition: () =>
       $(
-        "#messagebuffer>div:not('.shotKilled') .channel-emote[title='/battery']"
+        "#messagebuffer>div:not('.shotKilled') .channel-emote[title='/battery']",
       ).length == 0,
   },
 };
@@ -862,7 +878,7 @@ function checkReturnFire(div, jqueryChatSpan, safeUsername) {
 
       if (SFX.global.isEnabled && playSound) {
         var audio = new Audio(
-          "https://static.dontcodethis.com/sounds/tink.mp3"
+          "https://static.dontcodethis.com/sounds/tink.mp3",
         );
         audio.type = "audio/wav";
         audio.play();
@@ -905,7 +921,7 @@ function checkOverlapEmotes(jqueryChatSpan) {
       jqueryChatSpan
         .find(`img[title='${emote.name}']`)
         .addClass("emote-overlap")
-        .css("visibility", "hidden")
+        .css("visibility", "hidden"),
     );
     jqueryChatSpan.css("position", "relative");
 
@@ -973,14 +989,14 @@ function checkOverlapEmotes(jqueryChatSpan) {
                 emotesFound[i].style.left =
                   leftPrevEmote -
                   Math.round(
-                    (overlapEmoteRect.width - prevNormalRect.width) / 2
+                    (overlapEmoteRect.width - prevNormalRect.width) / 2,
                   ) +
                   emoteCombo +
                   "px";
                 emotesFound[i].style.top =
                   topPrevEmote -
                   Math.round(
-                    (overlapEmoteRect.height - prevNormalRect.height) / 2
+                    (overlapEmoteRect.height - prevNormalRect.height) / 2,
                   ) +
                   emoteCombo +
                   "px";
@@ -1051,11 +1067,11 @@ $(function () {
     (value) => {
       // todo: dont play audio if audio is currently playing
       const audio = new Audio(
-        "https://static.dontcodethis.com/sounds/tink.mp3"
+        "https://static.dontcodethis.com/sounds/tink.mp3",
       );
       audio.volume = value / 100;
       audio.play();
-    }
+    },
   );
 
   setupSliderListener("secVolume", "chatOptions-sfx-secvolume-cb", (value) => {
@@ -1065,7 +1081,8 @@ $(function () {
         pitch: 1,
         voiceObj:
           voices.find(
-            (voice) => voice.name === "Microsoft Zira - English (United States)"
+            (voice) =>
+              voice.name === "Microsoft Zira - English (United States)",
           ) ?? voices[0],
         message: `Test message with volume ${value} percent`,
       };
@@ -1117,7 +1134,7 @@ function applyAutoResizing() {
     let videoWidth = getVideoWrapSize();
     const storageVideoWidth = parseInt(
       window.localStorage.getItem(AUTO_RESIZE_STORAGE_NAME),
-      10
+      10,
     );
 
     if (videoWidth < AUTO_RESIZE_MIN || videoWidth > AUTO_RESIZE_MAX) return;
@@ -1165,7 +1182,7 @@ function saveHideUserlist() {
   try {
     window.localStorage.setItem(
       AUTO_HIDE_USERLIST_STORAGE_NAME,
-      isUserlistHidden()
+      isUserlistHidden(),
     );
   } catch (e) {
     console.error(e);
@@ -1192,7 +1209,7 @@ function getVideoWrapSize() {
   let match = videoWrap.className.match(/col-md-(\d+)/);
   if (!match) {
     throw new Error(
-      "ui::changeVideoWidth: videowrap is missing bootstrap class!"
+      "ui::changeVideoWidth: videowrap is missing bootstrap class!",
     );
   }
   return parseInt(match[1], 10);

@@ -87,11 +87,19 @@ Run all commands from the root directory:
 - [ ] Tests are included and passing (`npm test`)
 - [ ] No linting errors (`npm run lint`)
 - [ ] Breaking changes are documented
-- [ ] New public APIs have JSDoc comments
+- [ ] JSDocs are added to new functions or methods
 - [ ] Error handling is appropriate
 - [ ] No console.log in production code (use LOGGER)
 
 ## Special Considerations
+
+### CyTube Fork
+
+- Coolhole is a CyTube fork that intends to _extend_ CyTube development, not overhaul it
+- Avoid modifying files outside of `coolhole-` or obviously commented `coolhole` code
+- If a change to CyTube files _must_ be done, try your best to keep the change minimal to make future syncs with CyTube easier
+- Most, if not all, `coolhole` logic should live in `coohole` prefixed files with **at most** a small hook to add to said file
+- For example, prefer `mixins` for pug files, prefer callback functions that are included in `CoolholeCallbacks` instead of `Callbacks`, prefer exported classes rather than rewriting existing node logic in non-Coolhole files
 
 ### Database Queries
 
@@ -107,9 +115,9 @@ Run all commands from the root directory:
 
 ### Redis Operations
 
-- Use Redis module patterns established in the codebase
-- Handle connection failures gracefully
-- Document any assumptions about key structure or TTLs
+- Do not use Redis or implement code reliant on Redis
+- It's an artifact from an effort from CyTube
+- Do not modify or remove any existing Redis code as it may be implemented in the future
 
 ### Async Code
 
@@ -128,5 +136,10 @@ Run all commands from the root directory:
 
 - Document architectural decisions in `.agents/doc/` for significant features
 - Update relevant docs in `docs/` folder if adding new features or changing behavior
-- Include JSDoc for public APIs
-- Keep README.md and inline comments up to date
+- Include JSDoc for new methods or functions
+- Do NOT update **any** markdown documentation outside of designated agent folders under **any** circumstances
+
+## File Creation Naming Scheme
+
+- Prefix any new code files with `coolhole-` to seperate cytube work from coolhole work
+- If modifying code in a shared file, add a comment `// Coolhole Change -` followed by the reason for the change (addition and deletion as well)

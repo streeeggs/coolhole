@@ -5,6 +5,7 @@ import {
   cpOptsDefaults,
   cpOptTypes,
 } from "../../channel/coolholepoints-actions-options";
+import { coolholeSlotOptionsDefaults } from "../../channel/coolhole-slot-options";
 
 export default function initialize(app, ioConfig) {
   app.get(`/`, async (req, res) => {
@@ -21,6 +22,7 @@ export default function initialize(app, ioConfig) {
       // Inject coolhole default variables into pug
       cpOptsDefaults: cpOptsDefaults,
       cpOptsTypes: cpOptTypes,
+      coolholeSlotOptionsDefaults: coolholeSlotOptionsDefaults,
     });
   });
 }

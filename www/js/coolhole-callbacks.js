@@ -80,7 +80,7 @@ const validationPassed = (targetId) => {
 const triggerConfettiCelebration = (data) => {
   // intensity from a scale of 10 to 100
   const intensity = Math.max(
-    Math.min(data.votes.reduce((a, b) => a + b.wager, 0) / 100, 100)
+    Math.min(data.votes.reduce((a, b) => a + b.wager, 0) / 100, 100),
   );
   const defaults = {
     scalar: 2,
@@ -95,7 +95,7 @@ const triggerConfettiCelebration = (data) => {
 
   // did you win?
   const didYouWin = data.votes.find(
-    (vote) => vote.user === CLIENT.name && vote.isWinner
+    (vote) => vote.user === CLIENT.name && vote.isWinner,
   );
   if (didYouWin) {
     confetti({
@@ -204,7 +204,7 @@ const CoolholeCallbacks = {
       setParentVisible("a[href='#cs-chancoolpoint-options']", isModOrHigher());
       setParentVisible(
         "a[href='#cs-chancoolpoint-user-table']",
-        isModOrHigher()
+        isModOrHigher(),
       );
     }
     if (isModOrHigher) {
@@ -363,10 +363,10 @@ const CoolholeCallbacks = {
         });
         winningOptionButton.click(function () {
           $("#ch-poll-winner-confirmation-title").text(
-            `Choose "${option}" as the winner?`
+            `Choose "${option}" as the winner?`,
           );
           $("#ch-poll-winner-confirmation-text").text(
-            `Are you sure you want to end the poll with "${option}" as the winner?`
+            `Are you sure you want to end the poll with "${option}" as the winner?`,
           );
           $("#ch-poll-winner-confirmation-option").val(i);
           $("#ch-poll-winner-confirmation-modal").modal();
@@ -443,7 +443,7 @@ const CoolholeCallbacks = {
           $("#pollwrap .active .option button:not(.btn-danger)").each(
             function () {
               $(this).attr("disabled", true);
-            }
+            },
           );
 
           socket.emit("vote", {
@@ -476,7 +476,7 @@ const CoolholeCallbacks = {
             `Invalid wager amount. Must be 1 ≤ and ≤ ${
               CLIENT.coolpoints + 10000
             }`,
-            "#ch-poll-wager-wager"
+            "#ch-poll-wager-wager",
           );
           $("#ch-poll-wager-send-btn").attr("disabled", true);
         } else {
@@ -516,7 +516,7 @@ const CoolholeCallbacks = {
             data.counts[i] !== "?" && !isNaN(data.counts[i])
               ? toPercent(data.counts[i], totalVotes)
               : "?%"
-          })`
+          })`,
         );
       });
 
@@ -620,7 +620,7 @@ const CoolholeCallbacks = {
         .find(`div.option:nth-child(${data.winningOption + 1}) button`)
         .css(
           "background-color",
-          didYouWin ? "rgba(0, 255, 0, 0.5)" : "rgba(255, 0, 0, 0.5)"
+          didYouWin ? "rgba(0, 255, 0, 0.5)" : "rgba(255, 0, 0, 0.5)",
         );
       poll
         .find(`div.option:nth-child(${yourVote.option + 1}) button`)
@@ -642,5 +642,12 @@ const CoolholeCallbacks = {
 
   coolholeSpinSlotResponse: function (response) {
     handleSlotSpinResponse(response);
+  },
+
+  // TODO: Create an init callback and an update callback; this one keep rebinding event listeners on every update which is inefficient and could cause bugs
+  updateCoolholeSlotOpts: function (response) {
+    CHANNEL.opts.coolholeSlotOptions = response;
+
+    initSlotOptions(CHANNEL.opts.coolholeSlotOptions);
   },
 };

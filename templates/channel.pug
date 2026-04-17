@@ -231,6 +231,7 @@ html(lang="en")
                 ul.dropdown-menu
                   li: a(href="#cs-chancoolpoint-options", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('getCpOptions')") CoolPoints Actions
                   li: a(href="#cs-chancoolpoint-user-table", data-toggle="tab", tabindex="-1") CoolPoints User Table
+              li: a(href="#cs-chancoolholeslot-options", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('getCoolholeSlotOptions')") CoolHole Slots
 
           .modal-body
             .tab-content
@@ -250,6 +251,7 @@ html(lang="en")
               include coolhole-coolpoints
               +ch-coolpointoptions()
               +ch-coolpointsusertable()
+              +ch-slotoptions()
           .modal-footer
             button.btn.btn-default(type="button", data-dismiss="modal") Close
     +ch-coolpointsuserprompt()
@@ -282,6 +284,7 @@ html(lang="en")
     script(src="/js/callbacks.js")
     script(src="/js/coolhole-util.js")
     script(src="/js/coolpoints-util.js")
+    script(src="/js/coolhole-slot-options-util.js")
     script(src="/js/coolhole-slots.js")
     script(src="/js/coolhole-anime.js")
     script(defer, src="/js/gsap.min.js")

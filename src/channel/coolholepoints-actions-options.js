@@ -150,7 +150,7 @@ const CP_OPTS_DEFAULTS = [
     actionType: ActionType["Expenditures"],
     modTitle: "Danmaku ('On Screen' Comments)",
     userTitle: "Danmu",
-    userDescription: `AKA: Danmaku or barrage or niconico video is usually described as は、ニコニコ動画で流れる文字コメントのことで、動画をより楽しい \ (•◡•) /コメントが彩ります`,
+    userDescription: `AKA: Danmaku or barrage or niconico video is usually described as は、ニコニコ動画で流れる文字コメントのことで、動画をより楽しい \\ (•◡•) /コメントが彩ります`,
     options: [
       {
         optionName: "enabled",
@@ -385,8 +385,8 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
 
     LOGGER.error(
       `Unkown error in ${callingFunction} for CoolholePointsActionsOptionsModule. Here's hopefully relevant data: ${JSON.stringify(
-        data ? data : {}
-      )}`
+        data ? data : {},
+      )}`,
     );
 
     if (returnSocket)
@@ -404,7 +404,7 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
       const defaultActions = this.actionsDefault;
       const newActions = defaultActions.filter((defaultAction) => {
         return !data.coolpointsActions.some(
-          (action) => action.name === defaultAction.name
+          (action) => action.name === defaultAction.name,
         );
       });
       data.coolpointsActions.push(...newActions);
@@ -436,7 +436,7 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
   get(name) {
     if (this.coolpointsActions.length === 0) {
       LOGGER.error(
-        "No coolpointsActions found for this channel.. Forcing load?"
+        "No coolpointsActions found for this channel.. Forcing load?",
       );
       this.load({});
     }
@@ -459,15 +459,15 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
       const action = this.get(actionName);
       if (action.options.some((option) => option.optionName === optionName))
         action.options.find(
-          (option) => option.optionName === optionName
+          (option) => option.optionName === optionName,
         ).optionValue = optionValue;
       else
         LOGGER.error(
-          `Unable to find option ${optionName} for action ${actionName} for CoolholePointsActionsOptionsModule.`
+          `Unable to find option ${optionName} for action ${actionName} for CoolholePointsActionsOptionsModule.`,
         );
     } catch (e) {
       LOGGER.error(
-        `Something went wrong setting option ${optionName} for action ${actionName} for CoolholePointsActionsOptionsModule.`
+        `Something went wrong setting option ${optionName} for action ${actionName} for CoolholePointsActionsOptionsModule.`,
       );
       LOGGER.error(e);
     }
@@ -584,14 +584,14 @@ class CoolholePointsActionsOptionsModule extends ChannelModule {
       this.set(
         data.actionName,
         data.optionName,
-        normalizeInput(data.optionName, data.optionValue)
+        normalizeInput(data.optionName, data.optionValue),
       );
       sendUpdate = true;
     }
 
     if (sendUpdate) {
       LOGGER.info(
-        "[mod] " + user.getName() + " updated coolpoint channel options"
+        "[mod] " + user.getName() + " updated coolpoint channel options",
       );
       this.dirty = true;
       this.sendCpOpts(this.channel.users);

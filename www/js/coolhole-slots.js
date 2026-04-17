@@ -1,9 +1,15 @@
 $(function () {
   $("#cp-slots-spin-btn").on("click", handleSpinButtonClick);
-  // Preload slot emotes
-  preloadEmotes(TEMP_SLOT_SYMBOL_TO_EMOTE_MAPPING).catch((err) =>
-    console.warn("Some emotes failed to preload:", err)
-  );
+
+  // Preload emotes with setInveral waiting for CHANNEL.emotes
+  const preloadInterval = setInterval(() => {
+    if (CHANNEL.emotes && Object.keys(CHANNEL.emotes).length > 0) {
+      preloadEmotes(TEMP_SLOT_SYMBOL_TO_EMOTE_MAPPING).catch((err) =>
+        console.warn("Some emotes failed to preload:", err),
+      );
+      clearInterval(preloadInterval);
+    }
+  }, 1000);
 });
 
 const TEMP_SLOT_SYMBOL_TO_EMOTE_MAPPING = [
@@ -21,14 +27,9 @@ const TEMP_SLOT_SYMBOL_TO_EMOTE_MAPPING = [
 
 const SYMBOL_HEIGHT = $(".cp-slots-symbol").first().height();
 
-function symbolToUrl(symbolIndex) {
+function symbolIndexToUrl(symbolIndex) {
   const emoteName = TEMP_SLOT_SYMBOL_TO_EMOTE_MAPPING[symbolIndex];
-  return (
-    CHANNEL.emoteMap[emoteName]?.image ||
-    CHANNEL.emotes.filter((e) => e.name === emoteName)[0]?.image ||
-    CHANNEL.emotes[symbolIndex]?.image ||
-    ""
-  );
+  return symbolToUrl(emoteName) || CHANNEL.emotes[symbolIndex]?.image || "";
 }
 
 function handleSpinButtonClick() {
@@ -90,7 +91,7 @@ function updateGroupReel($reelGroup, resultColumn) {
 
   updateReelSymbols($resultReel, resultColumn);
   const randomSymbols = Array.from({ length: 10 }, () =>
-    Math.floor(Math.random() * TEMP_SLOT_SYMBOL_TO_EMOTE_MAPPING.length)
+    Math.floor(Math.random() * TEMP_SLOT_SYMBOL_TO_EMOTE_MAPPING.length),
   );
   $randomReels.each((_, el) => {
     updateReelSymbols($(el), randomSymbols);
@@ -101,7 +102,7 @@ function updateReelSymbols($reel, symbolIds) {
   const symbolEls = $reel.children(".cp-slots-symbol");
   for (const [i, symbolIndex] of symbolIds.entries()) {
     const symbolEl = symbolEls.eq(i);
-    const imageUrl = symbolToUrl(symbolIndex);
+    const imageUrl = symbolIndexToUrl(symbolIndex);
     symbolEl.css("background-image", `url(${imageUrl})`);
   }
 }
@@ -163,7 +164,7 @@ function handleSlotSpinResponse(response) {
         .map((h) => h.pattern)
         .join(", ")} with symbols: ${hits
         .map((h) => TEMP_SLOT_SYMBOL_TO_EMOTE_MAPPING[h.symbolId])
-        .join(", ")}`
+        .join(", ")}`,
     );
     resultGrid.prepend(resultMessagePre);
 

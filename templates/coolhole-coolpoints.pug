@@ -33,6 +33,56 @@ mixin ch-coolpointoptions
                                         default 
                                             break
 
+mixin ch-slotoptions
+  #cs-chancoolholeslot-options.tab-pane.fade.col-12(role="tabpanel", aria-labelledby="csSlotOptionsTab")
+    .form-group.mb-3.mb-sm-2.px-4
+      h4 Slot Machine Configuration
+      
+      //- Minimum Bet Option
+      .slot-option-form
+        label.slot-option-action-label Minimum Bet
+        .slot-option-form-wrapper
+          form(action="javascript:void(0)")
+            .form-group.pl-2.slot-option-form-group
+              input#slot-minBet(type="text", inputmode="numeric", placeholder=coolholeSlotOptionsDefaults.minBet, value=coolholeSlotOptionsDefaults.minBet, data-optionName="minBet").form-control.px-3.slot-option-input
+              span.text-info Minimum amount users can wager per spin
+
+      //- Symbol Odds Configuration
+      .slot-option-form
+        label.slot-option-action-label Symbol Odds
+        .slot-option-form-wrapper
+          p.text-muted Configure probability weights for each symbol
+          table.table.table-sm.table-striped
+            thead
+              tr
+                th Symbol #
+                th Number of times symbol appears in reel (relative to other symbols)
+            tbody#slot-odds-tbody
+              each symbol in Object.keys(coolholeSlotOptionsDefaults.symbolOdds).sort((a, b) => a - b)
+                - var oddValue = coolholeSlotOptionsDefaults.symbolOdds[symbol]
+                tr
+                  td= symbol
+                  td
+                    input(type="text", inputmode="numeric", class="form-control slot-odds-input", value=oddValue, data-symbol=symbol, data-optionName="symbolOdds")
+
+      //- Symbol Payouts Configuration
+      .slot-option-form
+        label.slot-option-action-label Symbol Payouts
+        .slot-option-form-wrapper
+          p.text-muted Configure payout multiplier for each symbol
+          table.table.table-sm.table-striped
+            thead
+              tr
+                th Symbol #
+                th Payout (CP)
+            tbody#slot-payouts-tbody
+              each symbol in Object.keys(coolholeSlotOptionsDefaults.symbolPayouts).sort((a, b) => a - b)
+                - var payoutValue = coolholeSlotOptionsDefaults.symbolPayouts[symbol]
+                tr
+                  td= symbol
+                  td
+                    input(type="text", inputmode="numeric", class="form-control slot-payouts-input", value=payoutValue, data-symbol=symbol, data-optionName="symbolPayouts")
+
 mixin ch-coolpointsusertable
   #cs-chancoolpoint-user-table.tab-pane.fade.col-12(role="tabpanel", aria-labelledby="csCoolpointsUserTableTab")
     h4 Coolpoints Users Table
