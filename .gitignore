@@ -26,3 +26,4 @@ peertube-hosts.json
 **/.DS_Store
 **/._.DS_Store
 .vscode
+.env

@@ -1,139 +1,49 @@
-# Coolhole Docker Setup (Development)
+# Coolhole Docker Setup
 
-A Docker Compose setup for local development of the Coolhole CyTube fork.
+Docker containerization for local development of Coolhole (CyTube fork).
 
 ## Prerequisites
 
-- Docker Desktop (Windows with WSL2)
+- Docker Desktop installed with WSL2 backend (Windows)
 - Git
+- VS Code with Dev Containers extension (optional, for dev container support)
 
-## Setup
+## Dev Container Setup (VS Code)
 
-1. **Clone into docker directory** (if not already done):
+I've set this up such that:
+- All server files watch for changes to rebuild
+- Node restarts when backend changes are detected
+- Pug will always recompile each page and won't cache so changes should be reflected on refresh
 
-   ```bash
-   cd docker
-   ```
+### Setup
 
-2. **Copy and configure environment**:
+Install the [VSCode Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
-   ```bash
-   cp .env.example .env
-   ```
+The `.env` file controls all runtime configuration. Never commit this file to git (it's in `.gitignore`).
 
-   Edit `.env` to set secure passwords for MariaDB (at minimum).
+See `.env.example` for all available options
 
-3. **Build and start containers**:
+### Actually using it
 
-   ```bash
-   docker-compose up -d
-   ```
+1. `CTRL+Shift+P`
+2. `Rebuild and Reopen in Container`
 
-4. **Wait for MariaDB to initialize** (~10-15 seconds):
+VS Code should reopen within the same window but mounted to the container's file system
 
-   ```bash
-   docker-compose logs -f db
-   ```
+## File Structure
 
-5. **Access the application**:
+**docker-compose.yml** - Orchestrates two services: MariaDB database and Node.js web server. Sets development environment with hot reload enabled and exposes ports 8080 and 1337.
 
-   - Open `http://localhost:8080` in your browser
-   - Register an account
+**build/Dockerfile** - Builds the web container with Node.js Iron Alpine, clones the Coolhole repository, installs dependencies, and configures the application with environment variables. Runs with nodemon for automatic restarts on file changes in development mode.
 
-6. **Make yourself an admin**:
+**build/postinst.sh** - MariaDB initialization script that runs on first container startup to set up the database schema.
 
-   ```bash
-   docker-compose exec db /bin/sh /make_admin.sh YOUR_USERNAME
-   ```
+**build/ch_dump.sql** - Database dump file used by postinst.sh to populate initial database structure.
 
-7. **Verify admin status**:
-   - Go to Admin Control Panel (ACP) to confirm
+**.env.example** - Template for environment variables. Copy to `.env` and set secure passwords before first run.
 
-## Hot Reload Development
+## Ports
 
-The containers mount your source code directly:
-
-- `/src` - Backend source (Babel-compiled to `/lib`)
-- `/www` - Frontend assets
-- `/lib` - Compiled output
-
-Changes to these directories are automatically detected. The container runs `nodemon` to watch for changes and rebuild/restart automatically.
-
-### Manual rebuild if needed:
-
-```bash
-docker-compose exec web npm run build-server
-```
-
-### View logs:
-
-```bash
-docker-compose logs -f web
-```
-
-## Stopping and Cleanup
-
-```bash
-# Stop containers (preserve data)
-docker-compose down
-
-# Remove containers and volumes (reset database)
-docker-compose down -v
-
-# Rebuild images
-docker-compose build --no-cache
-```
-
-## Database Access
-
-To access MariaDB directly:
-
-```bash
-docker-compose exec db mariadb -u cytube3 -p
-# Password: (from .env CYTUBE_MARIADB_PASSWORD)
-
-# Or use:
-docker-compose exec db mariadb -u root -p
-# Password: (from .env MARIADB_ROOT_PASSWORD)
-```
-
-## Exposed Ports
-
-- **8080** - Web server (HTTP)
-- **1337** - Alt port (available for future use)
-- **3306** - MariaDB (accessible from host)
-
-## Adding TOML Configuration
-
-To add email, captcha, or other optional services:
-
-1. Create `.toml` files in `build/toml_configs/`
-2. Rebuild: `docker-compose down && docker-compose build && docker-compose up -d`
-
-See [CyTube config examples](https://github.com/calzoneman/sync/tree/3.0/conf/example) for templates.
-
-## Troubleshooting
-
-**Container won't start:**
-
-```bash
-docker-compose logs web
-docker-compose logs db
-```
-
-**Permission errors on Windows:**
-
-- Ensure Docker Desktop is configured for WSL2
-- Run from WSL2 terminal, not PowerShell
-
-**Can't connect to database:**
-
-- Verify `.env` passwords are correct
-- Wait for healthcheck to pass: `docker-compose logs db`
-- Check if container exited: `docker-compose ps`
-
-**Hot reload not working:**
-
-- Verify volumes are mounted: `docker-compose exec web ls -la /service/coolhole/src`
-- Check logs: `docker-compose logs -f web`
-- Try manual rebuild: `docker-compose exec web npm run build-server`
+- **8080** - Web interface
+- **1337** - Alternative port
+- **3306** - MariaDB

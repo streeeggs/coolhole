@@ -1,0 +1,9 @@
+services:
+  web:
+    build:
+      target: prod
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "80:80"
+      - "1337:1337"
