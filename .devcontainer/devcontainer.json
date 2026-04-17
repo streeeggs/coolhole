@@ -1,0 +1,59 @@
+{
+  "name": "Coolhole Development",
+  "dockerComposeFile": [
+    "../docker/compose.yml",
+    "../docker/compose.dev.yml"
+  ],
+  "service": "web",
+  "workspaceFolder": "/service/coolhole",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "mhutchie.git-graph",
+        "ms-vscode.makefile-tools"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "eslint.validate": [
+          "javascript"
+        ]
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "forwardPorts": [
+    8080,
+    1337,
+    3306
+  ],
+  "portsAttributes": {
+    "8080": {
+      "label": "Web",
+      "onAutoForward": "notify"
+    },
+    "1337": {
+      "label": "Socket.IO",
+      "onAutoForward": "notify"
+    },
+    "3306": {
+      "label": "MariaDB",
+      "onAutoForward": "silent"
+    }
+  },
+  "otherPortsAttributes": {
+    "onAutoForward": "silent"
+  },
+  "remoteEnv": {
+    "NODE_ENV": "development"
+  },
+  "postCreateCommand": "npm run build-server",
+  "waitFor": "onCreateCommand"
+}

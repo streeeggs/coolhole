@@ -1,0 +1,10 @@
+services:
+  web:
+    build:
+      target: dev
+    ports:
+      - "8080:8080"
+      - "1337:1337"
+  db:
+    volumes:
+      - ./build/ch_dump.sql:/ch_dump.sql
