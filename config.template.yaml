@@ -193,6 +193,24 @@ ffmpeg:
 # libav is used rather than ffmpeg proper), this is "avprobe"
   ffprobe-exec: 'ffprobe'
 
+# yt-dlp for age-restricted YouTube videos
+# Downloads the video to Coolhost and plays as a direct file
+# Requires: yt-dlp binary installed on the server
+yt-dlp:
+  enabled: false
+  exec: 'yt-dlp'
+  # Download timeout in milliseconds (longer videos need more time)
+  timeout: 120000
+
+# Coolhost cache for age-restricted video files
+# Coolhost must be running on the same server
+coolhost:
+  url: 'http://localhost:3800'
+  # Absolute path to Coolhost's uploads directory (same filesystem)
+  uploads-dir: ''
+  # Coolhost admin password for cache API access
+  admin-password: ''
+
 link-domain-blacklist: []
 
 # Drop root if started as root!!

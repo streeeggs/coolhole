@@ -1204,6 +1204,15 @@ function applyHideMotd() {
   const isHidden = localStorage.getItem(HIDE_MOTD_STORAGE_NAME) === "true";
   $("#motd").toggle(!isHidden);
   $("#motdwrap").toggle(!isHidden);
+  if (isHidden) {
+    $("#togglemotd").find(".glyphicon-minus")
+      .removeClass("glyphicon-minus")
+      .addClass("glyphicon-plus");
+  } else {
+    $("#togglemotd").find(".glyphicon-plus")
+      .removeClass("glyphicon-plus")
+      .addClass("glyphicon-minus");
+  }
 }
 
 applyHideMotd();

@@ -484,6 +484,7 @@ function makeQueueEntry(item, addbtns) {
     li.data("uid", item.uid);
     li.data("media", video);
     li.data("temp", item.temp);
+    li.data("queueby", item.queueby || "");
     if(video.thumb) {
         $("<img/>").attr("src", video.thumb.url)
             .css("float", "left")
@@ -564,6 +565,25 @@ function addQueueButtons(li) {
             })
             .appendTo(menu);
     }
+    // Rename — shown to owners (their own items) and to mods/admins (settemp).
+    var canRename = hasPermission("settemp") ||
+        (CLIENT && CLIENT.name && li.data("queueby") === CLIENT.name);
+    if (canRename) {
+        $("<button/>").addClass("btn btn-xs btn-default qbtn-rename")
+            .html("<span class='glyphicon glyphicon-pencil'></span>Rename")
+            .on('click', function() {
+                var current = (li.data("media") && li.data("media").title) || "";
+                var next = window.prompt("New title:", current);
+                if (next === null) return;
+                next = next.trim();
+                if (!next || next === current) return;
+                socket.emit("renameMedia", {
+                    uid: li.data("uid"),
+                    title: next
+                });
+            })
+            .appendTo(menu);
+    }
     // Delete
     if(hasPermission("playlistdelete")) {
         $("<button/>").addClass("btn btn-xs btn-default qbtn-delete")
@@ -574,8 +594,9 @@ function addQueueButtons(li) {
             .appendTo(menu);
     }
 
-    if(USEROPTS.qbtn_hide && !USEROPTS.qbtn_idontlikechange
-        || menu.find(".btn").length == 0)
+    if(menu.find(".btn").length == 0)
+        menu.hide();
+    else if(USEROPTS.qbtn_hide && !USEROPTS.qbtn_idontlikechange && !hasPermission("playlistdelete"))
         menu.hide();
 
     // I DON'T LIKE CHANGE

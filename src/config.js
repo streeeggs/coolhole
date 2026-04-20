@@ -95,6 +95,16 @@ var defaults = {
         enabled: false,
         "ffprobe-exec": "ffprobe"
     },
+    "yt-dlp": {
+        enabled: false,
+        exec: "yt-dlp",
+        timeout: 120000
+    },
+    coolhost: {
+        url: "http://localhost:3800",
+        "uploads-dir": "",
+        "admin-password": ""
+    },
     "link-domain-blacklist": [],
     setuid: {
         enabled: false,

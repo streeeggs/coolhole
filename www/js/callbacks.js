@@ -735,6 +735,27 @@ const Callbacks = {
         queueMessage(data, "alert-danger");
     },
 
+    renameMedia: function(data) {
+        var li = $(".pluid-" + data.uid);
+        if (li.length === 0) return;
+
+        var media = li.data("media");
+        if (media) {
+            media.title = data.title;
+            li.data("media", media);
+        }
+
+        // .qe_title can be either <a> (googledrive/regular) or <span>. Both
+        // render text via .text(), so this works for both.
+        li.find(".qe_title").text(data.title);
+
+        // If this item is the currently playing one, also update the top-of-
+        // page "Now playing" label.
+        if (typeof PL_CURRENT !== "undefined" && data.uid === PL_CURRENT) {
+            $("#currenttitle").text("Currently Playing: " + data.title);
+        }
+    },
+
     setTemp: function(data) {
         var li = $(".pluid-" + data.uid);
         if(li.length == 0)
@@ -843,6 +864,19 @@ const Callbacks = {
         }
 
         $("#currenttitle").text("Currently Playing: " + data.title);
+    },
+
+    clearMedia: function() {
+        if (window.PLAYER) {
+            try {
+                window.PLAYER.destroy();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        window.PLAYER = false;
+        removeOld();
+        $("#currenttitle").text("");
     },
 
     mediaUpdate: function(data) {

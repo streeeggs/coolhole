@@ -17,6 +17,8 @@ const TwitchClip = require("@cytube/mediaquery/lib/provider/twitch-clip");
 import { Counter } from 'prom-client';
 import { lookup as lookupCustomMetadata } from './custom-media';
 
+const coolhostCache = require("./coolhost-cache");
+
 const LOGGER = require('@calzoneman/jsli')('get-info');
 const lookupCounter = new Counter({
     name: 'cytube_media_lookups_total',
@@ -78,6 +80,24 @@ var Getters = {
             }
             if (video.meta.ytRating) {
                 meta.ytRating = video.meta.ytRating;
+            }
+
+            // Age-restricted: download to Coolhost and play as direct file
+            if (meta.ytRating === "ytAgeRestricted" && Config.get("yt-dlp.enabled")) {
+                LOGGER.info("Age-restricted video %s, routing through Coolhost cache", id);
+                return coolhostCache.getOrDownload(id, video.title, video.duration,
+                    function (err, fileUrl) {
+                        if (err) {
+                            return callback("Age-restricted video: " + err);
+                        }
+                        var isHls = /\.m3u8(?:$|\?)/.test(fileUrl);
+                        var media = new Media(fileUrl, video.title, video.duration, isHls ? "hl" : "fi", {
+                            ytAgeRestricted: true,
+                            codec: "mov/h264"
+                        });
+                        callback(false, media);
+                    }
+                );
             }
 
             var media = new Media(video.id, video.title, video.duration, "yt", meta);

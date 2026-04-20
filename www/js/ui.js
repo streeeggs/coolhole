@@ -15,16 +15,16 @@ $(window).on('focus', CyTube.ui.onPageFocus).on('blur', CyTube.ui.onPageBlur);
 $(".modal").on('focus', CyTube.ui.onPageFocus);
 
 $("#togglemotd").on('click', function () {
+    toggleHideMotd();
     var hidden = $("#motd")[0].style.display === "none";
-    $("#motd").toggle();
     if (hidden) {
-        $("#togglemotd").find(".glyphicon-plus")
-            .removeClass("glyphicon-plus")
-            .addClass("glyphicon-minus");
-    } else {
         $("#togglemotd").find(".glyphicon-minus")
             .removeClass("glyphicon-minus")
             .addClass("glyphicon-plus");
+    } else {
+        $("#togglemotd").find(".glyphicon-plus")
+            .removeClass("glyphicon-plus")
+            .addClass("glyphicon-minus");
     }
 });
 
@@ -430,10 +430,13 @@ function queue(pos, src) {
                     });
                     return;
                 }
+            }
 
-                // Raw files allow title overrides since the ffprobe tag data
-                // is not always correct.
-                title = $("#addfromurl-title-val").val();
+            // Forward any custom title the user typed in the title box. The
+            // server will accept it for any type now, not just "fi"/"cu".
+            var titleInput = $("#addfromurl-title-val").val();
+            if (titleInput && titleInput.trim()) {
+                title = titleInput.trim();
             }
 
             if (data.id == null || data.type == null) {
@@ -486,15 +489,29 @@ $("#queue_end").on('click', queue.bind(this, "end", "url"));
 $("#ce_queue_next").on('click', queue.bind(this, "next", "customembed"));
 $("#ce_queue_end").on('click', queue.bind(this, "end", "customembed"));
 
+function linkNeedsTitle(parsed, rawUrl) {
+    if (!parsed) return false;
+    // Raw files and custom embeds never have good titles from the resolver.
+    if (parsed.type === "fi" || parsed.type === "cu" || parsed.type === "cm") {
+        return true;
+    }
+    // Direct .mp4/.webm/.mkv on any host lands as "fi" above, but if the URL
+    // is a bare coolhost link that didn't parse as fi (e.g. pasted as custom
+    // embed), still offer the title box.
+    if (typeof rawUrl === "string" && /coolhost\.ca\/f\//i.test(rawUrl)) {
+        return true;
+    }
+    return false;
+}
+
 $("#mediaurl").on('keyup', function(ev) {
     if (ev.keyCode === 13) {
         queue("end", "url");
     } else {
+        var rawUrl = $("#mediaurl").val();
         var editTitle = false;
         try {
-            if (parseMediaLink($("#mediaurl").val()).type === "fi") {
-                editTitle = true;
-            }
+            editTitle = linkNeedsTitle(parseMediaLink(rawUrl), rawUrl);
         } catch (error) {
         }
 
@@ -504,11 +521,12 @@ $("#mediaurl").on('keyup', function(ev) {
                 title = $("<div/>")
                     .attr("id", "addfromurl-title")
                     .appendTo($("#addfromurl"));
-                $("<span/>").text("Title (optional; for raw files only)")
+                $("<span/>").text("Title (optional — leave blank to use the link)")
                     .appendTo(title);
                 $("<input/>").addClass("form-control")
                     .attr("type", "text")
                     .attr("id", "addfromurl-title-val")
+                    .attr("placeholder", "e.g. The Good Boy")
                     .on('keydown', function (ev) {
                         if (ev.keyCode === 13) {
                             queue("end", "url");

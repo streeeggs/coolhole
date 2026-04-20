@@ -116,12 +116,12 @@ html(lang="en")
                   .input-group
                     input#mediaurl.form-control(type="text", placeholder="Media URL")
                     span.input-group-btn
-                      button#queue_next.btn.btn-default: svg.ch-icon(viewbox="0 0 24 24"): use(href="/svg/coolhole-icons.svg#ch-icon-ui-video-play-next")
+                      button#queue_next.btn.btn-default Queue Next
                     span.input-group-btn
-                      button#queue_end.btn.btn-default: svg.ch-icon(viewbox="0 0 24 24"): use(href="/svg/coolhole-icons.svg#ch-icon-ui-video-play-end")
+                      button#queue_end.btn.btn-default Add to End
                   .checkbox
                     label
-                      input.add-temp(type="checkbox")
+                      input.add-temp(type="checkbox", checked)
                       | Add as temporary
                   div#addfromurl-queue
                 #customembed.collapse.plcontrol-collapse.col-lg-12.col-md-12
@@ -129,12 +129,12 @@ html(lang="en")
                   .input-group
                     input#customembed-title.form-control(type="text", placeholder="Title (optional)")
                     span.input-group-btn
-                      button#ce_queue_next.btn.btn-default Queue next
+                      button#ce_queue_next.btn.btn-default Queue Next
                     span.input-group-btn
-                      button#ce_queue_end.btn.btn-default Queue last
+                      button#ce_queue_end.btn.btn-default Add to End
                   .checkbox
                     label
-                      input.add-temp(type="checkbox")
+                      input.add-temp(type="checkbox", checked)
                       | Add as temporary
                   | Paste the embed code below and click Next or At End.
                   | Acceptable embed codes are <code>&lt;iframe&gt;</code> and <code>&lt;object&gt;</code> tags.  <strong>CUSTOM EMBEDS CANNOT BE SYNCHRONIZED.</strong>
@@ -147,7 +147,7 @@ html(lang="en")
                       button#userpl_save.btn.btn-default Save
                   .checkbox
                     label
-                      input.add-temp(type="checkbox")
+                      input.add-temp(type="checkbox", checked)
                       | Add as temporary
                   ul#userpl_list.videolist
                 #queuefail.col-lg-12.col-md-12

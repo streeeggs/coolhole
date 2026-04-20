@@ -270,6 +270,7 @@ PlaylistModule.prototype.onUserPostJoin = function (user) {
     this.sendChangeMedia([user]);
     user.socket.typecheckedOn("queue", TYPE_QUEUE, this.handleQueue.bind(this, user));
     user.socket.typecheckedOn("setTemp", TYPE_SET_TEMP, this.handleSetTemp.bind(this, user));
+    user.socket.on("renameMedia", this.handleRenameMedia.bind(this, user));
     user.socket.typecheckedOn("moveMedia", TYPE_MOVE_MEDIA, this.handleMoveMedia.bind(this, user));
     user.socket.on("delete", this.handleDelete.bind(this, user));
     user.socket.on("jumpTo", this.handleJumpTo.bind(this, user));
@@ -402,11 +403,15 @@ PlaylistModule.prototype.handleQueue = function (user, data) {
     }
 
     /**
-     * Specifying a custom title is currently only allowed for custom media
-     * and raw files
+     * Custom titles: always accepted when provided. Previously limited to
+     * "cu" and "fi" but users need to be able to name anything that resolves
+     * with a junk title (bare coolhost.ca/f/ links, direct .mp4s on other
+     * hosts, etc). Length/sanitization is enforced by Media.setTitle.
      */
-    if (typeof data.title !== "string" || (data.type !== "cu" && data.type !== "fi")) {
+    if (typeof data.title !== "string" || !data.title.trim()) {
         data.title = false;
+    } else {
+        data.title = data.title.trim();
     }
 
     var link = util.formatLink(id, type, null);
@@ -629,6 +634,38 @@ PlaylistModule.prototype.handleSetTemp = function (user, data) {
     }
 };
 
+PlaylistModule.prototype.handleRenameMedia = function (user, data) {
+    if (!data || typeof data.uid !== "number" || typeof data.title !== "string") {
+        return;
+    }
+
+    var title = data.title.trim();
+    if (!title) {
+        return;
+    }
+
+    var item = this.items.find(data.uid);
+    if (!item) {
+        return;
+    }
+
+    var perms = this.channel.modules.permissions;
+    var uname = user.getName();
+    var isOwner = !!(item.queueby && uname && item.queueby === uname);
+    if (!isOwner && !perms.canSetTemp(user)) {
+        return;
+    }
+
+    item.media.setTitle(title);
+    this.channel.broadcastAll("renameMedia", {
+        uid: item.uid,
+        title: item.media.title
+    });
+    this._listDirty = true;
+    this.channel.logger.log("[playlist] " + uname + " renamed " +
+        item.media.type + ":" + item.media.id + " to " + item.media.title);
+};
+
 PlaylistModule.prototype.handleMoveMedia = function (user, data) {
     if (!this.channel.modules.permissions.canMoveVideo(user)) {
         return;
@@ -726,6 +763,10 @@ PlaylistModule.prototype.handleClear = function (user) {
 
     this.channel.logger.log("[playlist] " + user.getName() + " cleared the playlist");
     this.current = null;
+    if (this._leadInterval) {
+        clearInterval(this._leadInterval);
+        this._leadInterval = false;
+    }
     this.items.clear();
     this.semaphore.reset();
 
@@ -737,6 +778,7 @@ PlaylistModule.prototype.handleClear = function (user) {
 
     this.channel.broadcastAll("playlist", []);
     this.channel.broadcastAll("setPlaylistMeta", this.meta);
+    this.channel.broadcastAll("clearMedia");
     this._listDirty = true;
     this._positionDirty = true;
 };
@@ -906,6 +948,13 @@ PlaylistModule.prototype._delete = function (uid) {
 
     if (self.current === item && item === next) {
         self.current = null;
+        /* Stop the lead timer and notify clients to clear player when queue empties */
+        if (self._leadInterval) {
+            clearInterval(self._leadInterval);
+            self._leadInterval = false;
+        }
+        self.channel.broadcastAll("setCurrent", "");
+        self.channel.broadcastAll("clearMedia");
     } else if (self.current === item) {
         self.current = next;
         self.startPlayback();
@@ -987,8 +1036,8 @@ PlaylistModule.prototype._addItem = function (media, data, user, cb) {
         }
     }
 
-    if (media.meta.ytRating === "ytAgeRestricted") {
-        return qfail("Cannot add age restricted videos. See: https://github.com/calzoneman/sync/wiki/Frequently-Asked-Questions#why-dont-age-restricted-youtube-videos-work");
+    if (media.meta.ytRating === "ytAgeRestricted" && !media.meta.ytAgeRestricted) {
+        return qfail("Cannot add age restricted videos (yt-dlp not available).");
     }
 
     /* Warn about blocked countries */
@@ -1005,7 +1054,7 @@ PlaylistModule.prototype._addItem = function (media, data, user, cb) {
         queueby: data.queueby
     });
 
-    if (data.title && (media.type === "cu" || media.type === "fi")) {
+    if (data.title) {
         media.setTitle(data.title);
     }
 

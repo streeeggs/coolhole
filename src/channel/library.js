@@ -21,13 +21,23 @@ function LibraryModule(_channel) {
 
 LibraryModule.prototype = Object.create(ChannelModule.prototype);
 
+function shouldCacheMedia(media) {
+    if (!media || util.isLive(media.type)) {
+        return false;
+    }
+
+    // Coolhost-backed age-restricted YouTube entries expire after 8 hours,
+    // so caching them in the permanent channel library creates dead links.
+    return !media.meta.ytAgeRestricted;
+}
+
 LibraryModule.prototype.onUserPostJoin = function (user) {
     user.socket.typecheckedOn("uncache", TYPE_UNCACHE, this.handleUncache.bind(this, user));
     user.socket.typecheckedOn("searchMedia", TYPE_SEARCH_MEDIA, this.handleSearchMedia.bind(this, user));
 };
 
 LibraryModule.prototype.cacheMedia = function (media) {
-    if (this.channel.is(Flags.C_REGISTERED) && !util.isLive(media.type)) {
+    if (this.channel.is(Flags.C_REGISTERED) && shouldCacheMedia(media)) {
         db.channels.addToLibrary(this.channel.name, media);
     }
 };
