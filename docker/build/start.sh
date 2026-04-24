@@ -29,7 +29,7 @@ if [ "$NODE_ENV" = "development" ]; then
     echo "MariaDB is ready."
 
     npm run server-dev &
-    nodemon --watch src --watch templates --ignore '*.coffee' index.js &
+    nodemon --inspect=0.0.0.0:9229 --watch src --watch templates --ignore '*.coffee' index.js &
     wait -n
     exit $?
 else

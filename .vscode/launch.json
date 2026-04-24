@@ -20,6 +20,14 @@
         "NODE_ENV": "development"
       },
       "sourceMaps": true
+    },
+    {
+      "name": "Attach to Docker",
+      "type": "node",
+      "request": "attach",
+      "address": "localhost",
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }
