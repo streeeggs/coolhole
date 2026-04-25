@@ -355,18 +355,18 @@ class CoolholeSlots extends ChannelModule {
     const slotOptionData =
       this.channel.modules.coolholeSlotOptions.coolholeSlotOptions;
 
-    const symbols = slotOptionData.symbolPayouts || defaultSymbolPayouts;
-    const odds = slotOptionData.symbolOdds || defaultSymbolOddsTotal;
+    const symbols = defaultSymbolPayouts;
+    const odds = defaultSymbolOddsTotal;
 
     const rand = util.randomInt(1, odds);
     let cum = 0;
 
-    for (const { id, odds } of symbols) {
-      cum += odds;
-      if (rand < cum) {
-        return id;
-      }
-    }
+    // for (const { id, odds } of symbols) {
+    //   cum += odds;
+    //   if (rand < cum) {
+    //     return id;
+    //   }
+    // }
     // todo: throw error? should never have odds be greater than 100
     return parseInt(Object.keys(symbols)[0]);
   }

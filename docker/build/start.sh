@@ -23,15 +23,18 @@ if [ "$NODE_ENV" = "development" ]; then
     echo "Waiting for MariaDB to be ready..."
 
     until mariadb -h db -u root -p"$MARIADB_ROOT_PASSWORD" -e "SELECT 1" >/dev/null 2>&1; do
-    sleep 2
+        sleep 2
     done
 
     echo "MariaDB is ready."
 
+    # Start Babel in watch mode in the background
     npm run server-dev &
-    nodemon --inspect=0.0.0.0:9229 --watch src --watch templates --ignore '*.coffee' index.js &
-    wait -n
-    exit $?
+    BABEL_PID=$!
+
+    # Start server with inspector enabled, watching compiled lib/ for changes
+    # The delay ensures Babel finishes writing before nodemon restarts the process
+    exec nodemon --inspect=0.0.0.0:9229 --delay 1500 --watch lib index.js
 else
     exec forever index.js
 fi
