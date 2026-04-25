@@ -1,9 +1,6 @@
 {
   "name": "Coolhole Development",
-  "dockerComposeFile": [
-    "../docker/compose.yml",
-    "../docker/compose.dev.yml"
-  ],
+  "dockerComposeFile": ["../docker/compose.yml", "../docker/compose.dev.yml"],
   "service": "web",
   "workspaceFolder": "/service/coolhole",
   "customizations": {
@@ -20,20 +17,16 @@
         "[javascript]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
-        "eslint.validate": [
-          "javascript"
-        ]
+        "eslint.validate": ["javascript"]
       }
     }
   },
   "features": {
-    "ghcr.io/devcontainers/features/git:1": {}
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    }
   },
-  "forwardPorts": [
-    8080,
-    1337,
-    3306
-  ],
+  "forwardPorts": [8080, 1337, 3306],
   "portsAttributes": {
     "8080": {
       "label": "Web",
@@ -54,6 +47,6 @@
   "remoteEnv": {
     "NODE_ENV": "development"
   },
-  "postCreateCommand": "npm run build-server",
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
   "waitFor": "onCreateCommand"
 }
