@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="bg" cx="0.5" cy="0.4" r="0.95">
+      <stop offset="0%" stop-color="#1a0a14"/>
+      <stop offset="55%" stop-color="#0c060c"/>
+      <stop offset="100%" stop-color="#000"/>
+    </radialGradient>
+    <linearGradient id="moonGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f4e4c1" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#c98b6b" stop-opacity="0.55"/>
+    </linearGradient>
+    <linearGradient id="redGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#cc1133" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#660011" stop-opacity="0.4"/>
+    </linearGradient>
+    <radialGradient id="screenGlow" cx="0.5" cy="0.5" r="0.7">
+      <stop offset="0%" stop-color="#ff3850" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#ff3850" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#screenGlow)"/>
+
+  <!-- Blood moon, top right -->
+  <circle cx="1015" cy="135" r="95" fill="url(#redGlow)"/>
+  <circle cx="1015" cy="135" r="60" fill="#8a1322" opacity="0.95"/>
+  <circle cx="1000" cy="120" r="55" fill="#0c060c" opacity="0.5"/>
+
+  <!-- Subtle scanlines suggesting CRT/video -->
+  <g opacity="0.05" fill="#ffffff">
+    <rect x="0" y="100" width="1200" height="1"/>
+    <rect x="0" y="180" width="1200" height="1"/>
+    <rect x="0" y="260" width="1200" height="1"/>
+    <rect x="0" y="340" width="1200" height="1"/>
+    <rect x="0" y="420" width="1200" height="1"/>
+    <rect x="0" y="500" width="1200" height="1"/>
+  </g>
+
+  <!-- Brand kicker -->
+  <text x="80" y="138" fill="#cc1133" font-family="-apple-system, Segoe UI, Roboto, sans-serif" font-size="22" font-weight="700" letter-spacing="6" text-transform="uppercase">
+    COOLHOLE
+  </text>
+  <line x1="80" y1="158" x2="240" y2="158" stroke="#cc1133" stroke-width="2"/>
+
+  <!-- Wordmark -->
+  <text x="80" y="282" fill="#f4e4c1" font-family="-apple-system, Segoe UI, Roboto, sans-serif" font-size="100" font-weight="800" letter-spacing="-3">
+    Watch together.
+  </text>
+  <text x="80" y="380" fill="#cc1133" font-family="-apple-system, Segoe UI, Roboto, sans-serif" font-size="100" font-weight="800" letter-spacing="-3" font-style="italic">
+    Survive together.
+  </text>
+
+  <!-- Tagline -->
+  <text x="80" y="445" fill="#9a8898" font-family="-apple-system, Segoe UI, Roboto, sans-serif" font-size="28" font-weight="500">
+    Synced video. Persistent chat. Vampires.
+  </text>
+
+  <!-- Footer URL -->
+  <line x1="80" y1="540" x2="220" y2="540" stroke="#3a2a32" stroke-width="2"/>
+  <text x="80" y="572" fill="#7a5a6a" font-family="-apple-system, Segoe UI, Roboto, sans-serif" font-size="22" font-weight="500" letter-spacing="2">
+    coolhole.org
+  </text>
+</svg>

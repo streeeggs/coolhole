@@ -208,6 +208,7 @@ module.exports = {
         require('./routes/index')(app, channelIndex, webConfig.getMaxIndexEntries());
         require('./routes/socketconfig')(app, clusterClient);
         require('./routes/contact')(app, webConfig);
+        require('./routes/sitemap')(app, channelIndex);
         require('./auth').init(app, captchaConfig, captchaController);
         require('./account').init(app, globalMessageBus, emailConfig, emailController, captchaConfig);
         require('./routes/account/delete-account')(

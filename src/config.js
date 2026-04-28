@@ -78,7 +78,8 @@ var defaults = {
     },
     "vimeo-workaround": false,
     "html-template": {
-        title: "CyTube Beta", description: "Free, open source synchtube"
+        title: "CyTube Beta", description: "Free, open source synchtube",
+        "og-image": ""
     },
     "reserved-names": {
         usernames: ["^(.*?[-_])?admin(istrator)?([-_].*)?$", "^(.*?[-_])?owner([-_].*)?$"],
