@@ -8,13 +8,19 @@ services:
       - .env
     volumes:
       - db_data:/var/lib/mysql
-      - ./build/postinst.sh:/docker-entrypoint-initdb.d/postinst.sh
+      - ./build/docker/postinst.sh:/docker-entrypoint-initdb.d/postinst.sh
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
+      interval: 5s
+      retries: 10
 
   web:
+    image: coolhole:web
     build:
-      context: ./build
+      context: ..
+      dockerfile: docker/build/Dockerfile
       args:
         MARIADB_PORT: 3306
     env_file:
@@ -23,7 +29,8 @@ services:
     stdin_open: true
     tty: true
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
 volumes:
   db_data:

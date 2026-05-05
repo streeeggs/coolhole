@@ -27,3 +27,4 @@ peertube-hosts.json
 **/._.DS_Store
 .vscode
 .env
+.gitconfig

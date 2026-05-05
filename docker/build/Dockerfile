@@ -8,19 +8,20 @@
   RUN apk add --no-cache \
       git build-base git mariadb-client python3 npm yq uuidgen ffmpeg bash
   
-  # Clone app
-  RUN git clone https://github.com/streeeggs/coolhole
   WORKDIR /service/coolhole
-  
-  RUN npm install
-  
+  COPY . .
+
   # Copy config template (runtime config happens later)
   RUN cp config.template.yaml config.yaml
   
   # Copy start script
-  COPY start.sh /start.sh
-  RUN chmod +x /start.sh
-  
+  COPY docker/build/start.sh /usr/local/bin/start.sh
+  RUN chmod +x /usr/local/bin/start.sh
+
+  RUN apk add --no-cache dos2unix && dos2unix postinstall.sh
+
+  RUN npm install
+  RUN npm run build-server
   
   # ---------- Development Stage ----------
   FROM base AS dev
@@ -29,7 +30,7 @@
   
   ENV NODE_ENV=development
   
-  ENTRYPOINT ["/start.sh"]
+  ENTRYPOINT ["/usr/local/bin/start.sh"]
   
   
   # ---------- Production Stage ----------
@@ -39,4 +40,4 @@
   
   ENV NODE_ENV=production
   
-  ENTRYPOINT ["/start.sh"]
+ ENTRYPOINT ["/usr/local/bin/start.sh"]

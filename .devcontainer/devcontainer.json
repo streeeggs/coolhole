@@ -54,6 +54,6 @@
   "remoteEnv": {
     "NODE_ENV": "development"
   },
-  "postCreateCommand": "npm run build-server",
+  "postCreateCommand": "npm install && npm run build-server",
   "waitFor": "onCreateCommand"
 }

@@ -46,7 +46,7 @@
     "flow": "flow",
     "lint": "eslint src",
     "pretest": "npm run lint",
-    "postinstall": "./postinstall.sh",
+    "postinstall": "bash ./postinstall.sh",
     "server-dev": "babel -D --watch --source-maps --verbose --out-dir lib/ src/",
     "generate-userscript": "$npm_node_execpath gdrive-userscript/generate-userscript $@ > www/js/cytube-google-drive.user.js",
     "test": "mocha --recursive --exit test",
