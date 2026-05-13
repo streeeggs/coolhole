@@ -10,7 +10,7 @@ UUID=$(uuidgen)
 echo "Starting Node..."
 
 if [ "$NODE_ENV" = "development" ]; then
-
+    sleep infinity
 else
     exec forever index.js
 fi
