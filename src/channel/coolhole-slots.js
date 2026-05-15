@@ -300,11 +300,10 @@ const defaultSymbolPayouts = {
   9: 5,
 };
 
+const sumOdds = (oddsObj) => Object.values(oddsObj).reduce((a, b) => a + b, 0);
+
 // just easier in case symbols changes rather than hardcoding 100
-const defaultSymbolOddsTotal = Object.values(defaultSymbolOdds).reduce(
-  (a, b) => a + b,
-  0,
-);
+const defaultSymbolOddsTotal = sumOdds(defaultSymbolOdds);
 
 const baseSymbols = [...Array(10).keys()].map((i) => ({
   id: i,
@@ -355,20 +354,20 @@ class CoolholeSlots extends ChannelModule {
     const slotOptionData =
       this.channel.modules.coolholeSlotOptions.coolholeSlotOptions;
 
-    const symbols = defaultSymbolPayouts;
-    const odds = defaultSymbolOddsTotal;
+    const symbolOdds = slotOptionData.symbolOdds || defaultSymbolOdds;
+    const totalOdds = sumOdds(symbolOdds);
 
-    const rand = util.randomInt(1, odds);
+    const rand = util.randomInt(1, totalOdds);
     let cum = 0;
 
-    // for (const { id, odds } of symbols) {
-    //   cum += odds;
-    //   if (rand < cum) {
-    //     return id;
-    //   }
-    // }
-    // todo: throw error? should never have odds be greater than 100
-    return parseInt(Object.keys(symbols)[0]);
+    for (const id in symbolOdds) {
+      cum += symbolOdds[id];
+      if (rand < cum) {
+        return id;
+      }
+    }
+
+    return parseInt(Object.keys(symbolOdds)[0]);
   }
 
   getPayout(symbolId, pattern, bet) {

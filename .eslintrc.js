@@ -16,7 +16,7 @@ module.exports = {
             4,
             { 'SwitchCase': 1 }
         ],
-        'linebreak-style': ['error','unix'],
+        // 'linebreak-style': ['error','unix'],
         'no-control-regex': ['off'],
         'no-prototype-builtins': ['off'], // should consider cleaning up the code and turning this back on at some point
         'no-trailing-spaces': ['error'],
